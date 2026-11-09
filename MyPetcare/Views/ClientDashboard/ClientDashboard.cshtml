@@ -1,0 +1,1332 @@
+﻿@{
+    ViewData["Title"] = "Client Dashboard - PetCare Service Site";
+    Layout = null;
+
+    // Retrieve shared appointments list passed from Controller
+    var clientAppointments = ViewBag.Appointments as List<MyPetcare.Models.AppointmentModel> ?? new List<MyPetcare.Models.AppointmentModel>();
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewData["Title"]</title>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Theme Variables - Deep Obsidian Cyber Dark Theme Support */
+        :root {
+            --bg-color: #f4f7f6;
+            --card-bg: #ffffff;
+            --text-color: #333333;
+            --text-muted: #64748b;
+            --heading-color: #0f172a;
+            --border-color: #e2e8f0;
+            --sidebar-bg: #ffffff;
+            --table-border: #f1f5f9;
+            --bg-main: #f8fafc;
+            --primary-accent: #0284c7;
+            --card-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+            --table-hover: #f8fafc;
+            --badge-pending-bg: #fef3c7;
+            --badge-pending-text: #d97706;
+            --badge-approved-bg: #d1fae5;
+            --badge-approved-text: #059669;
+            --badge-rejected-bg: #fee2e2;
+            --badge-rejected-text: #dc2626;
+        }
+
+        [data-theme="dark"] {
+            --bg-color: #090d16;
+            --card-bg: #131b2e;
+            --text-color: #f8fafc;
+            --text-muted: #94a3b8;
+            --heading-color: #ffffff;
+            --border-color: #1e293b;
+            --sidebar-bg: #060911;
+            --table-border: #1e293b;
+            --bg-main: #090d16;
+            --primary-accent: #38bdf8;
+            --card-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+            --table-hover: #1e293b;
+            --badge-pending-bg: #451a03;
+            --badge-pending-text: #fbbf24;
+            --badge-approved-bg: #064e3b;
+            --badge-approved-text: #34d399;
+            --badge-rejected-bg: #7f1d1d;
+            --badge-rejected-text: #f87171;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, Helvetica, sans-serif;
+            transition: background-color 0.25s ease, color 0.25s ease, border-color 0.25s ease;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            display: flex;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* Sidebar Navigation with Indicator */
+        .sidebar {
+            width: 260px;
+            background-color: var(--sidebar-bg);
+            border-right: 1px solid var(--border-color);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 24px;
+        }
+
+        .sidebar-top .brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 30px;
+        }
+
+            .sidebar-top .brand img {
+                width: 40px;
+                height: 40px;
+                border-radius: 50%;
+                object-fit: contain;
+            }
+
+            .sidebar-top .brand h2 {
+                font-size: 18px;
+                font-weight: 700;
+                color: var(--heading-color);
+            }
+
+        .nav-links {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+            .nav-links li a {
+                display: flex;
+                align-items: center;
+                gap: 12px;
+                padding: 12px 16px;
+                color: var(--text-muted);
+                text-decoration: none;
+                font-weight: 600;
+                border-radius: 8px;
+                position: relative;
+                transition: all 0.25s ease;
+            }
+
+                .nav-links li.active a, .nav-links li a:hover {
+                    background-color: rgba(2, 132, 199, 0.15);
+                    color: var(--primary-accent);
+                }
+
+                    .nav-links li.active a::before {
+                        content: '';
+                        position: absolute;
+                        left: 0;
+                        top: 15%;
+                        height: 70%;
+                        width: 4px;
+                        background: var(--primary-accent);
+                        border-radius: 0 4px 4px 0;
+                        box-shadow: 0 0 8px var(--primary-accent);
+                    }
+
+        /* Theme Toggle & Logout Buttons */
+        .theme-toggle-btn {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 16px;
+            color: var(--text-color);
+            background-color: var(--bg-color);
+            border: 1px solid var(--border-color);
+            text-decoration: none;
+            font-weight: 600;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-bottom: 12px;
+            width: 100%;
+            text-align: left;
+        }
+
+            .theme-toggle-btn:hover {
+                border-color: var(--primary-accent);
+            }
+
+        .logout-btn {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 16px;
+            color: #dc2626;
+            text-decoration: none;
+            font-weight: 600;
+            border-radius: 8px;
+            background-color: var(--badge-rejected-bg);
+            transition: background 0.2s;
+        }
+
+            .logout-btn:hover {
+                opacity: 0.9;
+            }
+
+        /* Main Content Area */
+        .main-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Top Header */
+        .dashboard-header {
+            background-color: var(--card-bg);
+            padding: 20px 40px;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+            .dashboard-header h1 {
+                font-size: 22px;
+                color: var(--heading-color);
+            }
+
+        .user-profile {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            cursor: pointer;
+            padding: 6px 12px;
+            border-radius: 20px;
+            border: 1px solid transparent;
+            transition: all 0.2s ease;
+        }
+
+            .user-profile:hover {
+                border-color: var(--border-color);
+                background: var(--bg-main);
+            }
+
+        /* Dashboard Body Grid with Smooth Entrance Animation */
+        .dashboard-body {
+            padding: 30px 40px;
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 24px;
+            animation: fadeInSlideUp 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+
+        @@keyframes fadeInSlideUp {
+            from {
+                opacity: 0;
+                transform: translateY(12px) scale(0.99);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        /* Enhanced Glassmorphism Card Hover Lift */
+        .card {
+            background-color: var(--card-bg);
+            border-radius: 12px;
+            padding: 24px;
+            box-shadow: var(--card-shadow);
+            border: 1px solid var(--border-color);
+            backdrop-filter: blur(12px);
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.3s ease, border-color 0.3s ease;
+        }
+
+            .card:hover {
+                transform: translateY(-3px);
+                box-shadow: 0 12px 24px -6px rgba(2, 132, 199, 0.15);
+                border-color: rgba(2, 132, 199, 0.3);
+            }
+
+            .card h3 {
+                font-size: 18px;
+                margin-bottom: 16px;
+                color: var(--heading-color);
+                display: flex;
+                align-items: center;
+                gap: 8px;
+            }
+
+        /* Tables & Lists */
+        .table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+            font-size: 14px;
+        }
+
+            .table th, .table td {
+                padding: 14px 12px;
+                border-bottom: 1px solid var(--table-border);
+                color: var(--text-color);
+            }
+
+            .table th {
+                color: var(--text-muted);
+                font-weight: 600;
+            }
+
+            .table tbody tr:hover {
+                background-color: var(--table-hover);
+            }
+
+        /* Animated Glowing Status Badges */
+        .badge {
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: capitalize;
+            display: inline-block;
+        }
+
+            .badge.pending {
+                background-color: var(--badge-pending-bg);
+                color: var(--badge-pending-text);
+                box-shadow: 0 0 8px rgba(251, 191, 36, 0.25);
+                animation: pulse-glow 2s infinite ease-in-out;
+            }
+
+        @@keyframes pulse-glow {
+            0%, 100% {
+                box-shadow: 0 0 4px rgba(251, 191, 36, 0.2);
+            }
+
+            50% {
+                box-shadow: 0 0 12px rgba(251, 191, 36, 0.5);
+            }
+        }
+
+        .badge.confirmed, .badge.approved {
+            background-color: var(--badge-approved-bg);
+            color: var(--badge-approved-text);
+        }
+
+        .badge.rejected, .badge.cancelled {
+            background-color: var(--badge-rejected-bg);
+            color: var(--badge-rejected-text);
+        }
+
+        /* Micro-Interaction Buttons */
+        .action-btn {
+            background-color: var(--primary-accent);
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 14px;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+            .action-btn:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 4px 12px rgba(2, 132, 199, 0.35);
+                opacity: 0.95;
+            }
+
+            .action-btn:active {
+                transform: translateY(0) scale(0.96);
+            }
+
+        /* Floating Chatbot Bounce Effect */
+        #chatToggleBtn {
+            animation: floatBounce 3s infinite ease-in-out;
+        }
+
+        @@keyframes floatBounce {
+            0%, 100% {
+                transform: translateY(0);
+            }
+
+            50% {
+                transform: translateY(-6px);
+            }
+        }
+
+        #chatToggleBtn:hover {
+            transform: scale(1.1) !important;
+            box-shadow: 0 10px 25px rgba(59, 130, 246, 0.5) !important;
+        }
+
+        /* CANVA-STYLE CHARACTER CREATOR MODAL LAYOUT */
+        .canva-modal-body {
+            display: grid;
+            grid-template-columns: 280px 1fr;
+            height: 440px;
+            border-radius: 12px;
+            overflow: hidden;
+            border: 1px solid var(--border-color);
+            background: var(--card-bg);
+        }
+
+        .canva-sidebar {
+            background: var(--sidebar-bg);
+            border-right: 1px solid var(--border-color);
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+            overflow-y: auto;
+            text-align: left;
+        }
+
+        .canva-sidebar-section-title {
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            letter-spacing: 0.5px;
+        }
+
+        .canva-item-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 8px;
+        }
+
+        .canva-asset-card {
+            aspect-ratio: 1;
+            background: var(--bg-main);
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            padding: 6px;
+            font-size: 12px;
+        }
+
+            .canva-asset-card:hover, .canva-asset-card.active {
+                border-color: var(--primary-accent);
+                background: rgba(2, 132, 199, 0.1);
+            }
+
+        .swatch-group {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .color-swatch {
+            width: 26px;
+            height: 26px;
+            border-radius: 50%;
+            cursor: pointer;
+            border: 2px solid transparent;
+            transition: transform 0.15s ease;
+        }
+
+            .color-swatch:hover, .color-swatch.active {
+                transform: scale(1.15);
+                border-color: var(--heading-color);
+            }
+
+        .canva-canvas-viewport {
+            background: #ffffff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Sidebar -->
+    <aside class="sidebar">
+        <div class="sidebar-top">
+            <div class="brand">
+                <img src="/images/logopet.jpeg" alt="Logo">
+                <h2>PetCare Portal</h2>
+            </div>
+            <ul class="nav-links">
+                <li class="active"><a href="@Url.Action("ClientDashboard", "Home")"><i class="fa-solid fa-house"></i> Dashboard</a></li>
+                <li><a href="#" onclick="openProfileModal(); return false;"><i class="fa-solid fa-wand-magic-sparkles"></i> Pet Character Studio</a></li>
+                <li><a href="#" onclick="openFriendsModal(); return false;"><i class="fa-solid fa-user-group"></i> Friends & Visit</a></li>
+                <li><a href="#"><i class="fa-solid fa-calendar-check"></i> Appointments</a></li>
+                <li><a href="#"><i class="fa-solid fa-paw"></i> My Pets</a></li>
+            </ul>
+        </div>
+        <div>
+            <!-- Theme Toggle Button -->
+            <button class="theme-toggle-btn" onclick="toggleTheme()">
+                <i class="fa-solid fa-moon" id="themeIcon"></i> <span id="themeText">Dark Mode</span>
+            </button>
+            <a href="/Account/Logout" class="logout-btn"><i class="fa-solid fa-right-from-bracket"></i> Log out</a>
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <header class="dashboard-header">
+            <h1>Welcome back, @ViewBag.ClientName! 🐾</h1>
+            <div class="user-profile" onclick="openProfileModal()" title="Click to customize pet profile avatar">
+                <div style="text-align: right;">
+                    <span style="display: block; font-weight: 700; font-size: 14px;" id="headerDisplayName">@ViewBag.ClientName</span>
+                    <span style="font-size: 12px; color: var(--text-muted);">Client Account</span>
+                </div>
+                <!-- Dynamic Header Avatar SVG Container -->
+                <div id="headerAvatarContainer" style="width: 42px; height: 42px; border-radius: 50%; overflow: hidden; border: 2px solid var(--primary-accent); background: #ffffff; display: flex; align-items: center; justify-content: center;">
+                    <svg id="headerPetSvg" viewBox="0 0 200 200" width="38" height="38">
+                        <ellipse cx="100" cy="120" rx="40" ry="32" fill="#d97706" />
+                        <circle cx="100" cy="85" r="28" fill="#d97706" />
+                        <ellipse cx="100" cy="94" rx="14" ry="11" fill="#fef3c7" />
+                        <circle cx="91" cy="79" r="3.5" fill="#0f172a" />
+                        <circle cx="109" cy="79" r="3.5" fill="#0f172a" />
+                        <ellipse cx="100" cy="91" rx="4.5" ry="3" fill="#0f172a" />
+                    </svg>
+                </div>
+            </div>
+        </header>
+
+        <div class="dashboard-body">
+            <!-- Left Column: Appointments & Quick Actions -->
+            <div style="display: flex; flex-direction: column; gap: 24px;">
+                <div class="card">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+                        <h3><i class="fa-solid fa-calendar-days" style="color: var(--primary-accent);"></i> My Appointments</h3>
+                        <button class="action-btn" onclick="openAppointmentModal()">+ New Appointment</button>
+                    </div>
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Pet Name</th>
+                                <th>Service</th>
+                                <th>Date & Time</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if (clientAppointments.Any())
+                            {
+                                foreach (var item in clientAppointments)
+                                {
+                                    <tr>
+                                        <td><strong>@item.PetName</strong></td>
+                                        <td>@item.Service</td>
+                                        <td>@item.AppointmentDate.ToString("MMM dd, yyyy - hh:mm tt")</td>
+                                        <td>
+                                            <span class="badge @item.Status.ToLower()">@item.Status</span>
+                                        </td>
+                                    </tr>
+                                }
+                            }
+                            else
+                            {
+                                <tr>
+                                    <td colspan="4" style="text-align: center; color: var(--text-muted);">No appointments booked yet.</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="card">
+                    <h3><i class="fa-solid fa-paw" style="color: var(--primary-accent);"></i> Registered Pets Information</h3>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 15px;">
+                        <div style="background: var(--bg-main); padding: 16px; border-radius: 8px; border: 1px solid var(--border-color);">
+                            <h4 style="color: var(--heading-color); margin-bottom: 4px;">Max 🐕</h4>
+                            <p style="font-size: 13px; color: var(--text-muted);">Breed: Corgi</p>
+                            <p style="font-size: 13px; color: var(--text-muted);">Age: 2 Years Old</p>
+                        </div>
+                        <div style="background: var(--bg-main); padding: 16px; border-radius: 8px; border: 1px solid var(--border-color);">
+                            <h4 style="color: var(--heading-color); margin-bottom: 4px;">Luna 🐈</h4>
+                            <p style="font-size: 13px; color: var(--text-muted);">Breed: Puspin / Domestic</p>
+                            <p style="font-size: 13px; color: #16a34a; font-weight: 600;">Vaccinated ✓</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Column: PetBot Quick Help Widget Preview -->
+            <div style="display: flex; flex-direction: column; gap: 24px;">
+                <div class="card" style="background: linear-gradient(135deg, #0284c7, #0369a1); color: white; border: none;">
+                    <h3 style="color: white;"><i class="fa-solid fa-robot"></i> PetBot AI Support</h3>
+                    <p style="font-size: 14px; opacity: 0.9; line-height: 1.5; margin-bottom: 16px;">
+                        Need quick advice about your pet's diet, symptoms, or vaccine schedules? PetBot is online 24/7 at the bottom right corner!
+                    </p>
+                    <div style="background: rgba(255,255,255,0.15); padding: 12px; border-radius: 8px; font-size: 13px;">
+                        💡 <strong>Tip:</strong> Try asking PetBot about foods that are toxic to dogs or clinic schedules.
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h3><i class="fa-solid fa-circle-info" style="color: var(--primary-accent);"></i> Clinic Announcements</h3>
+                    <ul style="list-style: none; display: flex; flex-direction: column; gap: 12px; font-size: 14px; color: var(--text-muted);">
+                        <li style="border-bottom: 1px solid var(--table-border); padding-bottom: 8px;">
+                            🏥 <strong style="color: var(--heading-color);">Free Anti-Rabies Drive:</strong> This coming Saturday at the Alaminos City Veterinary Office.
+                        </li>
+                        <li>
+                            ⏰ <strong style="color: var(--heading-color);">Holiday Schedule:</strong> We are open during regular hours this coming holiday.
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- CANVA-STYLE MULTI-ANIMAL CHARACTER CREATOR MODAL -->
+    <div id="profileModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 30000; justify-content: center; align-items: center; backdrop-filter: blur(8px);">
+        <div class="card" style="width: 760px; max-width: 95%; border-radius: 16px; box-shadow: 0 15px 35px rgba(0,0,0,0.4); padding: 20px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px;">
+                <h3 style="margin: 0; font-size: 18px;"><i class="fa-solid fa-wand-magic-sparkles" style="color: var(--primary-accent);"></i> Pet Character Studio 🐾</h3>
+                <button onclick="closeProfileModal()" style="background: none; border: none; font-size: 20px; cursor: pointer; color: var(--text-muted);">&times;</button>
+            </div>
+
+            <!-- Canva Builder Body -->
+            <div class="canva-modal-body">
+                <!-- Left Sidebar Picker -->
+                <div class="canva-sidebar">
+                    <!-- Animal Species Selector -->
+                    <span class="canva-sidebar-section-title">Select Species</span>
+                    <div class="canva-item-grid">
+                        <div class="canva-asset-card active" onclick="setSpecies('dog')">🐶 Dog</div>
+                        <div class="canva-asset-card" onclick="setSpecies('cat')">🐱 Cat</div>
+                        <div class="canva-asset-card" onclick="setSpecies('rabbit')">🐰 Rabbit</div>
+                        <div class="canva-asset-card" onclick="setSpecies('bird')">🦜 Bird</div>
+                    </div>
+
+                    <!-- Fur Color Section -->
+                    <span class="canva-sidebar-section-title">Color / Fur Tone</span>
+                    <div class="swatch-group">
+                        <div class="color-swatch active" style="background: #d97706;" onclick="setFurColor('#d97706')"></div>
+                        <div class="color-swatch" style="background: #64748b;" onclick="setFurColor('#64748b')"></div>
+                        <div class="color-swatch" style="background: #451a03;" onclick="setFurColor('#451a03')"></div>
+                        <div class="color-swatch" style="background: #f8fafc;" onclick="setFurColor('#f8fafc')"></div>
+                        <div class="color-swatch" style="background: #fbbf24;" onclick="setFurColor('#fbbf24')"></div>
+                    </div>
+
+                    <!-- Ears / Features Section -->
+                    <span class="canva-sidebar-section-title">Ears & Features</span>
+                    <div class="canva-item-grid">
+                        <div class="canva-asset-card active" onclick="setEars('default')">✨ Default</div>
+                        <div class="canva-asset-card" onclick="setEars('floppy')">👂 Floppy</div>
+                        <div class="canva-asset-card" onclick="setEars('pointed')">🔺 Pointed</div>
+                    </div>
+
+                    <!-- Expressions Section -->
+                    <span class="canva-sidebar-section-title">Face Expression</span>
+                    <div class="canva-item-grid">
+                        <div class="canva-asset-card active" onclick="setExpression('happy')">😊 Happy</div>
+                        <div class="canva-asset-card" onclick="setExpression('wink')">😉 Wink</div>
+                        <div class="canva-asset-card" onclick="setExpression('cool')">😎 Cool</div>
+                    </div>
+
+                    <!-- Outfits Section -->
+                    <span class="canva-sidebar-section-title">Outfits</span>
+                    <div class="canva-item-grid">
+                        <div class="canva-asset-card" onclick="setOutfit('none')">🚫 None</div>
+                        <div class="canva-asset-card active" onclick="setOutfit('tee')">👕 Shirt</div>
+                        <div class="canva-asset-card" onclick="setOutfit('dress')">👗 Dress</div>
+                    </div>
+                    <div class="swatch-group">
+                        <div class="color-swatch" style="background: #ef4444;" onclick="setOutfitColor('#ef4444')"></div>
+                        <div class="color-swatch" style="background: #2563eb;" onclick="setOutfitColor('#2563eb')"></div>
+                        <div class="color-swatch" style="background: #10b981;" onclick="setOutfitColor('#10b981')"></div>
+                        <div class="color-swatch" style="background: #8b5cf6;" onclick="setOutfitColor('#8b5cf6')"></div>
+                    </div>
+
+                    <!-- Headwear Section -->
+                    <span class="canva-sidebar-section-title">Headwear</span>
+                    <div class="canva-item-grid">
+                        <div class="canva-asset-card active" onclick="setCap('cap')">🧢 Cap</div>
+                        <div class="canva-asset-card" onclick="setCap('bow')">🎀 Bow</div>
+                        <div class="canva-asset-card" onclick="setCap('none')">🚫 None</div>
+                    </div>
+                </div>
+
+                <!-- Right Canva Viewport -->
+                <div class="canva-canvas-viewport">
+                    <svg id="canvaPetSvg" viewBox="0 0 200 200" width="240" height="240">
+                        <!-- Dynamic Tail Layer -->
+                        <g id="svgTailLayer">
+                            <path id="svgTail" d="M 50 110 Q 30 95 40 80" stroke="#d97706" stroke-width="8" stroke-linecap="round" fill="none" />
+                        </g>
+                        <!-- Body Layer -->
+                        <ellipse id="svgBody" cx="100" cy="120" rx="40" ry="32" fill="#d97706" />
+                        <rect x="72" y="140" width="12" height="22" rx="6" fill="#b45309" />
+                        <rect x="116" y="140" width="12" height="22" rx="6" fill="#b45309" />
+
+                        <!-- Socks Layer -->
+                        <path id="svgSocks" d="M 72 155 L 84 155 L 84 160 C 84 163 72 163 72 160 Z" fill="#10b981" />
+                        <path id="svgSocks2" d="M 116 155 L 128 155 L 128 160 C 128 163 116 163 116 160 Z" fill="#10b981" />
+
+                        <!-- Outfit Layer -->
+                        <g id="svgOutfitGroup">
+                            <path id="svgShirt" d="M 68 100 Q 100 90 132 100 L 140 135 Q 100 142 60 135 Z" fill="#ef4444" />
+                            <circle cx="64" cy="112" r="10" fill="#ef4444" />
+                            <circle cx="136" cy="112" r="10" fill="#ef4444" />
+                        </g>
+
+                        <!-- Dynamic Ears Layer -->
+                        <g id="svgEarsLayer">
+                            <path id="svgEarLeft" d="M 75 75 Q 55 60 65 85 Z" fill="#b45309" />
+                            <path id="svgEarRight" d="M 125 75 Q 145 60 135 85 Z" fill="#b45309" />
+                        </g>
+
+                        <!-- Head Base -->
+                        <circle id="svgHead" cx="100" cy="85" r="28" fill="#d97706" />
+
+                        <!-- Dynamic Muzzle & Face Layer -->
+                        <g id="svgMuzzleLayer">
+                            <ellipse cx="100" cy="94" rx="14" ry="11" fill="#fef3c7" />
+                            <ellipse cx="100" cy="91" rx="4.5" ry="3" fill="#0f172a" />
+                            <path d="M 100 94 Q 96 101 93 98" stroke="#0f172a" stroke-width="1.5" fill="none" stroke-linecap="round" />
+                            <path d="M 100 94 Q 104 101 107 98" stroke="#0f172a" stroke-width="1.5" fill="none" stroke-linecap="round" />
+                            <path d="M 97 99 Q 100 106 103 99 Z" fill="#f43f5e" />
+                        </g>
+
+                        <!-- Eyes Layer -->
+                        <g id="svgEyes">
+                            <circle cx="91" cy="79" r="3.5" fill="#0f172a" />
+                            <circle cx="109" cy="79" r="3.5" fill="#0f172a" />
+                            <circle cx="92" cy="78" r="1" fill="#ffffff" />
+                            <circle cx="110" cy="78" r="1" fill="#ffffff" />
+                        </g>
+
+                        <!-- Headwear / Accessories Layer -->
+                        <g id="svgCapGroup">
+                            <path d="M 72 70 Q 100 45 128 70 L 145 65 Q 100 35 55 65 Z" fill="#2563eb" />
+                            <ellipse cx="100" cy="62" rx="28" ry="7" fill="#1d4ed8" />
+                            <rect x="95" y="52" width="10" height="4" fill="#fbbf24" />
+                        </g>
+                    </svg>
+                </div>
+            </div>
+
+            <!-- Footer -->
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 14px;">
+                <div style="text-align: left; flex: 1; max-width: 300px;">
+                    <input type="text" id="modalDisplayName" value="@ViewBag.ClientName" style="width: 100%; padding: 8px 12px; border-radius: 6px; border: 1px solid var(--border-color); background: var(--bg-main); color: var(--text-color); font-size: 13px;" />
+                </div>
+                <div style="display: flex; gap: 8px;">
+                    <button type="button" onclick="closeProfileModal()" style="padding: 8px 16px; border-radius: 6px; border: 1px solid var(--border-color); background: transparent; color: var(--text-color); cursor: pointer; font-weight: 600; font-size: 13px;">Cancel</button>
+                    <button type="button" class="action-btn" onclick="saveProfileChanges()" style="padding: 8px 18px; font-size: 13px;">Done & Save</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ADD FRIEND & VISIT PROFILE MODAL -->
+    <div id="friendsModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 30000; justify-content: center; align-items: center; backdrop-filter: blur(8px);">
+        <div class="card" style="width: 520px; max-width: 95%; border-radius: 16px; box-shadow: 0 15px 35px rgba(0,0,0,0.4); padding: 20px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px;">
+                <h3 style="margin: 0; font-size: 18px;"><i class="fa-solid fa-user-group" style="color: var(--primary-accent);"></i> Friends & Pet Visiting 🐾</h3>
+                <button onclick="closeFriendsModal()" style="background: none; border: none; font-size: 20px; cursor: pointer; color: var(--text-muted);">&times;</button>
+            </div>
+
+            <!-- Add Friend Bar -->
+            <div style="display: flex; gap: 8px; margin-bottom: 16px;">
+                <input type="email" id="friendEmailInput" placeholder="Enter friend's email address..." style="flex: 1; padding: 10px; border-radius: 8px; border: 1px solid var(--border-color); background: var(--bg-main); color: var(--text-color); font-size: 13px;" />
+                <button class="action-btn" onclick="sendFriendRequest()">Add Friend</button>
+            </div>
+
+            <!-- Friends List -->
+            <h4 style="font-size: 13px; color: var(--text-muted); margin-bottom: 10px; text-align: left;">YOUR FRIENDS</h4>
+            <div id="friendsListContainer" style="max-height: 240px; overflow-y: auto; display: flex; flex-direction: column; gap: 8px;">
+                <p style="font-size: 13px; color: var(--text-muted);">Loading friends...</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- VISITED FRIEND PROFILE PREVIEW MODAL -->
+    <div id="visitProfileModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 31000; justify-content: center; align-items: center; backdrop-filter: blur(8px);">
+        <div class="card" style="width: 380px; max-width: 90%; border-radius: 16px; text-align: center; padding: 24px;">
+            <h3 id="visitedFriendName" style="margin-bottom: 4px; justify-content: center;">Friend Name</h3>
+            <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 16px;">Pet Profile Showcase</p>
+
+            <div style="background: var(--bg-main); border: 1px solid var(--border-color); border-radius: 12px; padding: 16px; display: flex; align-items: center; justify-content: center; height: 200px;">
+                <svg id="visitedPetSvg" viewBox="0 0 200 200" width="180" height="180"></svg>
+            </div>
+
+            <button onclick="closeVisitProfileModal()" class="action-btn" style="margin-top: 16px; width: 100%;">Close Visit</button>
+            <!-- Update your close button HTML to ensure it sits safely above everything else -->
+            <button onclick="closeFriendsModal()" class="absolute top-4 right-4 text-gray-400 hover:text-white z-50 cursor-pointer p-1">
+                ✕
+            </button>
+        </div>
+    </div>
+    <!-- Inside your Friend Visiting Modal HTML -->
+    <div id="friendVisitingModal" class="fixed inset-0 bg-black/60 flex items-center justify-center" style="display: none;">
+        <div class="bg-gray-900 border border-gray-800 rounded-2xl p-6 w-96 text-center shadow-2xl">
+            <h3 id="visitingFriendTitleName" class="text-xl font-bold text-white mb-1">kenj's Pet</h3>
+            <p class="text-gray-400 text-xs mb-4">Pet Profile Showcase</p>
+
+            <!-- Pet / Avatar Display Area -->
+            <div id="visitingAvatarDisplayContainer" class="bg-gray-950 border border-gray-800 rounded-xl p-4 h-48 flex items-center justify-center mb-6">
+                <!-- Avatar or Pet SVG goes here -->
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="flex space-x-3">
+                <button onclick="closeVisitingModal()" class="flex-1 py-2.5 bg-gray-800 hover:bg-gray-700 text-white font-medium rounded-xl transition">
+                    Close Visit
+                </button>
+                <button id="visitFullAccountBtn" class="flex-1 py-2.5 bg-cyan-500 hover:bg-cyan-600 text-gray-950 font-bold rounded-xl transition">
+                    Visit Account 👤
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- BOOK APPOINTMENT MODAL -->
+    <div id="appointmentModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 30000; justify-content: center; align-items: center; backdrop-filter: blur(4px);">
+        <div class="card" style="width: 420px; max-width: 90%; border-radius: 16px; box-shadow: 0 15px 30px rgba(0,0,0,0.3);">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                <h3 style="margin: 0; font-size: 18px;"><i class="fa-solid fa-calendar-plus" style="color: var(--primary-accent);"></i> Book New Appointment</h3>
+                <button onclick="closeAppointmentModal()" style="background: none; border: none; font-size: 20px; cursor: pointer; color: var(--text-muted);">&times;</button>
+            </div>
+            <form id="appointmentForm" onsubmit="submitAppointment(event)">
+                <div style="margin-bottom: 16px;">
+                    <label style="display: block; font-size: 13px; font-weight: 600; margin-bottom: 6px;">Pet Name</label>
+                    <input type="text" id="modalPetName" placeholder="e.g. Brownie" style="width: 100%; padding: 10px 12px; border-radius: 8px; border: 1px solid var(--border-color); background: var(--bg-main); color: var(--text-color);" required />
+                </div>
+
+                <div style="margin-bottom: 16px;">
+                    <label style="display: block; font-size: 13px; font-weight: 600; margin-bottom: 6px;">Breed & Species</label>
+                    <input type="text" id="modalPetBreed" placeholder="e.g. Golden Retriever (Dog) or Puspin (Cat)" style="width: 100%; padding: 10px 12px; border-radius: 8px; border: 1px solid var(--border-color); background: var(--bg-main); color: var(--text-color);" required />
+                </div>
+
+                <div style="margin-bottom: 16px;">
+                    <label style="display: block; font-size: 13px; font-weight: 600; margin-bottom: 6px;">Select Service</label>
+                    <select id="modalService" style="width: 100%; padding: 10px 12px; border-radius: 8px; border: 1px solid var(--border-color); background: var(--bg-main); color: var(--text-color);" required>
+                        <option value="">-- Choose Service --</option>
+                        <option value="Anti-Rabies Vaccine">Anti-Rabies Vaccination</option>
+                        <option value="General Check-up">General Health Check-up</option>
+                        <option value="Grooming & Bath">Pet Grooming & Bath</option>
+                        <option value="Deworming">Deworming Treatment</option>
+                    </select>
+                </div>
+
+                <div style="margin-bottom: 24px;">
+                    <label style="display: block; font-size: 13px; font-weight: 600; margin-bottom: 6px;">Date & Time</label>
+                    <input type="datetime-local" id="modalDateTime" style="width: 100%; padding: 10px 12px; border-radius: 8px; border: 1px solid var(--border-color); background: var(--bg-main); color: var(--text-color);" required />
+                </div>
+
+                <div style="display: flex; justify-content: flex-end; gap: 10px;">
+                    <button type="button" onclick="closeAppointmentModal()" style="padding: 10px 18px; border-radius: 6px; border: 1px solid var(--border-color); background: transparent; color: var(--text-color); cursor: pointer; font-weight: 600;">Cancel</button>
+                    <button type="submit" class="action-btn" style="padding: 10px 20px;">Confirm Booking</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- FLOATING AI CHATBOT WIDGET -->
+    <div id="aiChatWidget" style="position: fixed; bottom: 24px; right: 24px; z-index: 20000; font-family: Arial, Helvetica, sans-serif;">
+        <button id="chatToggleBtn" onclick="toggleChatWindow()" style="width: 65px; height: 65px; border-radius: 50%; background: #ffffff; border: 2px solid #3b82f6; cursor: pointer; box-shadow: 0 8px 20px rgba(59, 130, 246, 0.3); display: flex; align-items: center; justify-content: center; overflow: hidden; padding: 0;">
+            <img src="/images/chatbotLogo.jpg" alt="PetBot AI" style="width: 100%; height: 100%; object-fit: cover;" />
+        </button>
+
+        <div id="chatWindow" style="display: none; position: absolute; bottom: 80px; right: 0; width: 360px; height: 490px; background-color: var(--card-bg); border: 1px solid var(--border-color); border-radius: 16px; box-shadow: 0 10px 30px rgba(0,0,0,0.15); flex-direction: column; overflow: hidden; color: var(--text-color);">
+            <div style="background: linear-gradient(135deg, #2563eb, #3b82f6); color: white; padding: 14px 16px; display: flex; justify-content: space-between; align-items: center;">
+                <div style="display: flex; align-items: center; gap: 10px;">
+                    <img src="/images/chatbotLogo.jpg" alt="PetBot Logo" style="width: 38px; height: 38px; border-radius: 50%; object-fit: cover; border: 2px solid white;" />
+                    <div>
+                        <h4 style="margin: 0; font-size: 1rem; font-weight: 700;">PetBot AI</h4>
+                        <span style="font-size: 0.75rem; opacity: 0.9; color: #dbeafe;">Online | AI Veterinary Assistant</span>
+                    </div>
+                </div>
+                <button onclick="toggleChatWindow()" style="background: transparent; border: none; color: white; font-size: 1.2rem; cursor: pointer;">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+
+            <div id="chatMessages" style="flex: 1; padding: 16px; overflow-y: auto; display: flex; flex-direction: column; gap: 12px; font-size: 0.9rem; background-color: var(--bg-main);">
+                <div style="background: #eff6ff; color: #1e3a8a; padding: 10px 14px; border-radius: 12px; max-width: 85%; align-self: flex-start; border-left: 3px solid #3b82f6; line-height: 1.4;">
+                    Hello! I am <strong>PetBot</strong> 🐾 Ask me any questions about animal health, vaccinations, or clinic hours!
+                </div>
+            </div>
+
+            <div style="padding: 12px; border-top: 1px solid var(--border-color); display: flex; gap: 8px; background-color: var(--card-bg);">
+                <input type="text" id="chatInput" placeholder="Ask PetBot about pet care..." onkeypress="handleChatKeyPress(event)" style="flex: 1; padding: 10px 12px; border-radius: 8px; border: 1px solid var(--border-color); background-color: var(--card-bg); color: var(--text-color); font-size: 0.9rem; outline: none;" />
+                <button onclick="sendChatMessage()" style="background-color: #2563eb; color: white; border: none; padding: 0 16px; border-radius: 8px; cursor: pointer; font-weight: 600;">
+                    <i class="fa-solid fa-paper-plane"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- JAVASCRIPT LOGIC -->
+    <script>
+        // Load Saved Profile Preferences and Character SVG on Startup
+        document.addEventListener("DOMContentLoaded", () => {
+            const savedName = localStorage.getItem('client_displayName');
+            if (savedName) document.getElementById('headerDisplayName').innerText = savedName;
+
+            const savedHeaderSvg = localStorage.getItem('header_pet_svg');
+            if (savedHeaderSvg) {
+                document.getElementById('headerPetSvg').innerHTML = savedHeaderSvg;
+                document.getElementById('canvaPetSvg').innerHTML = savedHeaderSvg;
+            }
+        });
+
+        // Theme Toggle Logic
+        const currentTheme = localStorage.getItem('theme') || 'light';
+        if (currentTheme === 'dark') {
+            document.documentElement.setAttribute('data-theme', 'dark');
+            document.getElementById('themeIcon').className = "fa-solid fa-sun";
+            document.getElementById('themeText').innerText = "Light Mode";
+        }
+
+        function toggleTheme() {
+            const root = document.documentElement;
+            const themeIcon = document.getElementById('themeIcon');
+            const themeText = document.getElementById('themeText');
+
+            if (root.getAttribute('data-theme') === 'dark') {
+                root.removeAttribute('data-theme');
+                localStorage.setItem('theme', 'light');
+                themeIcon.className = "fa-solid fa-moon";
+                themeText.innerText = "Dark Mode";
+            } else {
+                root.setAttribute('data-theme', 'dark');
+                localStorage.setItem('theme', 'dark');
+                themeIcon.className = "fa-solid fa-sun";
+                themeText.innerText = "Light Mode";
+            }
+        }
+
+        // -------------------------------------------------------------
+        // CANVA-STYLE MULTI-ANIMAL CHARACTER CREATOR ENGINE
+        // -------------------------------------------------------------
+        let currentSpecies = "dog";
+        let currentFurColor = "#d97706";
+        let currentOutfitColor = "#ef4444";
+
+        function setSpecies(species) {
+            currentSpecies = species;
+            const earsLayer = document.getElementById('svgEarsLayer');
+            const tailLayer = document.getElementById('svgTailLayer');
+            const muzzleLayer = document.getElementById('svgMuzzleLayer');
+            const darkerColor = adjustColorBrightness(currentFurColor, -25);
+
+            if (species === 'cat') {
+                earsLayer.innerHTML = `
+                    <path d="M 75 68 L 58 35 L 85 58 Z" fill="${darkerColor}" />
+                    <path d="M 125 68 L 142 35 L 115 58 Z" fill="${darkerColor}" />
+                    <path d="M 72 63 L 62 42 L 80 57 Z" fill="#f472b6" />
+                    <path d="M 128 63 L 138 42 L 120 57 Z" fill="#f472b6" />
+                `;
+                tailLayer.innerHTML = `
+                    <path d="M 50 120 Q 20 140 25 100 Q 30 80 20 70" stroke="${currentFurColor}" stroke-width="6" stroke-linecap="round" fill="none" />
+                `;
+                muzzleLayer.innerHTML = `
+                    <ellipse cx="100" cy="94" rx="12" ry="9" fill="#fef3c7" />
+                    <ellipse cx="100" cy="91" rx="3.5" ry="2.5" fill="#0f172a" />
+                    <line x1="65" y1="90" x2="85" y2="92" stroke="#0f172a" stroke-width="1.5" />
+                    <line x1="65" y1="96" x2="85" y2="95" stroke="#0f172a" stroke-width="1.5" />
+                    <line x1="135" y1="90" x2="115" y2="92" stroke="#0f172a" stroke-width="1.5" />
+                    <line x1="135" y1="96" x2="115" y2="95" stroke="#0f172a" stroke-width="1.5" />
+                `;
+            } else if (species === 'rabbit') {
+                earsLayer.innerHTML = `
+                    <ellipse cx="78" cy="40" rx="8" ry="32" fill="${currentFurColor}" />
+                    <ellipse cx="122" cy="40" rx="8" ry="32" fill="${currentFurColor}" />
+                    <ellipse cx="78" cy="40" rx="4" ry="24" fill="#f472b6" />
+                    <ellipse cx="122" cy="40" rx="4" ry="24" fill="#f472b6" />
+                `;
+                tailLayer.innerHTML = `
+                    <circle cx="45" cy="125" r="12" fill="#ffffff" />
+                `;
+                muzzleLayer.innerHTML = `
+                    <ellipse cx="100" cy="94" rx="12" ry="9" fill="#fef3c7" />
+                    <ellipse cx="100" cy="91" rx="4" ry="2.5" fill="#0f172a" />
+                `;
+            } else if (species === 'bird') {
+                earsLayer.innerHTML = `
+                    <path d="M 95 60 Q 100 40 108 45 Q 100 55 98 60 Z" fill="${darkerColor}" />
+                `;
+                tailLayer.innerHTML = `
+                    <path d="M 45 115 L 25 105 L 30 120 L 20 130 Z" fill="${currentFurColor}" />
+                `;
+                muzzleLayer.innerHTML = `
+                    <polygon points="100,86 92,94 108,94" fill="#f59e0b" />
+                `;
+            } else {
+                // Default Dog
+                earsLayer.innerHTML = `
+                    <path id="svgEarLeft" d="M 75 75 Q 55 60 65 85 Z" fill="${darkerColor}" />
+                    <path id="svgEarRight" d="M 125 75 Q 145 60 135 85 Z" fill="${darkerColor}" />
+                `;
+                tailLayer.innerHTML = `
+                    <path d="M 50 110 Q 30 95 40 80" stroke="${currentFurColor}" stroke-width="8" stroke-linecap="round" fill="none" />
+                `;
+                muzzleLayer.innerHTML = `
+                    <ellipse cx="100" cy="94" rx="14" ry="11" fill="#fef3c7" />
+                    <ellipse cx="100" cy="91" rx="4.5" ry="3" fill="#0f172a" />
+                    <path d="M 100 94 Q 96 101 93 98" stroke="#0f172a" stroke-width="1.5" fill="none" stroke-linecap="round" />
+                    <path d="M 100 94 Q 104 101 107 98" stroke="#0f172a" stroke-width="1.5" fill="none" stroke-linecap="round" />
+                    <path d="M 97 99 Q 100 106 103 99 Z" fill="#f43f5e" />
+                `;
+            }
+        }
+
+        function setFurColor(hex) {
+            currentFurColor = hex;
+            document.getElementById('svgBody').setAttribute('fill', hex);
+            document.getElementById('svgHead').setAttribute('fill', hex);
+            setSpecies(currentSpecies);
+        }
+
+        function setEars(style) {
+            if (style === 'floppy' && currentSpecies === 'dog') {
+                document.getElementById('svgEarsLayer').innerHTML = `<path d="M 72 72 Q 45 70 60 95 Z" fill="${adjustColorBrightness(currentFurColor, -25)}" /><path d="M 128 72 Q 155 70 140 95 Z" fill="${adjustColorBrightness(currentFurColor, -25)}" />`;
+            } else if (style === 'pointed') {
+                setSpecies(currentSpecies);
+            }
+        }
+
+        function setExpression(exp) {
+            const eyesGroup = document.getElementById('svgEyes');
+            if (exp === 'happy') {
+                eyesGroup.innerHTML = `
+                    <circle cx="91" cy="79" r="3.5" fill="#0f172a" />
+                    <circle cx="109" cy="79" r="3.5" fill="#0f172a" />
+                    <circle cx="92" cy="78" r="1" fill="#ffffff" />
+                    <circle cx="110" cy="78" r="1" fill="#ffffff" />
+                `;
+            } else if (exp === 'wink') {
+                eyesGroup.innerHTML = `
+                    <path d="M 87 79 Q 91 74 95 79" stroke="#0f172a" stroke-width="2.5" fill="none" stroke-linecap="round" />
+                    <circle cx="109" cy="79" r="3.5" fill="#0f172a" />
+                    <circle cx="110" cy="78" r="1" fill="#ffffff" />
+                `;
+            } else if (exp === 'cool') {
+                eyesGroup.innerHTML = `
+                    <rect x="84" y="74" width="32" height="9" rx="3" fill="#0f172a" />
+                    <line x1="91" y1="74" x2="109" y2="74" stroke="#475569" stroke-width="2" />
+                `;
+            }
+        }
+
+        function setOutfit(style) {
+            const outfitGroup = document.getElementById('svgOutfitGroup');
+            if (style === 'none') {
+                outfitGroup.style.display = 'none';
+            } else if (style === 'tee') {
+                outfitGroup.style.display = 'block';
+                outfitGroup.innerHTML = `
+                    <path d="M 68 100 Q 100 90 132 100 L 140 135 Q 100 142 60 135 Z" fill="${currentOutfitColor}" />
+                    <circle cx="64" cy="112" r="10" fill="${currentOutfitColor}" />
+                    <circle cx="136" cy="112" r="10" fill="${currentOutfitColor}" />
+                `;
+            } else if (style === 'dress') {
+                outfitGroup.style.display = 'block';
+                outfitGroup.innerHTML = `
+                    <path d="M 72 98 L 128 98 L 148 145 L 52 145 Z" fill="${currentOutfitColor}" />
+                `;
+            }
+        }
+
+        function setOutfitColor(hex) {
+            currentOutfitColor = hex;
+            document.querySelectorAll('#svgOutfitGroup path, #svgOutfitGroup circle').forEach(el => el.setAttribute('fill', hex));
+        }
+
+        function setCap(style) {
+            const capGroup = document.getElementById('svgCapGroup');
+            if (style === 'none') {
+                capGroup.style.display = 'none';
+            } else if (style === 'cap') {
+                capGroup.style.display = 'block';
+                capGroup.innerHTML = `
+                    <path d="M 72 70 Q 100 45 128 70 L 145 65 Q 100 35 55 65 Z" fill="#2563eb" />
+                    <ellipse cx="100" cy="62" rx="28" ry="7" fill="#1d4ed8" />
+                    <rect x="95" y="52" width="10" height="4" fill="#fbbf24" />
+                `;
+            } else if (style === 'bow') {
+                capGroup.style.display = 'block';
+                capGroup.innerHTML = `
+                    <circle cx="100" cy="55" r="7" fill="#db2777" />
+                    <polygon points="93,52 82,46 84,60" fill="#f472b6" />
+                    <polygon points="107,52 118,46 116,60" fill="#f472b6" />
+                `;
+            }
+        }
+
+        function adjustColorBrightness(hex, percent) {
+            let num = parseInt(hex.replace("#",""), 16);
+            let amt = Math.round(2.55 * percent);
+            let R = (num >> 16) + amt;
+            let G = (num >> 8 & 0x00FF) + amt;
+            let B = (num & 0x0000FF) + amt;
+            return "#" + (0x1000000 + (R<255?R<0?0:R:255)*0x10000 + (G<255?G<0?0:G:255)*0x100 + (B<255?B<0?0:B:255)).toString(16).slice(1);
+        }
+
+        function openProfileModal() {
+            document.getElementById('profileModal').style.display = 'flex';
+        }
+
+        function closeProfileModal() {
+            document.getElementById('profileModal').style.display = 'none';
+        }
+
+        function saveProfileChanges() {
+            const newName = document.getElementById('modalDisplayName').value.trim();
+            if (newName) {
+                document.getElementById('headerDisplayName').innerText = newName;
+                localStorage.setItem('client_displayName', newName);
+            }
+
+            const canvaSvgHtml = document.getElementById('canvaPetSvg').innerHTML;
+            document.getElementById('headerPetSvg').innerHTML = canvaSvgHtml;
+            localStorage.setItem('header_pet_svg', canvaSvgHtml);
+
+            closeProfileModal();
+        }
+
+        // -------------------------------------------------------------
+        // FRIENDS & VISITING LOGIC
+        // -------------------------------------------------------------
+        async function openFriendsModal() {
+            document.getElementById('friendsModal').style.display = 'flex';
+            const userEmail = "@ViewBag.UserEmail";
+            const container = document.getElementById('friendsListContainer');
+
+            try {
+                const res = await fetch(`/Account/GetFriendsList?userEmail=${encodeURIComponent(userEmail)}`);
+                const data = await res.json();
+
+                if (data.success && data.friends.length > 0) {
+                    container.innerHTML = data.friends.map(f => `
+                        <div style="display: flex; justify-content: space-between; align-items: center; background: var(--bg-main); padding: 10px 14px; border-radius: 8px; border: 1px solid var(--border-color);">
+                            <div style="display: flex; align-items: center; gap: 10px; text-align: left;">
+                                <div style="width: 36px; height: 36px; border-radius: 50%; background: #fff; overflow: hidden; display: flex; align-items: center; justify-content: center; border: 1px solid var(--primary-accent);">
+                                    <svg viewBox="0 0 200 200" width="30" height="30">
+                                        ${extractSvgInnerHtml(f.avatarJson)}
+                                    </svg>
+                                </div>
+                                <div>
+                                    <strong style="font-size: 13px; display: block; color: var(--heading-color);">${escapeHtml(f.name)}</strong>
+                                    <span style="font-size: 11px; color: var(--text-muted);">${escapeHtml(f.email)}</span>
+                                </div>
+                            </div>
+                            <button class="action-btn" onclick="visitFriendProfile('${escapeHtml(f.name)}', '${encodeURIComponent(f.avatarJson || '')}')" style="padding: 6px 12px; font-size: 12px;">Visit Pet 🐾</button>
+                        </div>
+                    `).join('');
+                } else {
+                    container.innerHTML = `<p style="font-size: 13px; color: var(--text-muted); padding: 10px;">No friends added yet. Enter an email above to connect!</p>`;
+                }
+            } catch (err) {
+                console.error(err);
+                container.innerHTML = `<p style="font-size: 13px; color: #dc2626;">Error loading friends list.</p>`;
+            }
+        }
+
+        async function sendFriendRequest() {
+            const friendEmail = document.getElementById('friendEmailInput').value.trim();
+            if (!friendEmail) return;
+
+            try {
+                const res = await fetch('/Account/AddFriend', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ UserEmail: "@ViewBag.UserEmail", FriendEmail: friendEmail })
+                });
+                const data = await res.json();
+                alert(data.message);
+                if (data.success) {
+                    document.getElementById('friendEmailInput').value = '';
+                    openFriendsModal();
+                }
+            } catch (err) {
+                console.error(err);
+                alert('Failed to send friend request.');
+            }
+        }
+
+              let currentVisitingEmail = '';
+
+        async function visitFriendPet(friendEmail) {
+            try {
+                currentVisitingEmail = friendEmail;
+                const response = await fetch(`/Home/GetFriendProfile?email=${encodeURIComponent(friendEmail)}`);
+                const data = await response.json();
+
+                if (data.success) {
+                    // Update modal title
+                    document.getElementById('visitingFriendTitleName').innerText = `${data.name}'s Pet & Profile`;
+
+                    // Set up the full account redirect button action
+                    const visitAccountBtn = document.getElementById('visitFullAccountBtn');
+                    visitAccountBtn.onclick = function() {
+                        // Redirect to a dedicated public profile or client dashboard view for this friend
+                        window.location.href = `/Home/ClientDashboard?name=${encodeURIComponent(data.name)}&viewingEmail=${encodeURIComponent(friendEmail)}`;
+                    };
+
+                    // Show the modal
+                    document.getElementById('friendVisitingModal').style.display = 'flex';
+                } else {
+                    alert(data.message);
+                }
+            } catch (error) {
+                console.error("Error loading friend profile:", error);
+                alert("Failed to visit friend's account.");
+            }
+        }
+
+        function closeVisitingModal() {
+            document.getElementById('friendVisitingModal').style.display = 'none';
+        }
+
+        // Appointment Modal Functions
+        function openAppointmentModal() {
+            document.getElementById('appointmentModal').style.display = 'flex';
+        }
+
+        function closeAppointmentModal() {
+            document.getElementById('appointmentModal').style.display = 'none';
+            document.getElementById('appointmentForm').reset();
+        }
+                async function sendFriendRequest() {
+            // Fallback to localStorage if ViewBag is empty
+            const userEmail = "@ViewBag.UserEmail" || localStorage.getItem('client_email');
+            const friendEmail = document.getElementById('friendEmailInput').value.trim();
+
+            if (!userEmail) {
+                alert("User email not found. Please log in again.");
+                return;
+            }
+            if (!friendEmail) return;
+
+            try {
+                const res = await fetch('/Account/AddFriend', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ UserEmail: userEmail, FriendEmail: friendEmail })
+                });
+                const data = await res.json();
+                alert(data.message);
+                if (data.success) {
+                    document.getElementById('friendEmailInput').value = '';
+                    openFriendsModal();
+                }
+            } catch (err) {
+                console.error(err);
+                alert('Failed to send friend request.');
+            }
+        }
+
+        // Appointment Submission Logic
+        async function submitAppointment(event) {
+            event.preventDefault();
+
+            const petNameVal = document.getElementById('modalPetName').value.trim();
+            const petBreedVal = document.getElementById('modalPetBreed').value.trim();
+            const service = document.getElementById('modalService').value;
+            const appointmentDate = document.getElementById('modalDateTime').value;
+
+            const formattedPetName = `${petNameVal} (${petBreedVal})`;
+
+            const payload = {
+                ClientName: document.getElementById('headerDisplayName').innerText,
+                PetName: formattedPetName,
+                Service: service,
+                AppointmentDate: appointmentDate
+            };
+
+            try {
+                const response = await fetch('/Home/CreateAppointment', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    alert(data.message);
+                    closeAppointmentModal();
+                    location.reload();
+                } else {
+                    alert(data.message || 'Error creating appointment.');
+                }
+            } catch (err) {
+                console.error(err);
+                alert('An error occurred while booking the appointment.');
+            }
+        }
+
+        // Chatbot Logic
+        let isChatOpen = false;
+
+        function toggleChatWindow() {
+            isChatOpen = !isChatOpen;
+            const chatWindow = document.getElementById('chatWindow');
+            chatWindow.style.display = isChatOpen ? 'flex' : 'none';
+        }
+
+        function handleChatKeyPress(event) {
+            if (event.key === 'Enter') {
+                sendChatMessage();
+            }
+        }
+
+        async function sendChatMessage() {
+            const inputField = document.getElementById('chatInput');
+            const messageText = inputField.value.trim();
+            if (!messageText) return;
+
+            const chatMessages = document.getElementById('chatMessages');
+
+            chatMessages.innerHTML += `
+                <div style="background: var(--primary-accent); color: #ffffff; padding: 12px 16px; border-radius: 14px; border-bottom-right-radius: 4px; max-width: 85%; align-self: flex-end; box-shadow: 0 2px 5px rgba(0,0,0,0.05); line-height: 1.4;">
+                    ${escapeHtml(messageText)}
+                </div>
+            `;
+            inputField.value = '';
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+
+            try {
+                const response = await fetch('/Chat/SendMessage', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ message: messageText })
+                });
+
+                const data = await response.json();
+
+                chatMessages.innerHTML += `
+                    <div style="background: var(--card-bg); color: var(--heading-color); padding: 12px 16px; border-radius: 14px; border-bottom-left-radius: 4px; max-width: 85%; align-self: flex-start; box-shadow: 0 2px 5px rgba(0,0,0,0.05); border-left: 4px solid var(--primary-accent); line-height: 1.4;">
+                        ${data.reply}
+                    </div>
+                `;
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+            } catch (error) {
+                chatMessages.innerHTML += `
+                    <div style="background: #fee2e2; color: #dc2626; padding: 12px 16px; border-radius: 14px; max-width: 85%; align-self: flex-start; box-shadow: 0 2px 5px rgba(0,0,0,0.05);">
+                        Error connecting to PetBot. Please try again.
+                    </div>
+                `;
+            }
+        }
+
+        function escapeHtml(text) {
+            return text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+        }
+    </script>
+</body>
+</html>

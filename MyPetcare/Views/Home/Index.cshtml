@@ -1,0 +1,487 @@
+﻿@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PetCare Service Site</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, Helvetica, sans-serif;
+        }
+
+        body {
+            background-color: #ffffff;
+            color: #000000;
+        }
+
+        /* Top Navigation Header */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 40px;
+            background-color: #ffffff;
+            border-bottom: 1px solid #eaeaea;
+        }
+
+        .logo-container {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .site-logo {
+            height: 48px;
+            width: 48px;
+            object-fit: contain;
+            border-radius: 50%;
+        }
+
+        .logo-title {
+            font-size: 26px;
+            font-weight: 700;
+            color: #000000;
+            letter-spacing: -0.5px;
+        }
+
+        .auth-buttons {
+            display: flex;
+            gap: 12px;
+        }
+
+        .login-btn {
+            background-color: #8c6a46;
+            color: #ffffff;
+            border: none;
+            padding: 10px 32px;
+            font-size: 16px;
+            font-weight: 600;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+        }
+
+            .login-btn:hover {
+                background-color: #725435;
+            }
+
+        .register-btn {
+            background-color: transparent;
+            color: #8c6a46;
+            border: 2px solid #8c6a46;
+            padding: 10px 24px;
+            font-size: 16px;
+            font-weight: 600;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+            .register-btn:hover {
+                background-color: #8c6a46;
+                color: #ffffff;
+            }
+
+        /* Hero Carousel Styling - Fixed for proper image framing */
+        .hero-carousel {
+            width: 100%;
+            max-width: 1000px; /* Nilagyan ng max-width para hindi umunat nang sobra sa malalaking PC monitors */
+            height: 420px;
+            margin: 20px auto 0 auto; /* Pina-center sa gitna ng PC screen */
+            overflow: hidden;
+            border-radius: 16px;
+            background-color: #f8fafc;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+        }
+
+        .carousel-slide {
+            display: none;
+            width: 100%;
+            height: 100%;
+        }
+
+            .carousel-slide.active {
+                display: block;
+            }
+
+            .carousel-slide img {
+                width: 100%;
+                height: 100%;
+                object-fit: contain; /* Binabago mula cover patungong contain para buong makita ang aso nang walang labis na zoom */
+                background-color: #f8fafc;
+            }
+
+        /* Features Cards Grid Section */
+        .features-container {
+            display: flex;
+            justify-content: space-between;
+            padding: 40px 60px;
+            max-width: 1280px;
+            margin: 0 auto;
+            gap: 20px;
+        }
+
+        .feature-card {
+            text-align: center;
+            flex: 1;
+        }
+
+            .feature-card img {
+                width: 100%;
+                height: 180px;
+                object-fit: cover;
+                border-radius: 8px;
+            }
+
+            .feature-card h3 {
+                margin-top: 14px;
+                font-size: 18px;
+                font-weight: 700;
+                color: #000000;
+            }
+
+            .feature-card p {
+                color: #444444;
+                font-size: 14px;
+                margin-top: 4px;
+                line-height: 1.4;
+            }
+
+        /* Modal Overlay & Login Tabs */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .modal-content {
+            background: #ffffff;
+            padding: 30px;
+            border-radius: 8px;
+            width: 380px;
+            position: relative;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .close-btn {
+            position: absolute;
+            right: 15px;
+            top: 10px;
+            font-size: 24px;
+            cursor: pointer;
+            color: #666;
+        }
+
+        .tab-buttons {
+            display: flex;
+            margin-bottom: 20px;
+            border-radius: 4px;
+            overflow: hidden;
+            border: 1px solid #ddd;
+        }
+
+        .tab-btn {
+            flex: 1;
+            padding: 10px;
+            border: none;
+            background-color: #f2f2f2;
+            cursor: pointer;
+            font-weight: 600;
+            color: #555;
+            font-size: 14px;
+        }
+
+            .tab-btn.active {
+                background-color: #8c6a46;
+                color: #ffffff;
+            }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+            .form-group label {
+                display: block;
+                margin-bottom: 5px;
+                font-size: 14px;
+                font-weight: 600;
+            }
+
+            .form-group input {
+                width: 100%;
+                padding: 10px;
+                border: 1px solid #ccc;
+                border-radius: 4px;
+                font-size: 14px;
+            }
+
+        .submit-btn {
+            width: 100%;
+            padding: 11px;
+            background-color: #8c6a46;
+            color: #ffffff;
+            border: none;
+            border-radius: 4px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 5px;
+        }
+
+            .submit-btn:hover {
+                background-color: #725435;
+            }
+
+        .error-msg {
+            color: #d9534f;
+            font-size: 13px;
+            margin-bottom: 10px;
+            text-align: center;
+        }
+
+        .success-msg {
+            color: #16a34a;
+            font-size: 13px;
+            margin-bottom: 10px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Header containing Logo Image and Title -->
+    <header class="header">
+        <div class="logo-container">
+            <img src="/images/logopet.jpeg" alt="Logo" class="site-logo">
+            <h1 class="logo-title">PetCare Service Site</h1>
+        </div>
+        <div class="auth-buttons">
+            <button class="register-btn" onclick="openModal('register')">Register</button>
+            <button class="login-btn" onclick="openModal('login')">Log in</button>
+        </div>
+    </header>
+
+    <!-- Auto-switching Hero Image Carousel -->
+   
+    <div class="hero-carousel">
+        <!-- Slide 1 (Unang lilitaw) -->
+        <div class="carousel-slide active">
+            <img src="/images/dog2.jpg" alt="Dog 2">
+        </div>
+        <!-- Slide 2 (Pangalawa) -->
+        <div class="carousel-slide">
+            <img src="/images/dog3.jpg" alt="Dog 3">
+        </div>
+        <!-- Slide 3 (Pangatlo) -->
+        <div class="carousel-slide">
+            <img src="/images/dog1.jpeg" alt="Dog 1">
+        </div>
+    </div>
+
+    <!-- 3 Core Feature Columns -->
+    <main class="features-container">
+        <div class="feature-card">
+            <img src="https://images.unsplash.com/photo-1506784983877-45594efa4cbe?auto=format&fit=crop&w=400&q=80" alt="Appointments">
+            <h3>Book Appointments</h3>
+            <p>Client can book an appointments</p>
+        </div>
+        <div class="feature-card">
+            <img src="https://images.unsplash.com/photo-1628009368231-7bb7cfcb0def?auto=format&fit=crop&w=400&q=80" alt="HealthCare">
+            <h3>HealthCare</h3>
+            <p>Client can see pets information</p>
+        </div>
+        <div class="feature-card">
+            <img src="/images/chatbot.jpg" alt="AI Chatbot" style="object-fit: contain; background-color: #f9f9f9;">
+            <h3>AI-Chatbot</h3>
+            <p>AI-Chatbot can answer questions<br>about animal</p>
+        </div>
+    </main>
+
+    <!-- Modal Popup for Login & Register -->
+    <div id="authModal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn" onclick="closeModal()">&times;</span>
+
+            <div class="tab-buttons">
+                <button type="button" class="tab-btn active" id="loginTabBtn" onclick="switchMode('login')">Log In</button>
+                <button type="button" class="tab-btn" id="registerTabBtn" onclick="switchMode('register')">Register</button>
+            </div>
+
+            <!-- LOGIN SECTION -->
+            <div id="loginSection">
+                <div style="display: flex; gap: 5px; margin-bottom: 15px;">
+                    <button type="button" class="tab-btn active" id="clientTab" onclick="switchRole('client')">Client Login</button>
+                    <button type="button" class="tab-btn" id="adminTab" onclick="switchRole('admin')">Admin Login</button>
+                </div>
+
+                <h2 id="modalTitle" style="font-size: 20px; margin-bottom: 15px;">Client Login</h2>
+                <form id="loginForm" onsubmit="handleLogin(event)">
+                    <input type="hidden" id="roleInput" value="client">
+
+                    <div class="form-group">
+                        <label for="email">Email</label>
+                        <input type="email" id="email" required placeholder="Enter email">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="password">Password</label>
+                        <input type="password" id="password" required placeholder="Enter password">
+                    </div>
+
+                    <p id="errorMessage" class="error-msg"></p>
+
+                    <button type="submit" class="submit-btn">Login</button>
+                </form>
+            </div>
+
+            <!-- REGISTER SECTION -->
+            <div id="registerSection" style="display: none;">
+                <h2 style="font-size: 20px; margin-bottom: 15px;">Create an Account</h2>
+                <form id="registerForm" onsubmit="handleRegister(event)">
+                    <div class="form-group">
+                        <label for="regName">Full Name</label>
+                        <input type="text" id="regName" required placeholder="Enter full name">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="regEmail">Email</label>
+                        <input type="email" id="regEmail" required placeholder="Enter email">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="regPassword">Password</label>
+                        <input type="password" id="regPassword" required placeholder="Create password">
+                    </div>
+
+                    <p id="regMessage" class="error-msg"></p>
+
+                    <button type="submit" class="submit-btn">Register</button>
+                </form>
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        let currentSlide = 0;
+        const slides = document.querySelectorAll('.carousel-slide');
+
+        function showNextSlide() {
+            slides[currentSlide].classList.remove('active');
+            currentSlide = (currentSlide + 1) % slides.length;
+            slides[currentSlide].classList.add('active');
+        }
+        setInterval(showNextSlide, 4000);
+
+        function openModal(mode) {
+            document.getElementById('authModal').style.display = 'flex';
+            switchMode(mode);
+        }
+
+        function closeModal() {
+            document.getElementById('authModal').style.display = 'none';
+            document.getElementById('errorMessage').innerText = '';
+            document.getElementById('regMessage').innerText = '';
+        }
+
+        function switchMode(mode) {
+            const loginSection = document.getElementById('loginSection');
+            const registerSection = document.getElementById('registerSection');
+            const loginTabBtn = document.getElementById('loginTabBtn');
+            const registerTabBtn = document.getElementById('registerTabBtn');
+
+            if (mode === 'login') {
+                loginSection.style.display = 'block';
+                registerSection.style.display = 'none';
+                loginTabBtn.classList.add('active');
+                registerTabBtn.classList.remove('active');
+            } else {
+                loginSection.style.display = 'none';
+                registerSection.style.display = 'block';
+                registerTabBtn.classList.add('active');
+                loginTabBtn.classList.remove('active');
+            }
+        }
+
+        function switchRole(role) {
+            document.getElementById('roleInput').value = role;
+            document.getElementById('modalTitle').innerText = (role === 'client' ? 'Client' : 'Admin') + ' Login';
+            document.getElementById('clientTab').classList.toggle('active', role === 'client');
+            document.getElementById('adminTab').classList.toggle('active', role === 'admin');
+        }
+
+        async function handleRegister(event) {
+            event.preventDefault();
+            const name = document.getElementById('regName').value;
+            const email = document.getElementById('regEmail').value;
+            const password = document.getElementById('regPassword').value;
+            const msgEl = document.getElementById('regMessage');
+
+            msgEl.className = "error-msg";
+            msgEl.innerText = "Processing registration...";
+
+            try {
+                const response = await fetch('/Account/Register', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+                    body: JSON.stringify({ name, email, password })
+                });
+
+                const data = await response.json();
+                if (data.success) {
+                    msgEl.className = "success-msg";
+                    msgEl.innerText = data.message;
+                    setTimeout(() => { switchMode('login'); }, 1500);
+                } else {
+                    msgEl.innerText = data.message;
+                }
+            } catch (err) {
+                msgEl.innerText = "An error occurred during registration.";
+            }
+        }
+
+        async function handleLogin(event) {
+            event.preventDefault();
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const role = document.getElementById('roleInput').value;
+            const errorMsg = document.getElementById('errorMessage');
+
+            errorMsg.className = "error-msg";
+            errorMsg.innerText = "Connecting...";
+
+            try {
+                const response = await fetch('/Account/Login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+                    body: JSON.stringify({ email, password, role })
+                });
+
+                const data = await response.json();
+                if (data.success) {
+                    closeModal();
+                    window.location.href = data.redirectUrl;
+                } else {
+                    errorMsg.innerText = data.message;
+                }
+            } catch (err) {
+                errorMsg.innerText = "Connection failed.";
+            }
+        }
+    </script>
+</body>
+</html>
