@@ -2,9 +2,9 @@
 WORKDIR /src
 
 COPY . .
-RUN dotnet restore "MyPetcare.sln"
 
-# Piliting i-publish sa .NET 9
+# Direktang i-restore at i-publish gamit ang .NET 9
+RUN dotnet restore "MyPetcare/MyPetcare.csproj" -f net9.0
 RUN dotnet publish "MyPetcare/MyPetcare.csproj" -c Release -o /app/publish -f net9.0
 
 FROM mcr.microsoft.com/dotnet/aspnet:9.0 AS base
