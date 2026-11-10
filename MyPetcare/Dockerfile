@@ -1,10 +1,14 @@
 ﻿FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build
 WORKDIR /src
-COPY ["MyPetcare/MyPetcare.csproj", "MyPetcare/"]
-RUN dotnet restore "MyPetcare/MyPetcare.csproj"
+
+# Kopyahin ang buong repository kasama ang solution at mga project folder
 COPY . .
-WORKDIR "/src/MyPetcare"
-RUN dotnet publish -c Release -o /app/publish
+
+# I-restore gamit ang solution file sa root
+RUN dotnet restore "MyPetcare.sln"
+
+# I-publish ang MyPetcare project
+RUN dotnet publish "MyPetcare/MyPetcare.csproj" -c Release -o /app/publish
 
 FROM mcr.microsoft.com/dotnet/aspnet:9.0 AS base
 WORKDIR /app
