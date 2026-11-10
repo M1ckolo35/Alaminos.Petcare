@@ -16,10 +16,23 @@ namespace MyPetcare.Controllers
 
         public async Task<IActionResult> Dashboard()
         {
+            // 1. Kunin ang appointments at i-sort: Newest / Current date ang nauuna sa itaas
+            var appointments = await _context.Appointments
+                .OrderByDescending(a => a.AppointmentDate)
+                .ToListAsync();
+
+            ViewBag.Appointments = appointments;
+
+            // 2. Kunin ang health records
             var healthRecords = await _context.PetHealthRecords.ToListAsync();
             ViewBag.HealthRecords = healthRecords;
-            return View();
+
+            // Kung kailangan mo rin ipasa ang Users list sa Model (kung naka-Model IEnumerable<User> ang view mo):
+            var users = await _context.Users.ToListAsync();
+
+            return View(users);
         }
+
         [HttpPost]
         public async Task<IActionResult> UpdateHealthRecord([FromBody] PetHealthRecord model)
         {

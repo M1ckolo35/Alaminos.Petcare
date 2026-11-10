@@ -2,7 +2,6 @@
     ViewData["Title"] = "Client Dashboard - PetCare Service Site";
     Layout = null;
 
-    // Retrieve shared appointments list passed from Controller
     var clientAppointments = ViewBag.Appointments as List<MyPetcare.Models.AppointmentModel> ?? new List<MyPetcare.Models.AppointmentModel>();
 }
 
@@ -15,11 +14,10 @@
     <!-- FontAwesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        /* Theme Variables - Deep Obsidian Cyber Dark Theme Support */
         :root {
-            --bg-color: #f4f7f6;
+            --bg-color: #f1f5f9;
             --card-bg: #ffffff;
-            --text-color: #333333;
+            --text-color: #334155;
             --text-muted: #64748b;
             --heading-color: #0f172a;
             --border-color: #e2e8f0;
@@ -27,29 +25,29 @@
             --table-border: #f1f5f9;
             --bg-main: #f8fafc;
             --primary-accent: #0284c7;
-            --card-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+            --card-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05), 0 1px 2px -1px rgba(0, 0, 0, 0.05);
             --table-hover: #f8fafc;
             --badge-pending-bg: #fef3c7;
-            --badge-pending-text: #d97706;
+            --badge-pending-text: #b45309;
             --badge-approved-bg: #d1fae5;
-            --badge-approved-text: #059669;
+            --badge-approved-text: #047857;
             --badge-rejected-bg: #fee2e2;
-            --badge-rejected-text: #dc2626;
+            --badge-rejected-text: #b91c1c;
         }
 
         [data-theme="dark"] {
-            --bg-color: #090d16;
-            --card-bg: #131b2e;
-            --text-color: #f8fafc;
-            --text-muted: #94a3b8;
-            --heading-color: #ffffff;
-            --border-color: #1e293b;
-            --sidebar-bg: #060911;
-            --table-border: #1e293b;
-            --bg-main: #090d16;
+            --bg-color: #0b0f19;
+            --card-bg: #111827;
+            --text-color: #9ca3af;
+            --text-muted: #6b7280;
+            --heading-color: #f9fafb;
+            --border-color: #1f2937;
+            --sidebar-bg: #0f172a;
+            --table-border: #1f2937;
+            --bg-main: #0b0f19;
             --primary-accent: #38bdf8;
-            --card-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
-            --table-hover: #1e293b;
+            --card-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3);
+            --table-hover: #1f2937;
             --badge-pending-bg: #451a03;
             --badge-pending-text: #fbbf24;
             --badge-approved-bg: #064e3b;
@@ -62,100 +60,200 @@
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: Arial, Helvetica, sans-serif;
-            transition: background-color 0.25s ease, color 0.25s ease, border-color 0.25s ease;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
         }
 
         body {
             background-color: var(--bg-color);
             color: var(--text-color);
             display: flex;
-            min-height: 100vh;
-            overflow-x: hidden;
+            height: 100vh;
+            overflow: hidden;
         }
 
-        /* Sidebar Navigation with Indicator */
+        @@keyframes slideInToast {
+            from {
+                opacity: 0;
+                transform: translateY(30px) scale(0.9);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        @@keyframes fadeOutToast {
+            from {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+
+            to {
+                opacity: 0;
+                transform: translateY(15px) scale(0.9);
+            }
+        }
+
+        .custom-toast {
+            position: fixed;
+            bottom: 35px;
+            right: 35px;
+            background-color: var(--card-bg);
+            color: var(--heading-color);
+            border: 2px solid var(--border-color);
+            padding: 18px 26px;
+            border-radius: 12px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            z-index: 99999;
+            font-size: 15px;
+            font-weight: 600;
+            animation: slideInToast 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+
+            .custom-toast.fade-out {
+                animation: fadeOutToast 0.3s ease forwards;
+            }
+
         .sidebar {
-            width: 260px;
+            width: 280px;
+            min-width: 280px;
+            height: 100vh;
             background-color: var(--sidebar-bg);
             border-right: 1px solid var(--border-color);
             display: flex;
             flex-direction: column;
             justify-content: space-between;
             padding: 24px;
+            position: sticky;
+            top: 0;
+            left: 0;
+            overflow-y: auto;
         }
 
         .sidebar-top .brand {
             display: flex;
             align-items: center;
             gap: 12px;
-            margin-bottom: 30px;
+            margin-bottom: 20px;
         }
 
             .sidebar-top .brand img {
-                width: 40px;
-                height: 40px;
-                border-radius: 50%;
-                object-fit: contain;
+                width: 36px;
+                height: 36px;
+                border-radius: 8px;
+                object-fit: cover;
             }
 
             .sidebar-top .brand h2 {
-                font-size: 18px;
+                font-size: 16px;
                 font-weight: 700;
                 color: var(--heading-color);
+                letter-spacing: -0.3px;
+            }
+
+        /* Admin Team & Online Status Box in Sidebar */
+        .sidebar-admin-section {
+            background: var(--bg-main);
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            padding: 12px;
+            margin-bottom: 20px;
+        }
+
+        .admin-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 8px 0;
+            border-bottom: 1px dashed var(--border-color);
+        }
+
+            .admin-item:last-child {
+                border-bottom: none;
+                padding-bottom: 0;
+            }
+
+        .admin-avatar-box {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: var(--primary-accent);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 12px;
+            position: relative;
+            flex-shrink: 0;
+        }
+
+        .online-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            border: 2px solid var(--sidebar-bg);
+            position: absolute;
+            bottom: -1px;
+            right: -1px;
+        }
+
+            .online-dot.active {
+                background-color: #10b981; /* Green if online */
+            }
+
+            .online-dot.offline {
+                background-color: #94a3b8; /* Gray if offline */
             }
 
         .nav-links {
             list-style: none;
             display: flex;
             flex-direction: column;
-            gap: 8px;
+            gap: 6px;
         }
 
             .nav-links li a {
                 display: flex;
                 align-items: center;
                 gap: 12px;
-                padding: 12px 16px;
+                padding: 10px 14px;
                 color: var(--text-muted);
                 text-decoration: none;
-                font-weight: 600;
-                border-radius: 8px;
+                font-weight: 500;
+                font-size: 14px;
+                border-radius: 6px;
                 position: relative;
-                transition: all 0.25s ease;
+                cursor: pointer;
             }
 
                 .nav-links li.active a, .nav-links li a:hover {
-                    background-color: rgba(2, 132, 199, 0.15);
+                    background-color: rgba(2, 132, 199, 0.08);
                     color: var(--primary-accent);
                 }
 
-                    .nav-links li.active a::before {
-                        content: '';
-                        position: absolute;
-                        left: 0;
-                        top: 15%;
-                        height: 70%;
-                        width: 4px;
-                        background: var(--primary-accent);
-                        border-radius: 0 4px 4px 0;
-                        box-shadow: 0 0 8px var(--primary-accent);
-                    }
+            .nav-links li.active a {
+                font-weight: 600;
+            }
 
-        /* Theme Toggle & Logout Buttons */
         .theme-toggle-btn {
             display: flex;
             align-items: center;
-            gap: 12px;
-            padding: 12px 16px;
+            gap: 10px;
+            padding: 10px 14px;
             color: var(--text-color);
-            background-color: var(--bg-color);
+            background-color: var(--bg-main);
             border: 1px solid var(--border-color);
-            text-decoration: none;
-            font-weight: 600;
-            border-radius: 8px;
+            font-weight: 500;
+            font-size: 14px;
+            border-radius: 6px;
             cursor: pointer;
-            margin-bottom: 12px;
+            margin-bottom: 10px;
             width: 100%;
             text-align: left;
         }
@@ -167,40 +265,45 @@
         .logout-btn {
             display: flex;
             align-items: center;
-            gap: 12px;
-            padding: 12px 16px;
-            color: #dc2626;
+            gap: 10px;
+            padding: 10px 14px;
+            color: #ef4444;
             text-decoration: none;
-            font-weight: 600;
-            border-radius: 8px;
-            background-color: var(--badge-rejected-bg);
-            transition: background 0.2s;
+            font-weight: 500;
+            font-size: 14px;
+            border-radius: 6px;
+            background-color: rgba(239, 68, 68, 0.06);
         }
 
             .logout-btn:hover {
-                opacity: 0.9;
+                background-color: rgba(239, 68, 68, 0.12);
             }
 
-        /* Main Content Area */
         .main-content {
             flex: 1;
             display: flex;
             flex-direction: column;
+            height: 100vh;
+            overflow-y: auto;
         }
 
-        /* Top Header */
         .dashboard-header {
             background-color: var(--card-bg);
-            padding: 20px 40px;
+            padding: 18px 36px;
             border-bottom: 1px solid var(--border-color);
             display: flex;
             justify-content: space-between;
             align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
         }
 
             .dashboard-header h1 {
-                font-size: 22px;
+                font-size: 20px;
+                font-weight: 700;
                 color: var(--heading-color);
+                letter-spacing: -0.3px;
             }
 
         .user-profile {
@@ -208,10 +311,9 @@
             align-items: center;
             gap: 12px;
             cursor: pointer;
-            padding: 6px 12px;
+            padding: 4px 10px;
             border-radius: 20px;
             border: 1px solid transparent;
-            transition: all 0.2s ease;
         }
 
             .user-profile:hover {
@@ -219,13 +321,12 @@
                 background: var(--bg-main);
             }
 
-        /* Dashboard Body Grid with Smooth Entrance Animation */
         .dashboard-body {
-            padding: 30px 40px;
-            display: grid;
-            grid-template-columns: 2fr 1fr;
+            padding: 28px 36px;
+            display: flex;
+            flex-direction: column;
             gap: 24px;
-            animation: fadeInSlideUp 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+            animation: fadeInSlideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
         }
 
         @@keyframes fadeInSlideUp {
@@ -240,42 +341,91 @@
             }
         }
 
-        /* Enhanced Glassmorphism Card Hover Lift */
-        .card {
+        .card, .metric-card {
             background-color: var(--card-bg);
-            border-radius: 12px;
-            padding: 24px;
+            border-radius: 10px;
+            padding: 22px;
             box-shadow: var(--card-shadow);
             border: 1px solid var(--border-color);
-            backdrop-filter: blur(12px);
-            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.3s ease, border-color 0.3s ease;
+            transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.25s ease, border-color 0.25s ease;
         }
 
-            .card:hover {
-                transform: translateY(-3px);
-                box-shadow: 0 12px 24px -6px rgba(2, 132, 199, 0.15);
-                border-color: rgba(2, 132, 199, 0.3);
+            .card:hover, .metric-card:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 10px 20px -5px rgba(2, 132, 199, 0.1);
+                border-color: rgba(2, 132, 199, 0.25);
             }
 
-            .card h3 {
-                font-size: 18px;
-                margin-bottom: 16px;
-                color: var(--heading-color);
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+        }
+
+        .metric-card {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+            .metric-card .metric-header {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                margin-bottom: 12px;
+            }
+
+            .metric-card h4 {
+                font-size: 13px;
+                font-weight: 600;
+                color: var(--text-muted);
+                text-transform: uppercase;
+                letter-spacing: 0.5px;
+            }
+
+            .metric-card .icon-box {
+                width: 34px;
+                height: 34px;
+                border-radius: 8px;
+                background: rgba(2, 132, 199, 0.1);
+                color: var(--primary-accent);
                 display: flex;
                 align-items: center;
-                gap: 8px;
+                justify-content: center;
+                font-size: 15px;
             }
 
-        /* Tables & Lists */
+            .metric-card .value {
+                font-size: 24px;
+                font-weight: 700;
+                color: var(--heading-color);
+            }
+
+        .lower-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 24px;
+        }
+
+        .card h3 {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 16px;
+            color: var(--heading-color);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
         .table {
             width: 100%;
             border-collapse: collapse;
             text-align: left;
-            font-size: 14px;
+            font-size: 13px;
         }
 
             .table th, .table td {
-                padding: 14px 12px;
+                padding: 12px 10px;
                 border-bottom: 1px solid var(--table-border);
                 color: var(--text-color);
             }
@@ -283,73 +433,104 @@
             .table th {
                 color: var(--text-muted);
                 font-weight: 600;
+                background-color: var(--bg-main);
             }
 
             .table tbody tr:hover {
                 background-color: var(--table-hover);
             }
 
-        /* Animated Glowing Status Badges */
         .badge {
-            padding: 6px 12px;
-            border-radius: 20px;
+            padding: 4px 10px;
+            border-radius: 12px;
             font-size: 11px;
             font-weight: 600;
-            text-transform: capitalize;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
             display: inline-block;
         }
 
             .badge.pending {
                 background-color: var(--badge-pending-bg);
                 color: var(--badge-pending-text);
-                box-shadow: 0 0 8px rgba(251, 191, 36, 0.25);
-                animation: pulse-glow 2s infinite ease-in-out;
             }
 
-        @@keyframes pulse-glow {
-            0%, 100% {
-                box-shadow: 0 0 4px rgba(251, 191, 36, 0.2);
+            .badge.confirmed, .badge.approved, .badge.rescheduled {
+                background-color: var(--badge-approved-bg);
+                color: var(--badge-approved-text);
             }
 
-            50% {
-                box-shadow: 0 0 12px rgba(251, 191, 36, 0.5);
+            .badge.rejected, .badge.cancelled {
+                background-color: var(--badge-rejected-bg);
+                color: var(--badge-rejected-text);
             }
-        }
 
-        .badge.confirmed, .badge.approved {
-            background-color: var(--badge-approved-bg);
-            color: var(--badge-approved-text);
-        }
-
-        .badge.rejected, .badge.cancelled {
-            background-color: var(--badge-rejected-bg);
-            color: var(--badge-rejected-text);
-        }
-
-        /* Micro-Interaction Buttons */
         .action-btn {
             background-color: var(--primary-accent);
             color: white;
             border: none;
-            padding: 8px 16px;
+            padding: 7px 14px;
             border-radius: 6px;
             cursor: pointer;
             font-weight: 600;
-            font-size: 14px;
-            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            font-size: 13px;
+            transition: transform 0.15s ease, box-shadow 0.15s ease;
         }
 
             .action-btn:hover {
-                transform: translateY(-2px);
-                box-shadow: 0 4px 12px rgba(2, 132, 199, 0.35);
+                transform: translateY(-1px);
+                box-shadow: 0 4px 12px rgba(2, 132, 199, 0.25);
                 opacity: 0.95;
             }
 
-            .action-btn:active {
-                transform: translateY(0) scale(0.96);
+        .btn-outline-warning {
+            background: transparent;
+            border: 1px solid #d97706;
+            color: #d97706;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 11px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+            .btn-outline-warning:hover {
+                background: #d97706;
+                color: white;
             }
 
-        /* Floating Chatbot Bounce Effect */
+        .btn-outline-danger {
+            background: transparent;
+            border: 1px solid #ef4444;
+            color: #ef4444;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 11px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+            .btn-outline-danger:hover {
+                background: #ef4444;
+                color: white;
+            }
+
+        .see-more-toggle {
+            display: inline-block;
+            margin-top: 12px;
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--primary-accent);
+            cursor: pointer;
+            background: none;
+            border: none;
+            text-decoration: underline;
+        }
+
+            .see-more-toggle:hover {
+                opacity: 0.8;
+            }
+
         #chatToggleBtn {
             animation: floatBounce 3s infinite ease-in-out;
         }
@@ -360,21 +541,20 @@
             }
 
             50% {
-                transform: translateY(-6px);
+                transform: translateY(-5px);
             }
         }
 
         #chatToggleBtn:hover {
-            transform: scale(1.1) !important;
-            box-shadow: 0 10px 25px rgba(59, 130, 246, 0.5) !important;
+            transform: scale(1.08) !important;
+            box-shadow: 0 8px 20px rgba(2, 132, 199, 0.35) !important;
         }
 
-        /* CANVA-STYLE CHARACTER CREATOR MODAL LAYOUT */
         .canva-modal-body {
             display: grid;
             grid-template-columns: 280px 1fr;
             height: 440px;
-            border-radius: 12px;
+            border-radius: 8px;
             overflow: hidden;
             border: 1px solid var(--border-color);
             background: var(--card-bg);
@@ -386,7 +566,7 @@
             padding: 16px;
             display: flex;
             flex-direction: column;
-            gap: 14px;
+            gap: 12px;
             overflow-y: auto;
             text-align: left;
         }
@@ -402,26 +582,27 @@
         .canva-item-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
-            gap: 8px;
+            gap: 6px;
         }
 
         .canva-asset-card {
             aspect-ratio: 1;
             background: var(--bg-main);
-            border: 2px solid var(--border-color);
-            border-radius: 8px;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
             display: flex;
             align-items: center;
             justify-content: center;
             cursor: pointer;
-            transition: all 0.2s ease;
-            padding: 6px;
             font-size: 12px;
+            color: var(--text-color);
+            transition: all 0.2s ease;
         }
 
             .canva-asset-card:hover, .canva-asset-card.active {
                 border-color: var(--primary-accent);
-                background: rgba(2, 132, 199, 0.1);
+                background: rgba(2, 132, 199, 0.08);
+                color: var(--primary-accent);
             }
 
         .swatch-group {
@@ -431,8 +612,8 @@
         }
 
         .color-swatch {
-            width: 26px;
-            height: 26px;
+            width: 24px;
+            height: 24px;
             border-radius: 50%;
             cursor: pointer;
             border: 2px solid transparent;
@@ -440,12 +621,12 @@
         }
 
             .color-swatch:hover, .color-swatch.active {
-                transform: scale(1.15);
                 border-color: var(--heading-color);
+                transform: scale(1.15);
             }
 
         .canva-canvas-viewport {
-            background: #ffffff;
+            background: var(--bg-main);
             display: flex;
             align-items: center;
             justify-content: center;
@@ -462,428 +643,1106 @@
                 <img src="/images/logopet.jpeg" alt="Logo">
                 <h2>PetCare Portal</h2>
             </div>
+
+            <!-- ALL ADMIN PERSONNEL LIST & ONLINE STATUS WIDGET -->
+            <div style="margin-bottom: 14px;">
+                <span style="font-size: 11px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; display: block; margin-bottom: 6px;">
+                    <i class="fa-solid fa-users-gear" style="color: var(--primary-accent); margin-right: 4px;"></i> Clinic Admin Team
+                </span>
+                <div class="sidebar-admin-section" id="sidebarAdminTeamContainer">
+                    <!-- Dinamikong ika-load dito ang lahat ng Admins at ang kanilang Online status -->
+                </div>
+            </div>
+
             <ul class="nav-links">
-                <li class="active"><a href="@Url.Action("ClientDashboard", "Home")"><i class="fa-solid fa-house"></i> Dashboard</a></li>
-                <li><a href="#" onclick="openProfileModal(); return false;"><i class="fa-solid fa-wand-magic-sparkles"></i> Pet Character Studio</a></li>
-                <li><a href="#" onclick="openFriendsModal(); return false;"><i class="fa-solid fa-user-group"></i> Friends & Visit</a></li>
-                <li><a href="#"><i class="fa-solid fa-calendar-check"></i> Appointments</a></li>
-                <li><a href="#"><i class="fa-solid fa-paw"></i> My Pets</a></li>
+                <li id="navDashboard" class="active"><a href="#" onclick="switchTab('dashboard'); return false;"><i class="fa-solid fa-chart-pie"></i> Dashboard</a></li>
+                <li id="navAppointments"><a href="#" onclick="switchTab('appointments'); return false;"><i class="fa-solid fa-calendar-days"></i> Appointments</a></li>
+                <li id="navMyPets"><a href="#" onclick="switchTab('mypets'); return false;"><i class="fa-solid fa-shield-dog"></i> My Pets</a></li>
+                <li><a href="#" onclick="openProfileModal(); return false;"><i class="fa-solid fa-wand-magic-sparkles"></i> Pet Studio</a></li>
             </ul>
         </div>
         <div>
-            <!-- Theme Toggle Button -->
             <button class="theme-toggle-btn" onclick="toggleTheme()">
                 <i class="fa-solid fa-moon" id="themeIcon"></i> <span id="themeText">Dark Mode</span>
             </button>
-            <a href="/Account/Logout" class="logout-btn"><i class="fa-solid fa-right-from-bracket"></i> Log out</a>
+            <a href="/Account/Logout" class="logout-btn" onclick="handleLogout()"><i class="fa-solid fa-arrow-right-from-bracket"></i> Sign Out</a>
         </div>
     </aside>
 
-    <!-- Main Content -->
+    <!-- Main Content Area -->
     <main class="main-content">
         <header class="dashboard-header">
-            <h1>Welcome back, @ViewBag.ClientName! 🐾</h1>
-            <div class="user-profile" onclick="openProfileModal()" title="Click to customize pet profile avatar">
-                <div style="text-align: right;">
-                    <span style="display: block; font-weight: 700; font-size: 14px;" id="headerDisplayName">@ViewBag.ClientName</span>
-                    <span style="font-size: 12px; color: var(--text-muted);">Client Account</span>
-                </div>
-                <!-- Dynamic Header Avatar SVG Container -->
-                <div id="headerAvatarContainer" style="width: 42px; height: 42px; border-radius: 50%; overflow: hidden; border: 2px solid var(--primary-accent); background: #ffffff; display: flex; align-items: center; justify-content: center;">
-                    <svg id="headerPetSvg" viewBox="0 0 200 200" width="38" height="38">
-                        <ellipse cx="100" cy="120" rx="40" ry="32" fill="#d97706" />
-                        <circle cx="100" cy="85" r="28" fill="#d97706" />
-                        <ellipse cx="100" cy="94" rx="14" ry="11" fill="#fef3c7" />
-                        <circle cx="91" cy="79" r="3.5" fill="#0f172a" />
-                        <circle cx="109" cy="79" r="3.5" fill="#0f172a" />
-                        <ellipse cx="100" cy="91" rx="4.5" ry="3" fill="#0f172a" />
-                    </svg>
+            <h1 id="headerMainTitle">Dashboard Overview</h1>
+            <div style="display: flex; gap: 12px; align-items: center;">
+                <button class="action-btn" id="headerBookBtn" style="display: none;" onclick="openAppointmentModal()"><i class="fa-solid fa-plus"></i> Book an Appointment</button>
+                <div class="user-profile" onclick="openProfileModal()" title="Customize Profile">
+                    <div style="text-align: right;">
+                        <span style="display: block; font-weight: 600; font-size: 13px; color: var(--heading-color);" id="headerDisplayName">@ViewBag.ClientName</span>
+                        <span style="font-size: 11px; color: var(--text-muted);">Client Portal</span>
+                    </div>
+                    <div id="headerAvatarContainer" style="width: 38px; height: 38px; border-radius: 50%; overflow: hidden; border: 1.5px solid var(--primary-accent); background: #ffffff; display: flex; align-items: center; justify-content: center;">
+                        <svg id="headerPetSvg" viewBox="0 0 200 200" width="34" height="34">
+                            <g id="headerSvgContent">
+                                <ellipse cx="100" cy="120" rx="40" ry="32" fill="#0284c7" />
+                                <circle cx="100" cy="85" r="28" fill="#0284c7" />
+                                <ellipse cx="100" cy="94" rx="14" ry="11" fill="#fef3c7" />
+                                <circle cx="91" cy="79" r="3.5" fill="#0f172a" />
+                                <circle cx="109" cy="79" r="3.5" fill="#0f172a" />
+                                <ellipse cx="100" cy="91" rx="4.5" ry="3" fill="#0f172a" />
+                            </g>
+                        </svg>
+                    </div>
                 </div>
             </div>
         </header>
 
         <div class="dashboard-body">
-            <!-- Left Column: Appointments & Quick Actions -->
-            <div style="display: flex; flex-direction: column; gap: 24px;">
-                <div class="card">
-                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
-                        <h3><i class="fa-solid fa-calendar-days" style="color: var(--primary-accent);"></i> My Appointments</h3>
-                        <button class="action-btn" onclick="openAppointmentModal()">+ New Appointment</button>
+            <!-- TAB 1: DASHBOARD OVERVIEW -->
+            <div id="tabDashboard" style="display: flex; flex-direction: column; gap: 24px;">
+                <div class="metrics-grid">
+                    <div class="metric-card">
+                        <div class="metric-header">
+                            <h4>Registered Pets</h4>
+                            <div class="icon-box"><i class="fa-solid fa-paw"></i></div>
+                        </div>
+                        <div class="value" id="petCountDisplay">0</div>
                     </div>
-                    <table class="table">
-                        <thead>
-                            <tr>
-                                <th>Pet Name</th>
-                                <th>Service</th>
-                                <th>Date & Time</th>
-                                <th>Status</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @if (clientAppointments.Any())
-                            {
-                                foreach (var item in clientAppointments)
-                                {
-                                    <tr>
-                                        <td><strong>@item.PetName</strong></td>
-                                        <td>@item.Service</td>
-                                        <td>@item.AppointmentDate.ToString("MMM dd, yyyy - hh:mm tt")</td>
-                                        <td>
-                                            <span class="badge @item.Status.ToLower()">@item.Status</span>
-                                        </td>
-                                    </tr>
-                                }
-                            }
-                            else
-                            {
-                                <tr>
-                                    <td colspan="4" style="text-align: center; color: var(--text-muted);">No appointments booked yet.</td>
-                                </tr>
-                            }
-                        </tbody>
-                    </table>
+                    <div class="metric-card">
+                        <div class="metric-header">
+                            <h4>Active Appointments</h4>
+                            <div class="icon-box"><i class="fa-solid fa-calendar-check"></i></div>
+                        </div>
+                        <div class="value" id="activeAppointmentsCountDisplay">0</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-header">
+                            <h4>Vaccination Status</h4>
+                            <div class="icon-box"><i class="fa-solid fa-shield-heart"></i></div>
+                        </div>
+                        <div class="value" style="font-size: 16px; color: #047857; margin-top: 6px;">Verified Active</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-header">
+                            <h4>Support Assistant</h4>
+                            <div class="icon-box"><i class="fa-solid fa-robot"></i></div>
+                        </div>
+                        <div class="value" style="font-size: 16px; color: var(--primary-accent); margin-top: 6px;">Online 24/7</div>
+                    </div>
                 </div>
 
-                <div class="card">
-                    <h3><i class="fa-solid fa-paw" style="color: var(--primary-accent);"></i> Registered Pets Information</h3>
-                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 15px;">
-                        <div style="background: var(--bg-main); padding: 16px; border-radius: 8px; border: 1px solid var(--border-color);">
-                            <h4 style="color: var(--heading-color); margin-bottom: 4px;">Max 🐕</h4>
-                            <p style="font-size: 13px; color: var(--text-muted);">Breed: Corgi</p>
-                            <p style="font-size: 13px; color: var(--text-muted);">Age: 2 Years Old</p>
+                <div class="lower-grid">
+                    <div style="display: flex; flex-direction: column; gap: 24px;">
+                        <div class="card" id="appointmentsCardSection">
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+                                <h3><i class="fa-solid fa-calendar-days" style="color: var(--primary-accent);"></i> Scheduled Appointments</h3>
+                                <button class="action-btn" onclick="openAppointmentModal()"><i class="fa-solid fa-plus"></i> New Booking</button>
+                            </div>
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>Pet Record</th>
+                                        <th>Service Type</th>
+                                        <th>Schedule Date</th>
+                                        <th>Status</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="combinedAppointmentsTableBody"></tbody>
+                            </table>
+                            <div id="dashboardSeeMoreContainer" style="text-align: center; margin-top: 10px;"></div>
                         </div>
-                        <div style="background: var(--bg-main); padding: 16px; border-radius: 8px; border: 1px solid var(--border-color);">
-                            <h4 style="color: var(--heading-color); margin-bottom: 4px;">Luna 🐈</h4>
-                            <p style="font-size: 13px; color: var(--text-muted);">Breed: Puspin / Domestic</p>
-                            <p style="font-size: 13px; color: #16a34a; font-weight: 600;">Vaccinated ✓</p>
+                    </div>
+
+                    <div style="display: flex; flex-direction: column; gap: 24px;">
+                        <!-- STANDALONE / NORMAL REFERENCE CALENDAR WIDGET WITH MOVING BLUE CIRCLE -->
+                        <div class="card">
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px;">
+                                <h3 style="margin: 0; font-size: 15px; display: flex; align-items: center; gap: 8px;">
+                                    <i class="fa-solid fa-calendar-days" style="color: var(--primary-accent);"></i> Schedule Reference
+                                </h3>
+                                <div style="display: flex; align-items: center; gap: 6px;">
+                                    <button onclick="changeMonth(-1)" style="background: none; border: 1px solid var(--border-color); border-radius: 4px; padding: 2px 7px; cursor: pointer; color: var(--text-color); font-size: 11px;"><i class="fa-solid fa-chevron-left"></i></button>
+                                    <span id="calendarMonthLabel" style="font-size: 12px; font-weight: 600; color: var(--heading-color); min-width: 95px; text-align: center;">November 2026</span>
+                                    <button onclick="changeMonth(1)" style="background: none; border: 1px solid var(--border-color); border-radius: 4px; padding: 2px 7px; cursor: pointer; color: var(--text-color); font-size: 11px;"><i class="fa-solid fa-chevron-right"></i></button>
+                                </div>
+                            </div>
+                            <div style="display: grid; grid-template-columns: repeat(7, 1fr); text-align: center; gap: 4px;">
+                                <div style="font-size: 11px; font-weight: 700; color: var(--text-muted); padding-bottom: 6px;">Su</div>
+                                <div style="font-size: 11px; font-weight: 700; color: var(--text-muted); padding-bottom: 6px;">Mo</div>
+                                <div style="font-size: 11px; font-weight: 700; color: var(--text-muted); padding-bottom: 6px;">Tu</div>
+                                <div style="font-size: 11px; font-weight: 700; color: var(--text-muted); padding-bottom: 6px;">We</div>
+                                <div style="font-size: 11px; font-weight: 700; color: var(--text-muted); padding-bottom: 6px;">Th</div>
+                                <div style="font-size: 11px; font-weight: 700; color: var(--text-muted); padding-bottom: 6px;">Fr</div>
+                                <div style="font-size: 11px; font-weight: 700; color: var(--text-muted); padding-bottom: 6px;">Sa</div>
+                                <div id="calendarDaysContainer" style="display: contents;">
+                                    <!-- Dynamic month calendar grid rendered via JavaScript -->
+                                </div>
+                            </div>
+                            <!-- Selected Date Display Indicator -->
+                            <div id="selectedDateDisplay" style="margin-top: 12px; font-size: 12px; color: var(--text-muted); text-align: center; border-top: 1px dashed var(--border-color); padding-top: 8px;">
+                                Click any day to view details
+                            </div>
+                        </div>
+
+                        <div class="card">
+                            <h3><i class="fa-solid fa-bullhorn" style="color: var(--primary-accent);"></i> Clinic Notices</h3>
+                            <ul id="clientAnnouncementsContainer" style="list-style: none; display: flex; flex-direction: column; gap: 10px; font-size: 13px; color: var(--text-muted);"></ul>
+                        </div>
+
+                        <!-- ALAMINOS CITY SLAUGHTER HOUSE MAP CARD -->
+                        <div class="card">
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                                <h3 style="margin: 0; font-size: 15px; display: flex; align-items: center; gap: 8px;">
+                                    <i class="fa-solid fa-map-location-dot" style="color: var(--primary-accent);"></i> Facility Location
+                                </h3>
+                                <span style="font-size: 11px; font-weight: 600; background: var(--bg-main); border: 1px solid var(--border-color); padding: 2px 8px; border-radius: 4px; color: var(--text-muted);">Alaminos City</span>
+                            </div>
+                            <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 12px;">
+                                <i class="fa-solid fa-location-pin" style="color: var(--primary-accent); margin-right: 4px;"></i> Alaminos City Slaughter House, Pangasinan
+                            </p>
+                            <div style="width: 100%; height: 210px; border-radius: 8px; overflow: hidden; border: 1px solid var(--border-color); position: relative;">
+                                <iframe width="100%"
+                                        height="100%"
+                                        style="border:0;"
+                                        loading="lazy"
+                                        allowfullscreen
+                                        referrerpolicy="no-referrer-when-downgrade"
+                                        src="https://maps.google.com/maps?q=Alaminos%20City%20Slaughter%20House%20Pangasinan&t=&z=15&ie=UTF8&iwloc=&output=embed">
+                                </iframe>
+                            </div>
+                            <div style="margin-top: 12px; text-align: right;">
+                                <a href="https://www.google.com/maps/place//data=!4m2!3m1!19sChIJ0cFvI7jckzMR_aYeb58mPsg" target="_blank" class="action-btn" style="text-decoration: none; font-size: 12px; padding: 6px 12px; display: inline-flex; align-items: center; gap: 6px;">
+                                    <i class="fa-solid fa-arrow-up-right-from-square"></i> Open in Google Maps
+                                </a>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <!-- Right Column: PetBot Quick Help Widget Preview -->
-            <div style="display: flex; flex-direction: column; gap: 24px;">
-                <div class="card" style="background: linear-gradient(135deg, #0284c7, #0369a1); color: white; border: none;">
-                    <h3 style="color: white;"><i class="fa-solid fa-robot"></i> PetBot AI Support</h3>
-                    <p style="font-size: 14px; opacity: 0.9; line-height: 1.5; margin-bottom: 16px;">
-                        Need quick advice about your pet's diet, symptoms, or vaccine schedules? PetBot is online 24/7 at the bottom right corner!
-                    </p>
-                    <div style="background: rgba(255,255,255,0.15); padding: 12px; border-radius: 8px; font-size: 13px;">
-                        💡 <strong>Tip:</strong> Try asking PetBot about foods that are toxic to dogs or clinic schedules.
+            <!-- TAB 2: APPOINTMENTS PAGE VIEW -->
+            <div id="tabAppointments" style="display: none; flex-direction: column; gap: 24px;">
+                <p style="font-size: 13px; color: var(--text-muted); margin-top: -10px;">View and manage the appointment history for each of your pets.</p>
+
+                <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; max-width: 500px;">
+                    <div class="metric-card">
+                        <div class="metric-header">
+                            <h4>Total appointments</h4>
+                            <div class="icon-box"><i class="fa-solid fa-calendar-check"></i></div>
+                        </div>
+                        <div class="value" id="metricTotalAppointments">0</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-header">
+                            <h4>Pets with records</h4>
+                            <div class="icon-box"><i class="fa-solid fa-paw"></i></div>
+                        </div>
+                        <div class="value" id="metricPetsWithRecords">0</div>
                     </div>
                 </div>
 
-                <div class="card">
-                    <h3><i class="fa-solid fa-circle-info" style="color: var(--primary-accent);"></i> Clinic Announcements</h3>
-                    <ul style="list-style: none; display: flex; flex-direction: column; gap: 12px; font-size: 14px; color: var(--text-muted);">
-                        <li style="border-bottom: 1px solid var(--table-border); padding-bottom: 8px;">
-                            🏥 <strong style="color: var(--heading-color);">Free Anti-Rabies Drive:</strong> This coming Saturday at the Alaminos City Veterinary Office.
-                        </li>
-                        <li>
-                            ⏰ <strong style="color: var(--heading-color);">Holiday Schedule:</strong> We are open during regular hours this coming holiday.
-                        </li>
-                    </ul>
+                <div style="display: flex; flex-direction: column; gap: 16px;">
+                    <div>
+                        <h3 style="font-size: 15px; font-weight: 600; color: var(--heading-color);">Your pets' records</h3>
+                        <p style="font-size: 12px; color: var(--text-muted);">Each pet has its own appointment history below.</p>
+                    </div>
+                    <div id="groupedAppointmentsContainer" style="display: flex; flex-direction: column; gap: 20px;"></div>
+                </div>
+            </div>
+
+            <!-- TAB 3: MY PETS PAGE VIEW -->
+            <div id="tabMyPets" style="display: none; flex-direction: column; gap: 24px;">
+                <div class="card" style="padding: 24px;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                        <h3 style="margin: 0; font-size: 18px; color: var(--heading-color); display: flex; align-items: center; gap: 10px;">
+                            <i class="fa-solid fa-shield-dog" style="color: var(--primary-accent);"></i> Registered Pet Profiles
+                        </h3>
+                        <button class="action-btn" onclick="openMyPetsModal()"><i class="fa-solid fa-plus"></i> Add Pet</button>
+                    </div>
+                    <div id="registeredPetsContainer" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px;"></div>
                 </div>
             </div>
         </div>
     </main>
 
-    <!-- CANVA-STYLE MULTI-ANIMAL CHARACTER CREATOR MODAL -->
-    <div id="profileModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 30000; justify-content: center; align-items: center; backdrop-filter: blur(8px);">
-        <div class="card" style="width: 760px; max-width: 95%; border-radius: 16px; box-shadow: 0 15px 35px rgba(0,0,0,0.4); padding: 20px;">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px;">
-                <h3 style="margin: 0; font-size: 18px;"><i class="fa-solid fa-wand-magic-sparkles" style="color: var(--primary-accent);"></i> Pet Character Studio 🐾</h3>
-                <button onclick="closeProfileModal()" style="background: none; border: none; font-size: 20px; cursor: pointer; color: var(--text-muted);">&times;</button>
+    <!-- RESCHEDULE MODAL -->
+    <div id="rescheduleModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 30000; justify-content: center; align-items: center; backdrop-filter: blur(4px);">
+        <div class="card" style="width: 380px; max-width: 90%; border-radius: 12px; padding: 22px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+                <h3 style="margin: 0; font-size: 16px;"><i class="fa-solid fa-clock-rotate-left" style="color: var(--primary-accent);"></i> Reschedule Appointment</h3>
+                <button onclick="closeRescheduleModal()" style="background: none; border: none; font-size: 18px; cursor: pointer; color: var(--text-muted);">&times;</button>
             </div>
+            <form onsubmit="submitReschedule(event)">
+                <input type="hidden" id="rescheduleAppointmentId" />
+                <div style="margin-bottom: 14px;">
+                    <label style="display: block; font-size: 12px; font-weight: 600; margin-bottom: 4px; color: var(--text-muted);">Pet Record</label>
+                    <input type="text" id="reschedulePetName" style="width: 100%; padding: 8px 10px; border-radius: 6px; border: 1px solid var(--border-color); background: var(--bg-main); color: var(--text-color); font-size: 13px;" readonly />
+                </div>
+                <div style="margin-bottom: 20px;">
+                    <label style="display: block; font-size: 12px; font-weight: 600; margin-bottom: 4px; color: var(--text-muted);">New Date & Time</label>
+                    <input type="datetime-local" id="rescheduleNewDateTime" style="width: 100%; padding: 8px 10px; border-radius: 6px; border: 1px solid var(--border-color); background: var(--bg-main); color: var(--text-color); font-size: 13px;" required />
+                </div>
+                <div style="display: flex; justify-content: flex-end; gap: 8px;">
+                    <button type="button" onclick="closeRescheduleModal()" style="padding: 7px 14px; border-radius: 6px; border: 1px solid var(--border-color); background: transparent; color: var(--text-color); cursor: pointer; font-weight: 500; font-size: 13px;">Cancel</button>
+                    <button type="submit" class="action-btn" style="padding: 7px 16px; font-size: 13px;">Save Schedule</button>
+                </div>
+            </form>
+        </div>
+    </div>
 
-            <!-- Canva Builder Body -->
+    <!-- CANCEL MODAL -->
+    <div id="cancelModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 30000; justify-content: center; align-items: center; backdrop-filter: blur(4px);">
+        <div class="card" style="width: 360px; max-width: 90%; border-radius: 12px; padding: 22px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px;">
+                <h3 style="margin: 0; font-size: 16px; color: #ef4444;"><i class="fa-solid fa-triangle-exclamation"></i> Cancel Appointment</h3>
+                <button onclick="closeCancelModal()" style="background: none; border: none; font-size: 18px; cursor: pointer; color: var(--text-muted);">&times;</button>
+            </div>
+            <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 20px;" id="cancelModalText">Are you sure you want to cancel this appointment?</p>
+            <input type="hidden" id="cancelAppointmentId" />
+            <div style="display: flex; justify-content: flex-end; gap: 8px;">
+                <button type="button" onclick="closeCancelModal()" style="padding: 7px 14px; border-radius: 6px; border: 1px solid var(--border-color); background: transparent; color: var(--text-color); cursor: pointer; font-weight: 500; font-size: 13px;">No, Keep It</button>
+                <button type="button" onclick="confirmCancelAppointment()" class="action-btn" style="background-color: #ef4444; padding: 7px 16px; font-size: 13px;">Yes, Cancel Booking</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MY PETS MODAL -->
+    <div id="myPetsModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 30000; justify-content: center; align-items: center; backdrop-filter: blur(4px);">
+        <div class="card" style="width: 420px; max-width: 90%; border-radius: 12px; padding: 22px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+                <h3 style="margin: 0; font-size: 16px;"><i class="fa-solid fa-shield-dog" style="color: var(--primary-accent);"></i> Register New Pet Info</h3>
+                <button onclick="closeMyPetsModal()" style="background: none; border: none; font-size: 18px; cursor: pointer; color: var(--text-muted);">&times;</button>
+            </div>
+            <form id="petRegistrationForm" onsubmit="registerNewPet(event)">
+                <div style="margin-bottom: 14px;">
+                    <label style="display: block; font-size: 12px; font-weight: 600; margin-bottom: 4px; color: var(--text-muted);">Pet Name</label>
+                    <input type="text" id="regPetName" placeholder="e.g. Max" style="width: 100%; padding: 8px 10px; border-radius: 6px; border: 1px solid var(--border-color); background: var(--bg-main); color: var(--text-color); font-size: 13px;" required />
+                </div>
+                <div style="margin-bottom: 14px;">
+                    <label style="display: block; font-size: 12px; font-weight: 600; margin-bottom: 4px; color: var(--text-muted);">Species</label>
+                    <select id="regPetSpecies" style="width: 100%; padding: 8px 10px; border-radius: 6px; border: 1px solid var(--border-color); background: var(--bg-main); color: var(--text-color); font-size: 13px;" required>
+                        <option value="Dog">Dog</option>
+                        <option value="Cat">Cat</option>
+                        <option value="Rabbit">Rabbit</option>
+                        <option value="Bird">Bird</option>
+                    </select>
+                </div>
+                <div style="margin-bottom: 14px;">
+                    <label style="display: block; font-size: 12px; font-weight: 600; margin-bottom: 4px; color: var(--text-muted);">Breed</label>
+                    <input type="text" id="regPetBreed" placeholder="e.g. Corgi / Aspin" style="width: 100%; padding: 8px 10px; border-radius: 6px; border: 1px solid var(--border-color); background: var(--bg-main); color: var(--text-color); font-size: 13px;" required />
+                </div>
+                <div style="margin-bottom: 20px;">
+                    <label style="display: block; font-size: 12px; font-weight: 600; margin-bottom: 4px; color: var(--text-muted);">Age / Details</label>
+                    <input type="text" id="regPetAge" placeholder="e.g. 2 Years Old" style="width: 100%; padding: 8px 10px; border-radius: 6px; border: 1px solid var(--border-color); background: var(--bg-main); color: var(--text-color); font-size: 13px;" required />
+                </div>
+                <div style="display: flex; justify-content: flex-end; gap: 8px;">
+                    <button type="button" onclick="closeMyPetsModal()" style="padding: 7px 14px; border-radius: 6px; border: 1px solid var(--border-color); background: transparent; color: var(--text-color); cursor: pointer; font-weight: 500; font-size: 13px;">Cancel</button>
+                    <button type="submit" class="action-btn" style="padding: 7px 16px; font-size: 13px;">Save Pet Record</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- PET STUDIO MODAL -->
+    <div id="profileModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 30000; justify-content: center; align-items: center; backdrop-filter: blur(4px);">
+        <div class="card" style="width: 740px; max-width: 95%; border-radius: 12px; padding: 20px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px;">
+                <h3 style="margin: 0; font-size: 16px;"><i class="fa-solid fa-wand-magic-sparkles" style="color: var(--primary-accent);"></i> Pet Avatar Studio (Edit Anytime)</h3>
+                <button onclick="closeProfileModal()" style="background: none; border: none; font-size: 18px; cursor: pointer; color: var(--text-muted);">&times;</button>
+            </div>
             <div class="canva-modal-body">
-                <!-- Left Sidebar Picker -->
                 <div class="canva-sidebar">
-                    <!-- Animal Species Selector -->
-                    <span class="canva-sidebar-section-title">Select Species</span>
+                    <span class="canva-sidebar-section-title">Species</span>
                     <div class="canva-item-grid">
-                        <div class="canva-asset-card active" onclick="setSpecies('dog')">🐶 Dog</div>
-                        <div class="canva-asset-card" onclick="setSpecies('cat')">🐱 Cat</div>
-                        <div class="canva-asset-card" onclick="setSpecies('rabbit')">🐰 Rabbit</div>
-                        <div class="canva-asset-card" onclick="setSpecies('bird')">🦜 Bird</div>
+                        <div class="canva-asset-card active" id="btnSpeciesDog" onclick="setSpecies('dog')">Dog</div>
+                        <div class="canva-asset-card" id="btnSpeciesCat" onclick="setSpecies('cat')">Cat</div>
+                        <div class="canva-asset-card" id="btnSpeciesRabbit" onclick="setSpecies('rabbit')">Rabbit</div>
+                        <div class="canva-asset-card" id="btnSpeciesBird" onclick="setSpecies('bird')">Bird</div>
                     </div>
-
-                    <!-- Fur Color Section -->
-                    <span class="canva-sidebar-section-title">Color / Fur Tone</span>
+                    <span class="canva-sidebar-section-title">Primary Tone</span>
                     <div class="swatch-group">
-                        <div class="color-swatch active" style="background: #d97706;" onclick="setFurColor('#d97706')"></div>
-                        <div class="color-swatch" style="background: #64748b;" onclick="setFurColor('#64748b')"></div>
-                        <div class="color-swatch" style="background: #451a03;" onclick="setFurColor('#451a03')"></div>
-                        <div class="color-swatch" style="background: #f8fafc;" onclick="setFurColor('#f8fafc')"></div>
-                        <div class="color-swatch" style="background: #fbbf24;" onclick="setFurColor('#fbbf24')"></div>
+                        <div class="color-swatch active" style="background: #0284c7;" onclick="setFurColor('#0284c7', this)"></div>
+                        <div class="color-swatch" style="background: #64748b;" onclick="setFurColor('#64748b', this)"></div>
+                        <div class="color-swatch" style="background: #334155;" onclick="setFurColor('#334155', this)"></div>
+                        <div class="color-swatch" style="background: #059669;" onclick="setFurColor('#059669', this)"></div>
+                        <div class="color-swatch" style="background: #d97706;" onclick="setFurColor('#d97706', this)"></div>
+                        <div class="color-swatch" style="background: #ef4444;" onclick="setFurColor('#ef4444', this)"></div>
                     </div>
-
-                    <!-- Ears / Features Section -->
-                    <span class="canva-sidebar-section-title">Ears & Features</span>
+                    <span class="canva-sidebar-section-title">Features</span>
                     <div class="canva-item-grid">
-                        <div class="canva-asset-card active" onclick="setEars('default')">✨ Default</div>
-                        <div class="canva-asset-card" onclick="setEars('floppy')">👂 Floppy</div>
-                        <div class="canva-asset-card" onclick="setEars('pointed')">🔺 Pointed</div>
+                        <div class="canva-asset-card active" id="btnEarsDefault" onclick="setEars('default')">Standard</div>
+                        <div class="canva-asset-card" id="btnEarsFloppy" onclick="setEars('floppy')">Floppy</div>
+                        <div class="canva-asset-card" id="btnEarsPointed" onclick="setEars('pointed')">Pointed</div>
                     </div>
-
-                    <!-- Expressions Section -->
-                    <span class="canva-sidebar-section-title">Face Expression</span>
+                    <span class="canva-sidebar-section-title">Expression</span>
                     <div class="canva-item-grid">
-                        <div class="canva-asset-card active" onclick="setExpression('happy')">😊 Happy</div>
-                        <div class="canva-asset-card" onclick="setExpression('wink')">😉 Wink</div>
-                        <div class="canva-asset-card" onclick="setExpression('cool')">😎 Cool</div>
+                        <div class="canva-asset-card active" id="btnExpHappy" onclick="setExpression('happy')">Happy</div>
+                        <div class="canva-asset-card" id="btnExpWink" onclick="setExpression('wink')">Wink</div>
+                        <div class="canva-asset-card" id="btnExpCool" onclick="setExpression('cool')">Cool</div>
                     </div>
-
-                    <!-- Outfits Section -->
-                    <span class="canva-sidebar-section-title">Outfits</span>
+                    <span class="canva-sidebar-section-title">Attire</span>
                     <div class="canva-item-grid">
-                        <div class="canva-asset-card" onclick="setOutfit('none')">🚫 None</div>
-                        <div class="canva-asset-card active" onclick="setOutfit('tee')">👕 Shirt</div>
-                        <div class="canva-asset-card" onclick="setOutfit('dress')">👗 Dress</div>
-                    </div>
-                    <div class="swatch-group">
-                        <div class="color-swatch" style="background: #ef4444;" onclick="setOutfitColor('#ef4444')"></div>
-                        <div class="color-swatch" style="background: #2563eb;" onclick="setOutfitColor('#2563eb')"></div>
-                        <div class="color-swatch" style="background: #10b981;" onclick="setOutfitColor('#10b981')"></div>
-                        <div class="color-swatch" style="background: #8b5cf6;" onclick="setOutfitColor('#8b5cf6')"></div>
-                    </div>
-
-                    <!-- Headwear Section -->
-                    <span class="canva-sidebar-section-title">Headwear</span>
-                    <div class="canva-item-grid">
-                        <div class="canva-asset-card active" onclick="setCap('cap')">🧢 Cap</div>
-                        <div class="canva-asset-card" onclick="setCap('bow')">🎀 Bow</div>
-                        <div class="canva-asset-card" onclick="setCap('none')">🚫 None</div>
+                        <div class="canva-asset-card" id="btnOutfitNone" onclick="setOutfit('none')">None</div>
+                        <div class="canva-asset-card active" id="btnOutfitTee" onclick="setOutfit('tee')">Shirt</div>
+                        <div class="canva-asset-card" id="btnOutfitDress" onclick="setOutfit('dress')">Dress</div>
                     </div>
                 </div>
-
-                <!-- Right Canva Viewport -->
                 <div class="canva-canvas-viewport">
-                    <svg id="canvaPetSvg" viewBox="0 0 200 200" width="240" height="240">
-                        <!-- Dynamic Tail Layer -->
-                        <g id="svgTailLayer">
-                            <path id="svgTail" d="M 50 110 Q 30 95 40 80" stroke="#d97706" stroke-width="8" stroke-linecap="round" fill="none" />
-                        </g>
-                        <!-- Body Layer -->
-                        <ellipse id="svgBody" cx="100" cy="120" rx="40" ry="32" fill="#d97706" />
-                        <rect x="72" y="140" width="12" height="22" rx="6" fill="#b45309" />
-                        <rect x="116" y="140" width="12" height="22" rx="6" fill="#b45309" />
-
-                        <!-- Socks Layer -->
-                        <path id="svgSocks" d="M 72 155 L 84 155 L 84 160 C 84 163 72 163 72 160 Z" fill="#10b981" />
-                        <path id="svgSocks2" d="M 116 155 L 128 155 L 128 160 C 128 163 116 163 116 160 Z" fill="#10b981" />
-
-                        <!-- Outfit Layer -->
-                        <g id="svgOutfitGroup">
-                            <path id="svgShirt" d="M 68 100 Q 100 90 132 100 L 140 135 Q 100 142 60 135 Z" fill="#ef4444" />
-                            <circle cx="64" cy="112" r="10" fill="#ef4444" />
-                            <circle cx="136" cy="112" r="10" fill="#ef4444" />
-                        </g>
-
-                        <!-- Dynamic Ears Layer -->
-                        <g id="svgEarsLayer">
-                            <path id="svgEarLeft" d="M 75 75 Q 55 60 65 85 Z" fill="#b45309" />
-                            <path id="svgEarRight" d="M 125 75 Q 145 60 135 85 Z" fill="#b45309" />
-                        </g>
-
-                        <!-- Head Base -->
-                        <circle id="svgHead" cx="100" cy="85" r="28" fill="#d97706" />
-
-                        <!-- Dynamic Muzzle & Face Layer -->
+                    <svg id="canvaPetSvg" viewBox="0 0 200 200" width="220" height="220">
+                        <g id="svgTailLayer"></g>
+                        <ellipse id="svgBody" cx="100" cy="120" rx="40" ry="32" fill="#0284c7" />
+                        <rect id="svgLegLeft" x="72" y="140" width="12" height="22" rx="6" fill="#0369a1" />
+                        <rect id="svgLegRight" x="116" y="140" width="12" height="22" rx="6" fill="#0369a1" />
+                        <g id="svgOutfitGroup"></g>
+                        <g id="svgEarsLayer"></g>
+                        <circle id="svgHead" cx="100" cy="85" r="28" fill="#0284c7" />
                         <g id="svgMuzzleLayer">
                             <ellipse cx="100" cy="94" rx="14" ry="11" fill="#fef3c7" />
                             <ellipse cx="100" cy="91" rx="4.5" ry="3" fill="#0f172a" />
-                            <path d="M 100 94 Q 96 101 93 98" stroke="#0f172a" stroke-width="1.5" fill="none" stroke-linecap="round" />
-                            <path d="M 100 94 Q 104 101 107 98" stroke="#0f172a" stroke-width="1.5" fill="none" stroke-linecap="round" />
-                            <path d="M 97 99 Q 100 106 103 99 Z" fill="#f43f5e" />
                         </g>
-
-                        <!-- Eyes Layer -->
-                        <g id="svgEyes">
-                            <circle cx="91" cy="79" r="3.5" fill="#0f172a" />
-                            <circle cx="109" cy="79" r="3.5" fill="#0f172a" />
-                            <circle cx="92" cy="78" r="1" fill="#ffffff" />
-                            <circle cx="110" cy="78" r="1" fill="#ffffff" />
-                        </g>
-
-                        <!-- Headwear / Accessories Layer -->
-                        <g id="svgCapGroup">
-                            <path d="M 72 70 Q 100 45 128 70 L 145 65 Q 100 35 55 65 Z" fill="#2563eb" />
-                            <ellipse cx="100" cy="62" rx="28" ry="7" fill="#1d4ed8" />
-                            <rect x="95" y="52" width="10" height="4" fill="#fbbf24" />
-                        </g>
+                        <g id="svgEyes"></g>
+                        <g id="svgGlassesGroup"></g>
                     </svg>
                 </div>
             </div>
-
-            <!-- Footer -->
             <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 14px;">
-                <div style="text-align: left; flex: 1; max-width: 300px;">
-                    <input type="text" id="modalDisplayName" value="@ViewBag.ClientName" style="width: 100%; padding: 8px 12px; border-radius: 6px; border: 1px solid var(--border-color); background: var(--bg-main); color: var(--text-color); font-size: 13px;" />
-                </div>
+                <input type="text" id="modalDisplayName" value="@ViewBag.ClientName" style="width: 260px; padding: 7px 10px; border-radius: 6px; border: 1px solid var(--border-color); background: var(--bg-main); color: var(--text-color); font-size: 13px;" />
                 <div style="display: flex; gap: 8px;">
-                    <button type="button" onclick="closeProfileModal()" style="padding: 8px 16px; border-radius: 6px; border: 1px solid var(--border-color); background: transparent; color: var(--text-color); cursor: pointer; font-weight: 600; font-size: 13px;">Cancel</button>
-                    <button type="button" class="action-btn" onclick="saveProfileChanges()" style="padding: 8px 18px; font-size: 13px;">Done & Save</button>
+                    <button type="button" onclick="closeProfileModal()" style="padding: 7px 14px; border-radius: 6px; border: 1px solid var(--border-color); background: transparent; color: var(--text-color); cursor: pointer; font-weight: 500; font-size: 13px;">Cancel</button>
+                    <button type="button" class="action-btn" onclick="saveProfileChanges()" style="padding: 7px 16px; font-size: 13px;">Save Changes</button>
                 </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- ADD FRIEND & VISIT PROFILE MODAL -->
-    <div id="friendsModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 30000; justify-content: center; align-items: center; backdrop-filter: blur(8px);">
-        <div class="card" style="width: 520px; max-width: 95%; border-radius: 16px; box-shadow: 0 15px 35px rgba(0,0,0,0.4); padding: 20px;">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px;">
-                <h3 style="margin: 0; font-size: 18px;"><i class="fa-solid fa-user-group" style="color: var(--primary-accent);"></i> Friends & Pet Visiting 🐾</h3>
-                <button onclick="closeFriendsModal()" style="background: none; border: none; font-size: 20px; cursor: pointer; color: var(--text-muted);">&times;</button>
-            </div>
-
-            <!-- Add Friend Bar -->
-            <div style="display: flex; gap: 8px; margin-bottom: 16px;">
-                <input type="email" id="friendEmailInput" placeholder="Enter friend's email address..." style="flex: 1; padding: 10px; border-radius: 8px; border: 1px solid var(--border-color); background: var(--bg-main); color: var(--text-color); font-size: 13px;" />
-                <button class="action-btn" onclick="sendFriendRequest()">Add Friend</button>
-            </div>
-
-            <!-- Friends List -->
-            <h4 style="font-size: 13px; color: var(--text-muted); margin-bottom: 10px; text-align: left;">YOUR FRIENDS</h4>
-            <div id="friendsListContainer" style="max-height: 240px; overflow-y: auto; display: flex; flex-direction: column; gap: 8px;">
-                <p style="font-size: 13px; color: var(--text-muted);">Loading friends...</p>
-            </div>
-        </div>
-    </div>
-
-    <!-- VISITED FRIEND PROFILE PREVIEW MODAL -->
-    <div id="visitProfileModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 31000; justify-content: center; align-items: center; backdrop-filter: blur(8px);">
-        <div class="card" style="width: 380px; max-width: 90%; border-radius: 16px; text-align: center; padding: 24px;">
-            <h3 id="visitedFriendName" style="margin-bottom: 4px; justify-content: center;">Friend Name</h3>
-            <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 16px;">Pet Profile Showcase</p>
-
-            <div style="background: var(--bg-main); border: 1px solid var(--border-color); border-radius: 12px; padding: 16px; display: flex; align-items: center; justify-content: center; height: 200px;">
-                <svg id="visitedPetSvg" viewBox="0 0 200 200" width="180" height="180"></svg>
-            </div>
-
-            <button onclick="closeVisitProfileModal()" class="action-btn" style="margin-top: 16px; width: 100%;">Close Visit</button>
-            <!-- Update your close button HTML to ensure it sits safely above everything else -->
-            <button onclick="closeFriendsModal()" class="absolute top-4 right-4 text-gray-400 hover:text-white z-50 cursor-pointer p-1">
-                ✕
-            </button>
-        </div>
-    </div>
-    <!-- Inside your Friend Visiting Modal HTML -->
-    <div id="friendVisitingModal" class="fixed inset-0 bg-black/60 flex items-center justify-center" style="display: none;">
-        <div class="bg-gray-900 border border-gray-800 rounded-2xl p-6 w-96 text-center shadow-2xl">
-            <h3 id="visitingFriendTitleName" class="text-xl font-bold text-white mb-1">kenj's Pet</h3>
-            <p class="text-gray-400 text-xs mb-4">Pet Profile Showcase</p>
-
-            <!-- Pet / Avatar Display Area -->
-            <div id="visitingAvatarDisplayContainer" class="bg-gray-950 border border-gray-800 rounded-xl p-4 h-48 flex items-center justify-center mb-6">
-                <!-- Avatar or Pet SVG goes here -->
-            </div>
-
-            <!-- Action Buttons -->
-            <div class="flex space-x-3">
-                <button onclick="closeVisitingModal()" class="flex-1 py-2.5 bg-gray-800 hover:bg-gray-700 text-white font-medium rounded-xl transition">
-                    Close Visit
-                </button>
-                <button id="visitFullAccountBtn" class="flex-1 py-2.5 bg-cyan-500 hover:bg-cyan-600 text-gray-950 font-bold rounded-xl transition">
-                    Visit Account 👤
-                </button>
             </div>
         </div>
     </div>
 
     <!-- BOOK APPOINTMENT MODAL -->
     <div id="appointmentModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 30000; justify-content: center; align-items: center; backdrop-filter: blur(4px);">
-        <div class="card" style="width: 420px; max-width: 90%; border-radius: 16px; box-shadow: 0 15px 30px rgba(0,0,0,0.3);">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-                <h3 style="margin: 0; font-size: 18px;"><i class="fa-solid fa-calendar-plus" style="color: var(--primary-accent);"></i> Book New Appointment</h3>
-                <button onclick="closeAppointmentModal()" style="background: none; border: none; font-size: 20px; cursor: pointer; color: var(--text-muted);">&times;</button>
+        <div class="card" style="width: 400px; max-width: 90%; border-radius: 12px; padding: 22px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+                <h3 style="margin: 0; font-size: 16px;"><i class="fa-solid fa-calendar-plus" style="color: var(--primary-accent);"></i> New Appointment Request</h3>
+                <button onclick="closeAppointmentModal()" style="background: none; border: none; font-size: 18px; cursor: pointer; color: var(--text-muted);">&times;</button>
             </div>
             <form id="appointmentForm" onsubmit="submitAppointment(event)">
-                <div style="margin-bottom: 16px;">
-                    <label style="display: block; font-size: 13px; font-weight: 600; margin-bottom: 6px;">Pet Name</label>
-                    <input type="text" id="modalPetName" placeholder="e.g. Brownie" style="width: 100%; padding: 10px 12px; border-radius: 8px; border: 1px solid var(--border-color); background: var(--bg-main); color: var(--text-color);" required />
+                <div style="margin-bottom: 14px;">
+                    <label style="display: block; font-size: 12px; font-weight: 600; margin-bottom: 4px; color: var(--text-muted);">Select Registered Pet</label>
+                    <select id="modalPetSelect" style="width: 100%; padding: 8px 10px; border-radius: 6px; border: 1px solid var(--border-color); background: var(--bg-main); color: var(--text-color); font-size: 13px;" onchange="updateModalPetInput(this)" required>
+                        <option value="">-- Choose from My Pets --</option>
+                    </select>
                 </div>
-
-                <div style="margin-bottom: 16px;">
-                    <label style="display: block; font-size: 13px; font-weight: 600; margin-bottom: 6px;">Breed & Species</label>
-                    <input type="text" id="modalPetBreed" placeholder="e.g. Golden Retriever (Dog) or Puspin (Cat)" style="width: 100%; padding: 10px 12px; border-radius: 8px; border: 1px solid var(--border-color); background: var(--bg-main); color: var(--text-color);" required />
+                <div style="margin-bottom: 14px;">
+                    <label style="display: block; font-size: 12px; font-weight: 600; margin-bottom: 4px; color: var(--text-muted);">Pet Name & Breed</label>
+                    <input type="text" id="modalPetName" placeholder="e.g. Max (Corgi)" style="width: 100%; padding: 8px 10px; border-radius: 6px; border: 1px solid var(--border-color); background: var(--bg-main); color: var(--text-color); font-size: 13px;" required />
                 </div>
-
-                <div style="margin-bottom: 16px;">
-                    <label style="display: block; font-size: 13px; font-weight: 600; margin-bottom: 6px;">Select Service</label>
-                    <select id="modalService" style="width: 100%; padding: 10px 12px; border-radius: 8px; border: 1px solid var(--border-color); background: var(--bg-main); color: var(--text-color);" required>
-                        <option value="">-- Choose Service --</option>
+                <div style="margin-bottom: 14px;">
+                    <label style="display: block; font-size: 12px; font-weight: 600; margin-bottom: 4px; color: var(--text-muted);">Service Selection</label>
+                    <select id="modalService" style="width: 100%; padding: 8px 10px; border-radius: 6px; border: 1px solid var(--border-color); background: var(--bg-main); color: var(--text-color); font-size: 13px;" required>
+                        <option value="">Select Service...</option>
                         <option value="Anti-Rabies Vaccine">Anti-Rabies Vaccination</option>
                         <option value="General Check-up">General Health Check-up</option>
                         <option value="Grooming & Bath">Pet Grooming & Bath</option>
                         <option value="Deworming">Deworming Treatment</option>
                     </select>
                 </div>
-
-                <div style="margin-bottom: 24px;">
-                    <label style="display: block; font-size: 13px; font-weight: 600; margin-bottom: 6px;">Date & Time</label>
-                    <input type="datetime-local" id="modalDateTime" style="width: 100%; padding: 10px 12px; border-radius: 8px; border: 1px solid var(--border-color); background: var(--bg-main); color: var(--text-color);" required />
+                <div style="margin-bottom: 20px;">
+                    <label style="display: block; font-size: 12px; font-weight: 600; margin-bottom: 4px; color: var(--text-muted);">Date & Time</label>
+                    <input type="datetime-local" id="modalDateTime" style="width: 100%; padding: 8px 10px; border-radius: 6px; border: 1px solid var(--border-color); background: var(--bg-main); color: var(--text-color); font-size: 13px;" required />
                 </div>
-
-                <div style="display: flex; justify-content: flex-end; gap: 10px;">
-                    <button type="button" onclick="closeAppointmentModal()" style="padding: 10px 18px; border-radius: 6px; border: 1px solid var(--border-color); background: transparent; color: var(--text-color); cursor: pointer; font-weight: 600;">Cancel</button>
-                    <button type="submit" class="action-btn" style="padding: 10px 20px;">Confirm Booking</button>
+                <div style="display: flex; justify-content: flex-end; gap: 8px;">
+                    <button type="button" onclick="closeAppointmentModal()" style="padding: 7px 14px; border-radius: 6px; border: 1px solid var(--border-color); background: transparent; color: var(--text-color); cursor: pointer; font-weight: 500; font-size: 13px;">Cancel</button>
+                    <button type="submit" class="action-btn" style="padding: 7px 16px; font-size: 13px;">Confirm Booking</button>
                 </div>
             </form>
         </div>
     </div>
 
     <!-- FLOATING AI CHATBOT WIDGET -->
-    <div id="aiChatWidget" style="position: fixed; bottom: 24px; right: 24px; z-index: 20000; font-family: Arial, Helvetica, sans-serif;">
-        <button id="chatToggleBtn" onclick="toggleChatWindow()" style="width: 65px; height: 65px; border-radius: 50%; background: #ffffff; border: 2px solid #3b82f6; cursor: pointer; box-shadow: 0 8px 20px rgba(59, 130, 246, 0.3); display: flex; align-items: center; justify-content: center; overflow: hidden; padding: 0;">
+    <div id="aiChatWidget" style="position: fixed; bottom: 24px; right: 24px; z-index: 20000;">
+        <button id="chatToggleBtn" onclick="toggleChatWindow()" style="width: 54px; height: 54px; border-radius: 50%; background: #ffffff; border: 2px solid var(--primary-accent); cursor: pointer; box-shadow: 0 4px 12px rgba(0,0,0,0.15); display: flex; align-items: center; justify-content: center; overflow: hidden; padding: 0;">
             <img src="/images/chatbotLogo.jpg" alt="PetBot AI" style="width: 100%; height: 100%; object-fit: cover;" />
         </button>
-
-        <div id="chatWindow" style="display: none; position: absolute; bottom: 80px; right: 0; width: 360px; height: 490px; background-color: var(--card-bg); border: 1px solid var(--border-color); border-radius: 16px; box-shadow: 0 10px 30px rgba(0,0,0,0.15); flex-direction: column; overflow: hidden; color: var(--text-color);">
-            <div style="background: linear-gradient(135deg, #2563eb, #3b82f6); color: white; padding: 14px 16px; display: flex; justify-content: space-between; align-items: center;">
-                <div style="display: flex; align-items: center; gap: 10px;">
-                    <img src="/images/chatbotLogo.jpg" alt="PetBot Logo" style="width: 38px; height: 38px; border-radius: 50%; object-fit: cover; border: 2px solid white;" />
-                    <div>
-                        <h4 style="margin: 0; font-size: 1rem; font-weight: 700;">PetBot AI</h4>
-                        <span style="font-size: 0.75rem; opacity: 0.9; color: #dbeafe;">Online | AI Veterinary Assistant</span>
-                    </div>
+        <div id="chatWindow" style="display: none; position: absolute; bottom: 68px; right: 0; width: 340px; height: 460px; background-color: var(--card-bg); border: 1px solid var(--border-color); border-radius: 10px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); flex-direction: column; overflow: hidden; color: var(--text-color);">
+            <div style="background: var(--sidebar-bg); border-bottom: 1px solid var(--border-color); padding: 12px 16px; display: flex; justify-content: space-between; align-items: center;">
+                <div style="display: flex; align-items: center; gap: 8px;">
+                    <div style="width: 8px; height: 8px; border-radius: 50%; background: #10b981;"></div>
+                    <h4 style="margin: 0; font-size: 14px; font-weight: 600; color: var(--heading-color);">PetBot Assistant</h4>
                 </div>
-                <button onclick="toggleChatWindow()" style="background: transparent; border: none; color: white; font-size: 1.2rem; cursor: pointer;">
+                <button onclick="toggleChatWindow()" style="background: transparent; border: none; color: var(--text-muted); font-size: 16px; cursor: pointer;">
                     <i class="fa-solid fa-xmark"></i>
                 </button>
             </div>
-
-            <div id="chatMessages" style="flex: 1; padding: 16px; overflow-y: auto; display: flex; flex-direction: column; gap: 12px; font-size: 0.9rem; background-color: var(--bg-main);">
-                <div style="background: #eff6ff; color: #1e3a8a; padding: 10px 14px; border-radius: 12px; max-width: 85%; align-self: flex-start; border-left: 3px solid #3b82f6; line-height: 1.4;">
-                    Hello! I am <strong>PetBot</strong> 🐾 Ask me any questions about animal health, vaccinations, or clinic hours!
+            <div id="chatMessages" style="flex: 1; padding: 14px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; font-size: 13px; background-color: var(--bg-main);">
+                <div style="background: var(--card-bg); border: 1px solid var(--border-color); color: var(--text-color); padding: 10px 12px; border-radius: 8px; max-width: 85%; align-self: flex-start; line-height: 1.4;">
+                    Hello! How can I assist you with your veterinary inquiries today?
                 </div>
             </div>
-
-            <div style="padding: 12px; border-top: 1px solid var(--border-color); display: flex; gap: 8px; background-color: var(--card-bg);">
-                <input type="text" id="chatInput" placeholder="Ask PetBot about pet care..." onkeypress="handleChatKeyPress(event)" style="flex: 1; padding: 10px 12px; border-radius: 8px; border: 1px solid var(--border-color); background-color: var(--card-bg); color: var(--text-color); font-size: 0.9rem; outline: none;" />
-                <button onclick="sendChatMessage()" style="background-color: #2563eb; color: white; border: none; padding: 0 16px; border-radius: 8px; cursor: pointer; font-weight: 600;">
+            <div style="padding: 10px; border-top: 1px solid var(--border-color); display: flex; gap: 6px; background-color: var(--card-bg);">
+                <input type="text" id="chatInput" placeholder="Type a message..." onkeypress="handleChatKeyPress(event)" style="flex: 1; padding: 8px 10px; border-radius: 6px; border: 1px solid var(--border-color); background-color: var(--bg-main); color: var(--text-color); font-size: 13px; outline: none;" />
+                <button onclick="sendChatMessage()" style="background-color: var(--primary-accent); color: white; border: none; padding: 0 14px; border-radius: 6px; cursor: pointer; font-size: 13px;">
                     <i class="fa-solid fa-paper-plane"></i>
                 </button>
             </div>
         </div>
     </div>
 
-    <!-- JAVASCRIPT LOGIC -->
+    <!-- SCRIPT LOGIC -->
     <script>
-        // Load Saved Profile Preferences and Character SVG on Startup
-        document.addEventListener("DOMContentLoaded", () => {
-            const savedName = localStorage.getItem('client_displayName');
-            if (savedName) document.getElementById('headerDisplayName').innerText = savedName;
+        let currentSpecies = "dog";
+        let currentFurColor = "#0284c7";
+        let currentEars = "default";
+        let currentExpression = "happy";
+        let currentOutfit = "tee";
 
-            const savedHeaderSvg = localStorage.getItem('header_pet_svg');
-            if (savedHeaderSvg) {
-                document.getElementById('headerPetSvg').innerHTML = savedHeaderSvg;
-                document.getElementById('canvaPetSvg').innerHTML = savedHeaderSvg;
+        const userIdentifier = "@ViewBag.ClientName" ? "@ViewBag.ClientName".replace(/\s+/g, '_').toLowerCase() : "default_client";
+        let currentCalendarDate = new Date();
+        let selectedCalendarDate = null;
+
+        document.addEventListener("DOMContentLoaded", () => {
+            const serverClientName = "@ViewBag.ClientName";
+            if (serverClientName) {
+                document.getElementById('headerDisplayName').innerText = serverClientName;
             }
+
+            const savedHeaderSvg = localStorage.getItem('header_pet_svg_' + userIdentifier);
+            if (savedHeaderSvg) {
+                document.getElementById('headerSvgContent').innerHTML = savedHeaderSvg;
+            }
+
+            renderStudioPet();
+            loadSavedPets();
+            loadClientAnnouncements();
+            loadAppointmentsPageView();
+            renderClientCalendar();
+            loadAdminTeamSidebar(); // Load all admins and online status
+
+            // Auto-refresh admin status every 5 seconds para real-time ang green/gray dot
+            setInterval(loadAdminTeamSidebar, 5000);
+
+            // Automatic Click Sound Effect Global Listener para sa lahat ng Buttons, Links, at Tabs
+            document.addEventListener('click', (e) => {
+                const target = e.target.closest('button, a, .canva-asset-card, .color-swatch');
+                if (target) {
+                    playClickSound();
+                }
+            });
         });
 
-        // Theme Toggle Logic
+        // Load all Admins and check if they are currently Online
+        function loadAdminTeamSidebar() {
+            const container = document.getElementById('sidebarAdminTeamContainer');
+            if (!container) return;
+
+            // Kunin ang listahan ng lahat ng admins (maaaring i-save ng Admin dashboard sa localStorage, o maglagay ng default kung nag-iisa pa lang)
+            let adminsList = JSON.parse(localStorage.getItem('admin_team_directory') || '[]');
+
+            // Kung walang naka-save na directory, idagdag ang kasalukuyang admin profile bilang default
+            let currentAdmin = JSON.parse(localStorage.getItem('admin_profile_data') || '{"name": "System Administrator", "position": "Administrator Role"}');
+
+            if (adminsList.length === 0) {
+                adminsList = [{ id: 'admin_1', name: currentAdmin.name, position: currentAdmin.position }];
+            }
+
+            // Kunin ang online heartbeats ng mga admin (sine-save ng admin dashboard habang aktibo sila)
+            let onlineHeartbeats = JSON.parse(localStorage.getItem('admin_online_heartbeats') || '{}');
+            let now = new Date().getTime();
+
+            let html = '';
+            adminsList.forEach(adm => {
+                let initials = adm.name ? adm.name.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase() : 'AD';
+
+                // Active/Online kung nag-ping o nag-update sa loob ng huling 30 segundo (30000ms)
+                let lastActiveTime = onlineHeartbeats[adm.id || adm.name] || 0;
+                let isOnline = (now - lastActiveTime) < 30000;
+
+                // Kung ang kasalukuyang client ay naka-open din o nagpasa ng active signal, o kung active session:
+                let dotClass = isOnline ? 'active' : 'offline';
+                let statusText = isOnline ? 'Online' : 'Offline';
+
+                html += `
+                    <div class="admin-item">
+                        <div class="admin-avatar-box">
+                            ${initials}
+                            <div class="online-dot ${dotClass}" title="${statusText}"></div>
+                        </div>
+                        <div style="overflow: hidden; flex: 1;">
+                            <span style="font-size: 12px; font-weight: 600; color: var(--heading-color); display: block; white-space: nowrap; text-overflow: ellipsis; overflow: hidden;">${adm.name}</span>
+                            <div style="display: flex; justify-content: space-between; align-items: center;">
+                                <span style="font-size: 10px; color: var(--text-muted); white-space: nowrap; text-overflow: ellipsis; overflow: hidden;">${adm.position}</span>
+                                <span style="font-size: 9px; font-weight: 600; color: ${isOnline ? '#10b981' : '#94a3b8'};">${statusText}</span>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+
+            container.innerHTML = html;
+        }
+
+        // Click / Pop Sound Effect gamit ang Web Audio API
+        function playClickSound() {
+            try {
+                const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                const osc = audioCtx.createOscillator();
+                const gainNode = audioCtx.createGain();
+
+                osc.type = 'triangle';
+                osc.frequency.setValueAtTime(400, audioCtx.currentTime);
+                osc.frequency.exponentialRampToValueAtTime(200, audioCtx.currentTime + 0.08);
+
+                gainNode.gain.setValueAtTime(0.1, audioCtx.currentTime);
+                gainNode.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.08);
+
+                osc.connect(gainNode);
+                gainNode.connect(audioCtx.destination);
+
+                osc.start();
+                osc.stop(audioCtx.currentTime + 0.08);
+            } catch (e) {
+                console.log("Audio not supported", e);
+            }
+        }
+
+        // Success / Notification Chime Sound Effect
+        function playSuccessSound() {
+            try {
+                const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                const osc = audioCtx.createOscillator();
+                const gainNode = audioCtx.createGain();
+
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(587.33, audioCtx.currentTime); // Note D5
+                osc.frequency.exponentialRampToValueAtTime(880, audioCtx.currentTime + 0.15); // Note A5
+
+                gainNode.gain.setValueAtTime(0.15, audioCtx.currentTime);
+                gainNode.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.3);
+
+                osc.connect(gainNode);
+                gainNode.connect(audioCtx.destination);
+
+                osc.start();
+                osc.stop(audioCtx.currentTime + 0.3);
+            } catch (e) {
+                console.log("Audio not supported", e);
+            }
+        }
+
+        // Malaki, Malinaw at May Sound Effect na Custom Toast Notification
+        function showCustomToast(message, type = 'success') {
+            const existingToast = document.getElementById('activeCustomToast');
+            if (existingToast) existingToast.remove();
+
+            playSuccessSound();
+
+            const toast = document.createElement('div');
+            toast.id = 'activeCustomToast';
+            toast.className = 'custom-toast';
+
+            let iconColor = type === 'error' ? '#ef4444' : 'var(--primary-accent)';
+            let iconClass = type === 'error' ? 'fa-circle-exclamation' : 'fa-circle-check';
+
+            toast.innerHTML = `
+                <i class="fa-solid ${iconClass}" style="color: ${iconColor}; font-size: 22px;"></i>
+                <span style="font-size: 15px; letter-spacing: -0.2px;">${message}</span>
+            `;
+
+            document.body.appendChild(toast);
+
+            setTimeout(() => {
+                toast.classList.add('fade-out');
+                setTimeout(() => toast.remove(), 300);
+            }, 3500);
+        }
+
+        function changeMonth(direction) {
+            currentCalendarDate.setMonth(currentCalendarDate.getMonth() + direction);
+            renderClientCalendar();
+        }
+
+        function renderClientCalendar() {
+            const container = document.getElementById('calendarDaysContainer');
+            const label = document.getElementById('calendarMonthLabel');
+            if (!container) return;
+
+            const year = currentCalendarDate.getFullYear();
+            const month = currentCalendarDate.getMonth();
+
+            const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+            label.innerText = `${monthNames[month]} ${year}`;
+
+            const firstDayIndex = new Date(year, month, 1).getDay();
+            const totalDays = new Date(year, month + 1, 0).getDate();
+
+            let html = '';
+            for (let i = 0; i < firstDayIndex; i++) {
+                html += `<div></div>`;
+            }
+
+            const todayReal = new Date();
+
+            for (let day = 1; day <= totalDays; day++) {
+                let isToday = (day === todayReal.getDate() && month === todayReal.getMonth() && year === todayReal.getFullYear());
+                let isSelected = (selectedCalendarDate && day === selectedCalendarDate.getDate() && month === selectedCalendarDate.getMonth() && year === selectedCalendarDate.getFullYear());
+
+                let style = `
+                    padding: 6px 0;
+                    font-size: 12px;
+                    font-weight: 500;
+                    border-radius: 50%;
+                    width: 28px;
+                    height: 28px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    margin: 2px auto;
+                    color: var(--text-color);
+                    cursor: pointer;
+                    transition: all 0.2s ease;
+                `;
+
+                if (isSelected || (isToday && !selectedCalendarDate)) {
+                    style += `background-color: var(--primary-accent); color: white; font-weight: 700; box-shadow: 0 2px 6px rgba(2, 132, 199, 0.4);`;
+                }
+
+                html += `<div style="${style}" onmouseover="if(!this.style.backgroundColor) this.style.background='rgba(2, 132, 199, 0.15)'" onmouseout="if(!this.style.backgroundColor.includes('rgb(2, 132, 199)')) this.style.background='transparent'" onclick="selectStandaloneDate(${day}, ${month}, ${year})">${day}</div>`;
+            }
+
+            container.innerHTML = html;
+        }
+
+        function selectStandaloneDate(day, month, year) {
+            selectedCalendarDate = new Date(year, month, day);
+            renderClientCalendar();
+
+            const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+            const displayElem = document.getElementById('selectedDateDisplay');
+            if (displayElem) {
+                displayElem.innerHTML = `<i class="fa-solid fa-calendar-day" style="color: var(--primary-accent); margin-right: 4px;"></i> Selected: <strong>${monthNames[month]} ${day}, ${year}</strong>`;
+            }
+        }
+
+        let dashboardShowAll = false;
+        let appointmentsTabShowAll = {};
+
+        function switchTab(tabName) {
+            const tabDashboard = document.getElementById('tabDashboard');
+            const tabAppointments = document.getElementById('tabAppointments');
+            const tabMyPets = document.getElementById('tabMyPets');
+            const navDashboard = document.getElementById('navDashboard');
+            const navAppointments = document.getElementById('navAppointments');
+            const navMyPets = document.getElementById('navMyPets');
+            const headerTitle = document.getElementById('headerMainTitle');
+            const headerBookBtn = document.getElementById('headerBookBtn');
+
+            tabDashboard.style.display = 'none';
+            tabAppointments.style.display = 'none';
+            tabMyPets.style.display = 'none';
+            navDashboard.className = '';
+            navAppointments.className = '';
+            navMyPets.className = '';
+
+            if (tabName === 'dashboard') {
+                tabDashboard.style.display = 'flex';
+                navDashboard.className = 'active';
+                headerTitle.innerText = 'Dashboard Overview';
+                headerBookBtn.style.display = 'none';
+                loadSavedPets();
+            } else if (tabName === 'appointments') {
+                tabAppointments.style.display = 'flex';
+                navAppointments.className = 'active';
+                headerTitle.innerText = 'Appointment Records';
+                headerBookBtn.style.display = 'inline-flex';
+                loadAppointmentsPageView();
+            } else if (tabName === 'mypets') {
+                tabMyPets.style.display = 'flex';
+                navMyPets.className = 'active';
+                headerTitle.innerText = 'My Pets Directory';
+                headerBookBtn.style.display = 'inline-flex';
+                loadSavedPets();
+            }
+        }
+
+        function renderStudioPet() {
+            document.getElementById('svgBody').setAttribute('fill', currentFurColor);
+            document.getElementById('svgHead').setAttribute('fill', currentFurColor);
+
+            const darkerColor = adjustColor(currentFurColor, -30);
+            document.getElementById('svgLegLeft').setAttribute('fill', darkerColor);
+            document.getElementById('svgLegRight').setAttribute('fill', darkerColor);
+
+            const earsLayer = document.getElementById('svgEarsLayer');
+            const tailLayer = document.getElementById('svgTailLayer');
+
+            if (currentSpecies === 'cat') {
+                earsLayer.innerHTML = `<path d="M 75 68 L 58 35 L 85 58 Z" fill="${darkerColor}" /><path d="M 125 68 L 142 35 L 115 58 Z" fill="${darkerColor}" />`;
+                tailLayer.innerHTML = `<path d="M 50 120 Q 20 140 25 100 Q 30 80 20 70" stroke="${currentFurColor}" stroke-width="6" stroke-linecap="round" fill="none" />`;
+            } else if (currentSpecies === 'rabbit') {
+                earsLayer.innerHTML = `<ellipse cx="78" cy="40" rx="8" ry="32" fill="${currentFurColor}" /><ellipse cx="122" cy="40" rx="8" ry="32" fill="${currentFurColor}" />`;
+                tailLayer.innerHTML = `<circle cx="45" cy="125" r="10" fill="#ffffff" />`;
+            } else if (currentSpecies === 'bird') {
+                earsLayer.innerHTML = `<path d="M 90 60 L 100 40 L 110 60 Z" fill="${darkerColor}" />`;
+                tailLayer.innerHTML = `<path d="M 55 125 L 35 135 L 45 115 Z" fill="${darkerColor}" />`;
+            } else {
+                if (currentEars === 'floppy') {
+                    earsLayer.innerHTML = `<path d="M 72 72 Q 45 70 60 100 Z" fill="${darkerColor}" /><path d="M 128 72 Q 155 70 140 100 Z" fill="${darkerColor}" />`;
+                } else if (currentEars === 'pointed') {
+                    earsLayer.innerHTML = `<path d="M 75 70 L 60 40 L 88 62 Z" fill="${darkerColor}" /><path d="M 125 70 L 140 40 L 112 62 Z" fill="${darkerColor}" />`;
+                } else {
+                    earsLayer.innerHTML = `<path d="M 75 75 Q 55 60 65 85 Z" fill="${darkerColor}" /><path d="M 125 75 Q 145 60 135 85 Z" fill="${darkerColor}" />`;
+                }
+                tailLayer.innerHTML = `<path d="M 50 110 Q 30 95 40 80" stroke="${currentFurColor}" stroke-width="8" stroke-linecap="round" fill="none" />`;
+            }
+
+            const eyesGroup = document.getElementById('svgEyes');
+            const glassesGroup = document.getElementById('svgGlassesGroup');
+            glassesGroup.innerHTML = '';
+
+            if (currentExpression === 'wink') {
+                eyesGroup.innerHTML = `<path d="M 87 79 Q 91 74 95 79" stroke="#0f172a" stroke-width="2.5" fill="none" stroke-linecap="round" /><circle cx="109" cy="79" r="3.5" fill="#0f172a" />`;
+            } else if (currentExpression === 'cool') {
+                eyesGroup.innerHTML = `<circle cx="91" cy="79" r="3.5" fill="#0f172a" /><circle cx="109" cy="79" r="3.5" fill="#0f172a" />`;
+                glassesGroup.innerHTML = `<rect x="80" y="72" width="18" height="12" rx="3" fill="#0f172a" /><rect x="102" y="72" width="18" height="12" rx="3" fill="#0f172a" /><line x1="98" y1="78" x2="102" y2="78" stroke="#0f172a" stroke-width="2" />`;
+            } else {
+                eyesGroup.innerHTML = `<circle cx="91" cy="79" r="3.5" fill="#0f172a" /><circle cx="109" cy="79" r="3.5" fill="#0f172a" />`;
+            }
+
+            const outfitGroup = document.getElementById('svgOutfitGroup');
+            if (currentOutfit === 'dress') {
+                outfitGroup.innerHTML = `<path d="M 68 102 Q 100 92 132 102 L 148 142 Q 100 148 52 142 Z" fill="#ec4899" />`;
+            } else if (currentOutfit === 'tee') {
+                outfitGroup.innerHTML = `<path d="M 68 100 Q 100 90 132 100 L 140 135 Q 100 142 60 135 Z" fill="#ef4444" />`;
+            } else {
+                outfitGroup.innerHTML = '';
+            }
+        }
+
+        function setSpecies(species) {
+            currentSpecies = species;
+            ['btnSpeciesDog', 'btnSpeciesCat', 'btnSpeciesRabbit', 'btnSpeciesBird'].forEach(id => {
+                document.getElementById(id)?.classList.remove('active');
+            });
+            if (species === 'cat') document.getElementById('btnSpeciesCat')?.classList.add('active');
+            else if (species === 'rabbit') document.getElementById('btnSpeciesRabbit')?.classList.add('active');
+            else if (species === 'bird') document.getElementById('btnSpeciesBird')?.classList.add('active');
+            else document.getElementById('btnSpeciesDog')?.classList.add('active');
+            renderStudioPet();
+        }
+
+        function setFurColor(hex, elem) {
+            currentFurColor = hex;
+            if (elem) {
+                document.querySelectorAll('.swatch-group .color-swatch').forEach(s => s.classList.remove('active'));
+                elem.classList.add('active');
+            }
+            renderStudioPet();
+        }
+
+        function setEars(style) {
+            currentEars = style;
+            ['btnEarsDefault', 'btnEarsFloppy', 'btnEarsPointed'].forEach(id => {
+                document.getElementById(id)?.classList.remove('active');
+            });
+            if (style === 'floppy') document.getElementById('btnEarsFloppy')?.classList.add('active');
+            else if (style === 'pointed') document.getElementById('btnEarsPointed')?.classList.add('active');
+            else document.getElementById('btnEarsDefault')?.classList.add('active');
+            renderStudioPet();
+        }
+
+        function setExpression(exp) {
+            currentExpression = exp;
+            ['btnExpHappy', 'btnExpWink', 'btnExpCool'].forEach(id => {
+                document.getElementById(id)?.classList.remove('active');
+            });
+            if (exp === 'wink') document.getElementById('btnExpWink')?.classList.add('active');
+            else if (exp === 'cool') document.getElementById('btnExpCool')?.classList.add('active');
+            else document.getElementById('btnExpHappy')?.classList.add('active');
+            renderStudioPet();
+        }
+
+        function setOutfit(style) {
+            currentOutfit = style;
+            ['btnOutfitNone', 'btnOutfitTee', 'btnOutfitDress'].forEach(id => {
+                document.getElementById(id)?.classList.remove('active');
+            });
+            if (style === 'dress') document.getElementById('btnOutfitDress')?.classList.add('active');
+            else if (style === 'tee') document.getElementById('btnOutfitTee')?.classList.add('active');
+            else document.getElementById('btnOutfitNone')?.classList.add('active');
+            renderStudioPet();
+        }
+
+        function saveProfileChanges() {
+            const newName = document.getElementById('modalDisplayName').value.trim();
+            if (newName) {
+                document.getElementById('headerDisplayName').innerText = newName;
+            }
+            const studioSvgInner = document.getElementById('canvaPetSvg').innerHTML;
+            document.getElementById('headerSvgContent').innerHTML = studioSvgInner;
+
+            localStorage.setItem('header_pet_svg_' + userIdentifier, studioSvgInner);
+            localStorage.setItem('pet_studio_config_' + userIdentifier, JSON.stringify({
+                species: currentSpecies, furColor: currentFurColor, ears: currentEars, expression: currentExpression, outfit: currentOutfit, name: newName
+            }));
+
+            closeProfileModal();
+            showCustomToast("Pet avatar updated successfully! You can edit anytime.");
+        }
+
+        function adjustColor(hex, amt) {
+            let usePound = false;
+            if (hex[0] == "#") { hex = hex.slice(1); usePound = true; }
+            let num = parseInt(hex, 16);
+            let r = (num >> 16) + amt;
+            if (r > 255) r = 255; else if (r < 0) r = 0;
+            let b = ((num >> 8) & 0x00FF) + amt;
+            if (b > 255) b = 255; else if (b < 0) b = 0;
+            let g = (num & 0x0000FF) + amt;
+            if (g > 255) g = 255; else if (g < 0) g = 0;
+            return (usePound ? "#" : "") + (g | (b << 8) | (r << 16)).toString(16).padStart(6, '0');
+        }
+
+        function toggleDashboardSeeMore() {
+            dashboardShowAll = !dashboardShowAll;
+            loadSavedPets();
+        }
+
+        function togglePetGroupSeeMore(petKey) {
+            appointmentsTabShowAll[petKey] = !appointmentsTabShowAll[petKey];
+            loadAppointmentsPageView();
+        }
+
+        function loadAppointmentsPageView() {
+            let dbAppointments = [];
+            @if (clientAppointments.Any())
+            {
+                        foreach (var item in clientAppointments)
+                        {
+                                    @:dbAppointments.push({ petName: '@item.PetName', service: '@item.Service', date: '@item.AppointmentDate.ToString("MMM dd, yyyy - hh:mm tt")', status: '@item.Status', id: '@item.Id' });
+                        }
+            }
+
+            let statusOverrides = JSON.parse(localStorage.getItem('appointment_status_overrides_' + userIdentifier) || '{}');
+            let allRecords = dbAppointments.map(rec => {
+                if (rec.id && statusOverrides[rec.id]) {
+                    rec.status = statusOverrides[rec.id].status;
+                    if (statusOverrides[rec.id].date) {
+                        rec.date = statusOverrides[rec.id].date;
+                    }
+                }
+                return rec;
+            });
+
+            document.getElementById('metricTotalAppointments').innerText = allRecords.length;
+
+            let grouped = {};
+            allRecords.forEach(item => {
+                let key = item.petName || 'Unknown Pet';
+                if (!grouped[key]) grouped[key] = [];
+                grouped[key].push(item);
+            });
+
+            document.getElementById('metricPetsWithRecords').innerText = Object.keys(grouped).length;
+
+            let container = document.getElementById('groupedAppointmentsContainer');
+            container.innerHTML = '';
+
+            if (Object.keys(grouped).length === 0) {
+                container.innerHTML = `<div class="card" style="text-align: center; color: var(--text-muted); padding: 30px;">No appointment records found.</div>`;
+                return;
+            }
+
+            for (let [petName, records] of Object.entries(grouped)) {
+                let isExpanded = appointmentsTabShowAll[petName] || false;
+                let visibleRecords = isExpanded ? records : records.slice(0, 3);
+                let hasMore = records.length > 3;
+
+                let rowsHtml = '';
+                visibleRecords.forEach(rec => {
+                    let badgeClass = (rec.status || 'PENDING').toLowerCase();
+                    rowsHtml += `
+                        <tr>
+                            <td style="color: var(--text-color); font-weight: 500;">${rec.service}</td>
+                            <td style="color: var(--text-muted);"><i class="fa-regular fa-calendar" style="margin-right: 6px;"></i> ${rec.date}</td>
+                            <td><span class="badge ${badgeClass}">${rec.status || 'PENDING'}</span></td>
+                        </tr>
+                    `;
+                });
+
+                let seeMoreBtnHtml = hasMore ? `
+                    <div style="padding: 10px 20px; background: var(--bg-main); border-top: 1px solid var(--border-color); text-align: center;">
+                        <button class="see-more-toggle" onclick="togglePetGroupSeeMore('${petName}')">
+                            ${isExpanded ? 'See Less ▲' : `See More (${records.length - 3} more) ▼`}
+                        </button>
+                    </div>
+                ` : '';
+
+                container.innerHTML += `
+                    <div class="card" style="padding: 0; overflow: hidden;">
+                        <div style="background: var(--bg-main); padding: 16px 20px; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center;">
+                            <div>
+                                <h4 style="font-size: 14px; font-weight: 600; color: var(--heading-color); display: flex; align-items: center; gap: 8px;">
+                                    <i class="fa-solid fa-paw" style="color: var(--primary-accent);"></i> ${petName}
+                                </h4>
+                                <span style="font-size: 11px; color: var(--text-muted);">${records.length} appointment${records.length > 1 ? 's' : ''} recorded</span>
+                            </div>
+                            <span style="font-size: 11px; font-weight: 600; text-transform: uppercase; background: var(--card-bg); border: 1px solid var(--border-color); padding: 4px 10px; border-radius: 6px; color: var(--text-muted);">Pet Record</span>
+                        </div>
+                        <table class="table" style="margin: 0;">
+                            <thead>
+                                <tr>
+                                    <th style="padding-left: 20px;">SERVICE</th>
+                                    <th>APPOINTMENT DATE</th>
+                                    <th style="padding-right: 20px;">STATUS</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                ${rowsHtml}
+                            </tbody>
+                        </table>
+                        ${seeMoreBtnHtml}
+                    </div>
+                `;
+            }
+        }
+
+        function loadSavedPets() {
+            let pets = JSON.parse(localStorage.getItem('registered_pets_' + userIdentifier) || '[]');
+
+            document.getElementById('petCountDisplay').innerText = pets.length;
+
+            const container = document.getElementById('registeredPetsContainer');
+            const dropdown = document.getElementById('modalPetSelect');
+
+            container.innerHTML = '';
+            if (dropdown) dropdown.innerHTML = '<option value="">-- Choose from My Pets --</option>';
+
+            if (pets.length === 0) {
+                container.innerHTML = `<div style="grid-column: 1 / -1; text-align: center; color: var(--text-muted); padding: 40px; font-size: 14px;">No registered pets found. Click "Add Pet" to register your first pet profile.</div>`;
+            } else {
+                pets.forEach(pet => {
+                    let iconClass = pet.species === 'Cat' ? 'fa-cat' : (pet.species === 'Rabbit' ? 'fa-hippo' : 'fa-dog');
+                    container.innerHTML += `
+                        <div style="background: var(--bg-main); padding: 18px; border-radius: 10px; border: 1px solid var(--border-color); display: flex; flex-direction: column; justify-content: space-between;">
+                            <div>
+                                <h4 style="color: var(--heading-color); margin-bottom: 6px; font-size: 15px; display: flex; align-items: center; gap: 8px;">
+                                    <i class="fa-solid ${iconClass}" style="color: var(--primary-accent);"></i> ${pet.name}
+                                </h4>
+                                <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 4px;">Breed: ${pet.breed} (${pet.species})</p>
+                                <p style="font-size: 13px; color: var(--text-muted);">Details: ${pet.age}</p>
+                            </div>
+                            <button onclick="bookForPet('${pet.name}', '${pet.breed} (${pet.species})')" class="action-btn" style="margin-top: 16px; font-size: 12px; padding: 6px 12px; align-self: flex-start;">Make Appointment</button>
+                        </div>
+                    `;
+
+                    if (dropdown) {
+                        dropdown.innerHTML += `<option value="${pet.name} (${pet.breed})">${pet.name} - ${pet.breed} (${pet.species})</option>`;
+                    }
+                });
+            }
+
+            let dbAppointments = [];
+            @if (clientAppointments.Any())
+            {
+                        foreach (var item in clientAppointments)
+                        {
+                                    @:dbAppointments.push({ id: '@item.Id', petName: '@item.PetName', service: '@item.Service', date: '@item.AppointmentDate.ToString("MMM dd, yyyy - hh:mm tt")', rawDate: '@item.AppointmentDate.ToString("yyyy-MM-ddTHH:mm")', status: '@item.Status' });
+                        }
+            }
+
+            let statusOverrides = JSON.parse(localStorage.getItem('appointment_status_overrides_' + userIdentifier) || '{}');
+
+            let allAppointments = dbAppointments.map(item => {
+                if (item.id && statusOverrides[item.id]) {
+                    item.status = statusOverrides[item.id].status;
+                    if (statusOverrides[item.id].date) {
+                        item.date = statusOverrides[item.id].date;
+                        item.rawDate = statusOverrides[item.id].rawDate;
+                    }
+                }
+                return item;
+            });
+
+            const activeApptsCount = allAppointments.filter(a => (a.status || '').toLowerCase() !== 'cancelled' && (a.status || '').toLowerCase() !== 'rejected').length;
+            const activeCountElem = document.getElementById('activeAppointmentsCountDisplay');
+            if (activeCountElem) activeCountElem.innerText = activeApptsCount;
+
+            const combinedTableBody = document.getElementById('combinedAppointmentsTableBody');
+            const seeMoreContainer = document.getElementById('dashboardSeeMoreContainer');
+
+            if (combinedTableBody) {
+                combinedTableBody.innerHTML = '';
+                if (allAppointments.length > 0) {
+                    let limit = dashboardShowAll ? allAppointments.length : 5;
+                    let visibleList = allAppointments.slice(0, limit);
+
+                    visibleList.forEach(item => {
+                        let badgeClass = (item.status || 'PENDING').toLowerCase();
+                        let actionButtons = (item.status && (item.status.toLowerCase() == 'cancelled' || item.status.toLowerCase() == 'rejected')) ?
+                            `<span style="font-size: 11px; color: var(--text-muted);">No actions</span>` :
+                            `<button class="btn-outline-warning" onclick="openRescheduleModal('${item.id || ''}', '${item.petName}', '${item.rawDate || ''}')"><i class="fa-solid fa-clock-rotate-left"></i> Reschedule</button>
+                             <button class="btn-outline-danger" onclick="openCancelModal('${item.id || ''}', '${item.petName}')"><i class="fa-solid fa-xmark"></i> Cancel</button>`;
+
+                        combinedTableBody.innerHTML += `
+                            <tr>
+                                <td><strong>${item.petName}</strong></td>
+                                <td>${item.service}</td>
+                                <td>${item.date}</td>
+                                <td><span class="badge ${badgeClass}">${item.status || 'PENDING'}</span></td>
+                                <td>${actionButtons}</td>
+                            </tr>
+                        `;
+                    });
+
+                    if (allAppointments.length > 5) {
+                        seeMoreContainer.innerHTML = `
+                            <button class="see-more-toggle" onclick="toggleDashboardSeeMore()">
+                                ${dashboardShowAll ? 'See Less ▲' : `See More (${allAppointments.length - 5} more) ▼`}
+                            </button>
+                        `;
+                    } else {
+                        seeMoreContainer.innerHTML = '';
+                    }
+                } else {
+                    combinedTableBody.innerHTML = `
+                        <tr>
+                            <td colspan="5" style="text-align: center; color: var(--text-muted); padding: 24px;">No appointment records found.</td>
+                        </tr>
+                    `;
+                    seeMoreContainer.innerHTML = '';
+                }
+            }
+        }
+
+        function updateModalPetInput(selectElem) {
+            if (selectElem.value) {
+                document.getElementById('modalPetName').value = selectElem.value;
+            }
+        }
+
+        function loadClientAnnouncements() {
+            let list = JSON.parse(localStorage.getItem('clinic_announcements') || '[]');
+            if (list.length === 0) {
+                list = [
+                    { title: 'Community Anti-Rabies Drive', content: 'Scheduled this Saturday at the Alaminos City Veterinary Office facility.', date: 'Nov 10, 2026' },
+                    { title: 'Holiday Operating Hours', content: 'Regular clinic schedules apply throughout the upcoming holiday cycle.', date: 'Nov 01, 2026' }
+                ];
+                localStorage.setItem('clinic_announcements', JSON.stringify(list));
+            }
+
+            const container = document.getElementById('clientAnnouncementsContainer');
+            if (container) {
+                container.innerHTML = '';
+                list.forEach(ann => {
+                    container.innerHTML += `
+                        <li style="border-bottom: 1px solid var(--table-border); padding-bottom: 8px; margin-bottom: 8px;">
+                            <strong style="color: var(--heading-color); display: block; margin-bottom: 2px;">${ann.title}</strong>
+                            <p style="margin-bottom: 4px;">${ann.content}</p>
+                            <span style="font-size: 11px; color: var(--primary-accent); font-weight: 600;">${ann.date}</span>
+                        </li>
+                    `;
+                });
+            }
+        }
+
+        function handleLogout() {}
+
         const currentTheme = localStorage.getItem('theme') || 'light';
         if (currentTheme === 'dark') {
             document.documentElement.setAttribute('data-theme', 'dark');
@@ -909,380 +1768,204 @@
             }
         }
 
-        // -------------------------------------------------------------
-        // CANVA-STYLE MULTI-ANIMAL CHARACTER CREATOR ENGINE
-        // -------------------------------------------------------------
-        let currentSpecies = "dog";
-        let currentFurColor = "#d97706";
-        let currentOutfitColor = "#ef4444";
+        function openRescheduleModal(id, petName, currentDate) {
+            document.getElementById('rescheduleAppointmentId').value = id;
+            document.getElementById('reschedulePetName').value = petName;
+            document.getElementById('rescheduleNewDateTime').value = currentDate;
+            document.getElementById('rescheduleModal').style.display = 'flex';
+        }
 
-        function setSpecies(species) {
-            currentSpecies = species;
-            const earsLayer = document.getElementById('svgEarsLayer');
-            const tailLayer = document.getElementById('svgTailLayer');
-            const muzzleLayer = document.getElementById('svgMuzzleLayer');
-            const darkerColor = adjustColorBrightness(currentFurColor, -25);
+        function closeRescheduleModal() {
+            document.getElementById('rescheduleModal').style.display = 'none';
+        }
 
-            if (species === 'cat') {
-                earsLayer.innerHTML = `
-                    <path d="M 75 68 L 58 35 L 85 58 Z" fill="${darkerColor}" />
-                    <path d="M 125 68 L 142 35 L 115 58 Z" fill="${darkerColor}" />
-                    <path d="M 72 63 L 62 42 L 80 57 Z" fill="#f472b6" />
-                    <path d="M 128 63 L 138 42 L 120 57 Z" fill="#f472b6" />
-                `;
-                tailLayer.innerHTML = `
-                    <path d="M 50 120 Q 20 140 25 100 Q 30 80 20 70" stroke="${currentFurColor}" stroke-width="6" stroke-linecap="round" fill="none" />
-                `;
-                muzzleLayer.innerHTML = `
-                    <ellipse cx="100" cy="94" rx="12" ry="9" fill="#fef3c7" />
-                    <ellipse cx="100" cy="91" rx="3.5" ry="2.5" fill="#0f172a" />
-                    <line x1="65" y1="90" x2="85" y2="92" stroke="#0f172a" stroke-width="1.5" />
-                    <line x1="65" y1="96" x2="85" y2="95" stroke="#0f172a" stroke-width="1.5" />
-                    <line x1="135" y1="90" x2="115" y2="92" stroke="#0f172a" stroke-width="1.5" />
-                    <line x1="135" y1="96" x2="115" y2="95" stroke="#0f172a" stroke-width="1.5" />
-                `;
-            } else if (species === 'rabbit') {
-                earsLayer.innerHTML = `
-                    <ellipse cx="78" cy="40" rx="8" ry="32" fill="${currentFurColor}" />
-                    <ellipse cx="122" cy="40" rx="8" ry="32" fill="${currentFurColor}" />
-                    <ellipse cx="78" cy="40" rx="4" ry="24" fill="#f472b6" />
-                    <ellipse cx="122" cy="40" rx="4" ry="24" fill="#f472b6" />
-                `;
-                tailLayer.innerHTML = `
-                    <circle cx="45" cy="125" r="12" fill="#ffffff" />
-                `;
-                muzzleLayer.innerHTML = `
-                    <ellipse cx="100" cy="94" rx="12" ry="9" fill="#fef3c7" />
-                    <ellipse cx="100" cy="91" rx="4" ry="2.5" fill="#0f172a" />
-                `;
-            } else if (species === 'bird') {
-                earsLayer.innerHTML = `
-                    <path d="M 95 60 Q 100 40 108 45 Q 100 55 98 60 Z" fill="${darkerColor}" />
-                `;
-                tailLayer.innerHTML = `
-                    <path d="M 45 115 L 25 105 L 30 120 L 20 130 Z" fill="${currentFurColor}" />
-                `;
-                muzzleLayer.innerHTML = `
-                    <polygon points="100,86 92,94 108,94" fill="#f59e0b" />
-                `;
-            } else {
-                // Default Dog
-                earsLayer.innerHTML = `
-                    <path id="svgEarLeft" d="M 75 75 Q 55 60 65 85 Z" fill="${darkerColor}" />
-                    <path id="svgEarRight" d="M 125 75 Q 145 60 135 85 Z" fill="${darkerColor}" />
-                `;
-                tailLayer.innerHTML = `
-                    <path d="M 50 110 Q 30 95 40 80" stroke="${currentFurColor}" stroke-width="8" stroke-linecap="round" fill="none" />
-                `;
-                muzzleLayer.innerHTML = `
-                    <ellipse cx="100" cy="94" rx="14" ry="11" fill="#fef3c7" />
-                    <ellipse cx="100" cy="91" rx="4.5" ry="3" fill="#0f172a" />
-                    <path d="M 100 94 Q 96 101 93 98" stroke="#0f172a" stroke-width="1.5" fill="none" stroke-linecap="round" />
-                    <path d="M 100 94 Q 104 101 107 98" stroke="#0f172a" stroke-width="1.5" fill="none" stroke-linecap="round" />
-                    <path d="M 97 99 Q 100 106 103 99 Z" fill="#f43f5e" />
-                `;
+        async function submitReschedule(event) {
+            event.preventDefault();
+            const id = document.getElementById('rescheduleAppointmentId').value;
+            const newDateStr = document.getElementById('rescheduleNewDateTime').value;
+
+            if (id) {
+                let dObj = new Date(newDateStr);
+                let formattedDateStr = dObj.toLocaleString('en-US', { month: 'short', day: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' });
+
+                let statusOverrides = JSON.parse(localStorage.getItem('appointment_status_overrides_' + userIdentifier) || '{}');
+                statusOverrides[id] = {
+                    status: 'RESCHEDULED',
+                    date: formattedDateStr,
+                    rawDate: newDateStr
+                };
+                localStorage.setItem('appointment_status_overrides_' + userIdentifier, JSON.stringify(statusOverrides));
+
+                let globalAdminLogs = JSON.parse(localStorage.getItem('admin_appointment_logs') || '{}');
+                globalAdminLogs[id] = { status: 'RESCHEDULED', date: formattedDateStr };
+                localStorage.setItem('admin_appointment_logs', JSON.stringify(globalAdminLogs));
             }
-        }
 
-        function setFurColor(hex) {
-            currentFurColor = hex;
-            document.getElementById('svgBody').setAttribute('fill', hex);
-            document.getElementById('svgHead').setAttribute('fill', hex);
-            setSpecies(currentSpecies);
-        }
-
-        function setEars(style) {
-            if (style === 'floppy' && currentSpecies === 'dog') {
-                document.getElementById('svgEarsLayer').innerHTML = `<path d="M 72 72 Q 45 70 60 95 Z" fill="${adjustColorBrightness(currentFurColor, -25)}" /><path d="M 128 72 Q 155 70 140 95 Z" fill="${adjustColorBrightness(currentFurColor, -25)}" />`;
-            } else if (style === 'pointed') {
-                setSpecies(currentSpecies);
+            try {
+                await fetch('/Home/RescheduleAppointment', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ Id: id, AppointmentDate: newDateStr })
+                });
+            } catch (err) {
+                console.error(err);
             }
+            showCustomToast('Appointment rescheduled and synced to admin!');
+            closeRescheduleModal();
+            setTimeout(() => location.reload(), 1000);
         }
 
-        function setExpression(exp) {
-            const eyesGroup = document.getElementById('svgEyes');
-            if (exp === 'happy') {
-                eyesGroup.innerHTML = `
-                    <circle cx="91" cy="79" r="3.5" fill="#0f172a" />
-                    <circle cx="109" cy="79" r="3.5" fill="#0f172a" />
-                    <circle cx="92" cy="78" r="1" fill="#ffffff" />
-                    <circle cx="110" cy="78" r="1" fill="#ffffff" />
-                `;
-            } else if (exp === 'wink') {
-                eyesGroup.innerHTML = `
-                    <path d="M 87 79 Q 91 74 95 79" stroke="#0f172a" stroke-width="2.5" fill="none" stroke-linecap="round" />
-                    <circle cx="109" cy="79" r="3.5" fill="#0f172a" />
-                    <circle cx="110" cy="78" r="1" fill="#ffffff" />
-                `;
-            } else if (exp === 'cool') {
-                eyesGroup.innerHTML = `
-                    <rect x="84" y="74" width="32" height="9" rx="3" fill="#0f172a" />
-                    <line x1="91" y1="74" x2="109" y2="74" stroke="#475569" stroke-width="2" />
-                `;
+        function openCancelModal(id, petName) {
+            document.getElementById('cancelAppointmentId').value = id;
+            document.getElementById('cancelModalText').innerText = `Are you sure you want to cancel the appointment for ${petName}?`;
+            document.getElementById('cancelModal').style.display = 'flex';
+        }
+
+        function closeCancelModal() {
+            document.getElementById('cancelModal').style.display = 'none';
+        }
+
+        async function confirmCancelAppointment() {
+            const id = document.getElementById('cancelAppointmentId').value;
+
+            if (id) {
+                let statusOverrides = JSON.parse(localStorage.getItem('appointment_status_overrides_' + userIdentifier) || '{}');
+                statusOverrides[id] = {
+                    status: 'CANCELLED'
+                };
+                localStorage.setItem('appointment_status_overrides_' + userIdentifier, JSON.stringify(statusOverrides));
+
+                let globalAdminLogs = JSON.parse(localStorage.getItem('admin_appointment_logs') || '{}');
+                globalAdminLogs[id] = { status: 'CANCELLED' };
+                localStorage.setItem('admin_appointment_logs', JSON.stringify(globalAdminLogs));
             }
-        }
 
-        function setOutfit(style) {
-            const outfitGroup = document.getElementById('svgOutfitGroup');
-            if (style === 'none') {
-                outfitGroup.style.display = 'none';
-            } else if (style === 'tee') {
-                outfitGroup.style.display = 'block';
-                outfitGroup.innerHTML = `
-                    <path d="M 68 100 Q 100 90 132 100 L 140 135 Q 100 142 60 135 Z" fill="${currentOutfitColor}" />
-                    <circle cx="64" cy="112" r="10" fill="${currentOutfitColor}" />
-                    <circle cx="136" cy="112" r="10" fill="${currentOutfitColor}" />
-                `;
-            } else if (style === 'dress') {
-                outfitGroup.style.display = 'block';
-                outfitGroup.innerHTML = `
-                    <path d="M 72 98 L 128 98 L 148 145 L 52 145 Z" fill="${currentOutfitColor}" />
-                `;
+            try {
+                await fetch('/Home/CancelAppointment', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ Id: id })
+                });
+            } catch (err) {
+                console.error(err);
             }
+            showCustomToast('Appointment cancelled and synced to admin.');
+            closeCancelModal();
+            setTimeout(() => location.reload(), 1000);
         }
 
-        function setOutfitColor(hex) {
-            currentOutfitColor = hex;
-            document.querySelectorAll('#svgOutfitGroup path, #svgOutfitGroup circle').forEach(el => el.setAttribute('fill', hex));
+        function openMyPetsModal() {
+            document.getElementById('myPetsModal').style.display = 'flex';
         }
 
-        function setCap(style) {
-            const capGroup = document.getElementById('svgCapGroup');
-            if (style === 'none') {
-                capGroup.style.display = 'none';
-            } else if (style === 'cap') {
-                capGroup.style.display = 'block';
-                capGroup.innerHTML = `
-                    <path d="M 72 70 Q 100 45 128 70 L 145 65 Q 100 35 55 65 Z" fill="#2563eb" />
-                    <ellipse cx="100" cy="62" rx="28" ry="7" fill="#1d4ed8" />
-                    <rect x="95" y="52" width="10" height="4" fill="#fbbf24" />
-                `;
-            } else if (style === 'bow') {
-                capGroup.style.display = 'block';
-                capGroup.innerHTML = `
-                    <circle cx="100" cy="55" r="7" fill="#db2777" />
-                    <polygon points="93,52 82,46 84,60" fill="#f472b6" />
-                    <polygon points="107,52 118,46 116,60" fill="#f472b6" />
-                `;
-            }
+        function closeMyPetsModal() {
+            document.getElementById('myPetsModal').style.display = 'none';
+            document.getElementById('petRegistrationForm').reset();
         }
 
-        function adjustColorBrightness(hex, percent) {
-            let num = parseInt(hex.replace("#",""), 16);
-            let amt = Math.round(2.55 * percent);
-            let R = (num >> 16) + amt;
-            let G = (num >> 8 & 0x00FF) + amt;
-            let B = (num & 0x0000FF) + amt;
-            return "#" + (0x1000000 + (R<255?R<0?0:R:255)*0x10000 + (G<255?G<0?0:G:255)*0x100 + (B<255?B<0?0:B:255)).toString(16).slice(1);
+        function registerNewPet(event) {
+            event.preventDefault();
+            const name = document.getElementById('regPetName').value.trim();
+            const species = document.getElementById('regPetSpecies').value;
+            const breed = document.getElementById('regPetBreed').value.trim();
+            const age = document.getElementById('regPetAge').value.trim();
+
+            let pets = JSON.parse(localStorage.getItem('registered_pets_' + userIdentifier) || '[]');
+            pets.push({ name, species, breed, age });
+            localStorage.setItem('registered_pets_' + userIdentifier, JSON.stringify(pets));
+
+            showCustomToast('Pet registered successfully!');
+            closeMyPetsModal();
+            loadSavedPets();
+            loadAppointmentsPageView();
+        }
+
+        function bookForPet(petName, petBreedInfo) {
+            document.getElementById('modalPetName').value = `${petName} (${petBreedInfo})`;
+            openAppointmentModal();
         }
 
         function openProfileModal() {
+            let savedConfig = localStorage.getItem('pet_studio_config_' + userIdentifier);
+            if (savedConfig) {
+                try {
+                    let config = JSON.parse(savedConfig);
+                    currentSpecies = config.species || 'dog';
+                    currentFurColor = config.furColor || '#0284c7';
+                    currentEars = config.ears || 'default';
+                    currentExpression = config.expression || 'happy';
+                    currentOutfit = config.outfit || 'tee';
+
+                    if (config.name) {
+                        document.getElementById('modalDisplayName').value = config.name;
+                    }
+
+                    setSpecies(currentSpecies);
+                    setEars(currentEars);
+                    setExpression(currentExpression);
+                    setOutfit(currentOutfit);
+                } catch(e) { console.error(e); }
+            }
+            renderStudioPet();
             document.getElementById('profileModal').style.display = 'flex';
         }
+        function closeProfileModal() { document.getElementById('profileModal').style.display = 'none'; }
 
-        function closeProfileModal() {
-            document.getElementById('profileModal').style.display = 'none';
-        }
-
-        function saveProfileChanges() {
-            const newName = document.getElementById('modalDisplayName').value.trim();
-            if (newName) {
-                document.getElementById('headerDisplayName').innerText = newName;
-                localStorage.setItem('client_displayName', newName);
-            }
-
-            const canvaSvgHtml = document.getElementById('canvaPetSvg').innerHTML;
-            document.getElementById('headerPetSvg').innerHTML = canvaSvgHtml;
-            localStorage.setItem('header_pet_svg', canvaSvgHtml);
-
-            closeProfileModal();
-        }
-
-        // -------------------------------------------------------------
-        // FRIENDS & VISITING LOGIC
-        // -------------------------------------------------------------
-        async function openFriendsModal() {
-            document.getElementById('friendsModal').style.display = 'flex';
-            const userEmail = "@ViewBag.UserEmail";
-            const container = document.getElementById('friendsListContainer');
-
-            try {
-                const res = await fetch(`/Account/GetFriendsList?userEmail=${encodeURIComponent(userEmail)}`);
-                const data = await res.json();
-
-                if (data.success && data.friends.length > 0) {
-                    container.innerHTML = data.friends.map(f => `
-                        <div style="display: flex; justify-content: space-between; align-items: center; background: var(--bg-main); padding: 10px 14px; border-radius: 8px; border: 1px solid var(--border-color);">
-                            <div style="display: flex; align-items: center; gap: 10px; text-align: left;">
-                                <div style="width: 36px; height: 36px; border-radius: 50%; background: #fff; overflow: hidden; display: flex; align-items: center; justify-content: center; border: 1px solid var(--primary-accent);">
-                                    <svg viewBox="0 0 200 200" width="30" height="30">
-                                        ${extractSvgInnerHtml(f.avatarJson)}
-                                    </svg>
-                                </div>
-                                <div>
-                                    <strong style="font-size: 13px; display: block; color: var(--heading-color);">${escapeHtml(f.name)}</strong>
-                                    <span style="font-size: 11px; color: var(--text-muted);">${escapeHtml(f.email)}</span>
-                                </div>
-                            </div>
-                            <button class="action-btn" onclick="visitFriendProfile('${escapeHtml(f.name)}', '${encodeURIComponent(f.avatarJson || '')}')" style="padding: 6px 12px; font-size: 12px;">Visit Pet 🐾</button>
-                        </div>
-                    `).join('');
-                } else {
-                    container.innerHTML = `<p style="font-size: 13px; color: var(--text-muted); padding: 10px;">No friends added yet. Enter an email above to connect!</p>`;
-                }
-            } catch (err) {
-                console.error(err);
-                container.innerHTML = `<p style="font-size: 13px; color: #dc2626;">Error loading friends list.</p>`;
-            }
-        }
-
-        async function sendFriendRequest() {
-            const friendEmail = document.getElementById('friendEmailInput').value.trim();
-            if (!friendEmail) return;
-
-            try {
-                const res = await fetch('/Account/AddFriend', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ UserEmail: "@ViewBag.UserEmail", FriendEmail: friendEmail })
-                });
-                const data = await res.json();
-                alert(data.message);
-                if (data.success) {
-                    document.getElementById('friendEmailInput').value = '';
-                    openFriendsModal();
-                }
-            } catch (err) {
-                console.error(err);
-                alert('Failed to send friend request.');
-            }
-        }
-
-              let currentVisitingEmail = '';
-
-        async function visitFriendPet(friendEmail) {
-            try {
-                currentVisitingEmail = friendEmail;
-                const response = await fetch(`/Home/GetFriendProfile?email=${encodeURIComponent(friendEmail)}`);
-                const data = await response.json();
-
-                if (data.success) {
-                    // Update modal title
-                    document.getElementById('visitingFriendTitleName').innerText = `${data.name}'s Pet & Profile`;
-
-                    // Set up the full account redirect button action
-                    const visitAccountBtn = document.getElementById('visitFullAccountBtn');
-                    visitAccountBtn.onclick = function() {
-                        // Redirect to a dedicated public profile or client dashboard view for this friend
-                        window.location.href = `/Home/ClientDashboard?name=${encodeURIComponent(data.name)}&viewingEmail=${encodeURIComponent(friendEmail)}`;
-                    };
-
-                    // Show the modal
-                    document.getElementById('friendVisitingModal').style.display = 'flex';
-                } else {
-                    alert(data.message);
-                }
-            } catch (error) {
-                console.error("Error loading friend profile:", error);
-                alert("Failed to visit friend's account.");
-            }
-        }
-
-        function closeVisitingModal() {
-            document.getElementById('friendVisitingModal').style.display = 'none';
-        }
-
-        // Appointment Modal Functions
-        function openAppointmentModal() {
-            document.getElementById('appointmentModal').style.display = 'flex';
-        }
-
+        function openAppointmentModal() { document.getElementById('appointmentModal').style.display = 'flex'; }
         function closeAppointmentModal() {
             document.getElementById('appointmentModal').style.display = 'none';
             document.getElementById('appointmentForm').reset();
         }
-                async function sendFriendRequest() {
-            // Fallback to localStorage if ViewBag is empty
-            const userEmail = "@ViewBag.UserEmail" || localStorage.getItem('client_email');
-            const friendEmail = document.getElementById('friendEmailInput').value.trim();
 
-            if (!userEmail) {
-                alert("User email not found. Please log in again.");
-                return;
-            }
-            if (!friendEmail) return;
-
-            try {
-                const res = await fetch('/Account/AddFriend', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ UserEmail: userEmail, FriendEmail: friendEmail })
-                });
-                const data = await res.json();
-                alert(data.message);
-                if (data.success) {
-                    document.getElementById('friendEmailInput').value = '';
-                    openFriendsModal();
-                }
-            } catch (err) {
-                console.error(err);
-                alert('Failed to send friend request.');
-            }
-        }
-
-        // Appointment Submission Logic
         async function submitAppointment(event) {
             event.preventDefault();
-
-            const petNameVal = document.getElementById('modalPetName').value.trim();
-            const petBreedVal = document.getElementById('modalPetBreed').value.trim();
+            const petName = document.getElementById('modalPetName').value.trim();
             const service = document.getElementById('modalService').value;
-            const appointmentDate = document.getElementById('modalDateTime').value;
+            const appDate = document.getElementById('modalDateTime').value;
 
-            const formattedPetName = `${petNameVal} (${petBreedVal})`;
+            if (!petName || !service || !appDate) {
+                showCustomToast('Please fill out all required appointment fields.', 'error');
+                return;
+            }
 
             const payload = {
                 ClientName: document.getElementById('headerDisplayName').innerText,
-                PetName: formattedPetName,
+                PetName: petName,
                 Service: service,
-                AppointmentDate: appointmentDate
+                AppointmentDate: appDate
             };
 
             try {
                 const response = await fetch('/Home/CreateAppointment', {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json'
+                    },
                     body: JSON.stringify(payload)
                 });
 
-                const data = await response.json();
-
-                if (data.success) {
-                    alert(data.message);
+                if (response.ok) {
+                    showCustomToast('Appointment successfully booked and saved!');
                     closeAppointmentModal();
-                    location.reload();
+                    setTimeout(() => location.reload(), 1000);
                 } else {
-                    alert(data.message || 'Error creating appointment.');
+                    showCustomToast('Server error: Hindi nai-save ang appointment.', 'error', 'error');
                 }
             } catch (err) {
-                console.error(err);
-                alert('An error occurred while booking the appointment.');
+                console.error('Fetch error:', err);
+                showCustomToast('May problema sa koneksyon patungo sa server.', 'error');
             }
         }
 
-        // Chatbot Logic
         let isChatOpen = false;
-
         function toggleChatWindow() {
             isChatOpen = !isChatOpen;
-            const chatWindow = document.getElementById('chatWindow');
-            chatWindow.style.display = isChatOpen ? 'flex' : 'none';
+            document.getElementById('chatWindow').style.display = isChatOpen ? 'flex' : 'none';
         }
 
         function handleChatKeyPress(event) {
-            if (event.key === 'Enter') {
-                sendChatMessage();
-            }
+            if (event.key === 'Enter') sendChatMessage();
         }
 
         async function sendChatMessage() {
@@ -1291,12 +1974,7 @@
             if (!messageText) return;
 
             const chatMessages = document.getElementById('chatMessages');
-
-            chatMessages.innerHTML += `
-                <div style="background: var(--primary-accent); color: #ffffff; padding: 12px 16px; border-radius: 14px; border-bottom-right-radius: 4px; max-width: 85%; align-self: flex-end; box-shadow: 0 2px 5px rgba(0,0,0,0.05); line-height: 1.4;">
-                    ${escapeHtml(messageText)}
-                </div>
-            `;
+            chatMessages.innerHTML += `<div style="background: var(--primary-accent); color: white; padding: 8px 12px; border-radius: 6px; max-width: 85%; align-self: flex-end; font-size: 13px;">${escapeHtml(messageText)}</div>`;
             inputField.value = '';
             chatMessages.scrollTop = chatMessages.scrollHeight;
 
@@ -1306,21 +1984,11 @@
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ message: messageText })
                 });
-
                 const data = await response.json();
-
-                chatMessages.innerHTML += `
-                    <div style="background: var(--card-bg); color: var(--heading-color); padding: 12px 16px; border-radius: 14px; border-bottom-left-radius: 4px; max-width: 85%; align-self: flex-start; box-shadow: 0 2px 5px rgba(0,0,0,0.05); border-left: 4px solid var(--primary-accent); line-height: 1.4;">
-                        ${data.reply}
-                    </div>
-                `;
+                chatMessages.innerHTML += `<div style="background: var(--card-bg); border: 1px solid var(--border-color); color: var(--heading-color); padding: 8px 12px; border-radius: 6px; max-width: 85%; align-self: flex-start; font-size: 13px;">${data.reply}</div>`;
                 chatMessages.scrollTop = chatMessages.scrollHeight;
             } catch (error) {
-                chatMessages.innerHTML += `
-                    <div style="background: #fee2e2; color: #dc2626; padding: 12px 16px; border-radius: 14px; max-width: 85%; align-self: flex-start; box-shadow: 0 2px 5px rgba(0,0,0,0.05);">
-                        Error connecting to PetBot. Please try again.
-                    </div>
-                `;
+                chatMessages.innerHTML += `<div style="background: #fee2e2; color: #dc2626; padding: 8px 12px; border-radius: 6px; font-size: 13px;">Connection error.</div>`;
             }
         }
 

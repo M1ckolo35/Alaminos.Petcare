@@ -19,6 +19,7 @@ namespace MyPetcare.Controllers
         {
             return View();
         }
+
         [HttpPost]
         public IActionResult Login([FromBody] LoginModel model)
         {
@@ -27,7 +28,16 @@ namespace MyPetcare.Controllers
                 return Json(new { success = false, message = "Please enter both email and password." });
             }
 
-            // GMAIL VALIDATION: Enforce @gmail.com ONLY for clients, NOT for admins
+            // ADMIN ROLE VALIDATION: Enforce @admin.com ONLY for admin role
+            if (!string.IsNullOrEmpty(model.Role) && model.Role.Equals("admin", StringComparison.OrdinalIgnoreCase))
+            {
+                if (!model.Email.Trim().EndsWith("@admin.com", StringComparison.OrdinalIgnoreCase))
+                {
+                    return Json(new { success = false, message = "Admin access requires a valid @admin.com address." });
+                }
+            }
+
+            // CLIENT ROLE VALIDATION: Enforce @gmail.com ONLY for client role
             if (!string.IsNullOrEmpty(model.Role) && model.Role.Equals("client", StringComparison.OrdinalIgnoreCase))
             {
                 if (!model.Email.Trim().EndsWith("@gmail.com", StringComparison.OrdinalIgnoreCase))
@@ -36,8 +46,14 @@ namespace MyPetcare.Controllers
                 }
             }
 
+            // DATABASE USER CHECK: Verify credentials
             var existingUser = _context.Users.FirstOrDefault(u => u.Email == model.Email && u.Password == model.Password);
+            if (existingUser == null)
+            {
+                return Json(new { success = false, message = "Invalid email or password." });
+            }
 
+            // ROUTING / REDIRECTION BASED ON ROLE
             if (!string.IsNullOrEmpty(model.Role) && model.Role.Equals("client", StringComparison.OrdinalIgnoreCase))
             {
                 string clientName = model.Email.Split('@')[0];
@@ -58,6 +74,7 @@ namespace MyPetcare.Controllers
                 });
             }
         }
+
         [HttpPost]
         public IActionResult Register([FromBody] RegisterApiDto model)
         {
@@ -100,7 +117,7 @@ namespace MyPetcare.Controllers
                 };
 
                 _context.Users.Add(newUser);
-                _context.SaveChanges(); // Saves directly to SQL Server so it appears in the client directory list
+                _context.SaveChanges(); // Saves directly to SQL Server
 
                 return Json(new { success = true, message = "Registration successful!" });
             }
@@ -149,9 +166,6 @@ namespace MyPetcare.Controllers
         [HttpGet]
         public IActionResult Logout()
         {
-            // If you are using ASP.NET Core Cookie Authentication, sign out like this:
-            // await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
-
             // Redirect the user back to the landing page or login page
             return RedirectToAction("Index", "Account");
         }
@@ -204,7 +218,6 @@ namespace MyPetcare.Controllers
         }
     }
 
-
     // Model para sa Login
     public class LoginModel
     {
@@ -220,6 +233,7 @@ namespace MyPetcare.Controllers
         public string Email { get; set; } = string.Empty;
         public string Password { get; set; } = string.Empty;
     }
+
     // DTO for Forgot Password requests
     public class ForgotPasswordDto
     {

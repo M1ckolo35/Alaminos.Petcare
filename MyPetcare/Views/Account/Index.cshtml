@@ -7,18 +7,57 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MyPetcare Service Site</title>
+    <title>MyPetcare - Login Portal</title>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
     <style>
+        :root {
+            /* Professional Light Theme (Matched to Dashboard) */
+            --bg-main: #f8fafc;
+            --bg-card: #ffffff;
+            --bg-sidebar: #0f172a;
+            --text-main: #334155;
+            --text-muted: #64748b;
+            --text-heading: #0f172a;
+            --border-color: #e2e8f0;
+            --header-bg: #ffffff;
+            --primary-accent: #0284c7;
+            --card-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.05);
+            --input-bg: #f8fafc;
+        }
+
+        [data-theme="dark"] {
+            /* Modern Dark Enterprise Theme */
+            --bg-main: #0b0f19;
+            --bg-card: #111827;
+            --bg-sidebar: #0b0f19;
+            --text-main: #9ca3af;
+            --text-muted: #6b7280;
+            --text-heading: #f9fafb;
+            --border-color: #1f2937;
+            --header-bg: #111827;
+            --primary-accent: #38bdf8;
+            --card-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5);
+            --input-bg: #1f2937;
+        }
+
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: Arial, Helvetica, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            transition: background-color 0.25s ease, color 0.25s ease, border-color 0.25s ease;
         }
 
         body {
-            background-color: #ffffff;
-            color: #000000;
+            background-color: var(--bg-main);
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow-x: hidden;
+            position: relative;
+            padding-bottom: 75px;
         }
 
         /* Top Navigation Header */
@@ -26,8 +65,23 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 12px 40px;
-            background-color: #ffffff;
+            padding: 18px 48px;
+            background-color: var(--header-bg);
+            border-bottom: 1px solid var(--border-color);
+            animation: fadeInDown 0.7s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+            z-index: 10;
+        }
+
+        @@keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         .logo-container {
@@ -37,58 +91,80 @@
         }
 
         .site-logo {
-            height: 48px;
-            width: 48px;
+            height: 42px;
+            width: 42px;
             object-fit: contain;
-            border-radius: 50%;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(2, 132, 199, 0.2);
         }
 
         .logo-title {
-            font-size: 26px;
+            font-size: 22px;
             font-weight: 700;
-            color: #000000;
-            letter-spacing: -0.5px;
+            color: var(--text-heading);
+            letter-spacing: -0.4px;
         }
 
-        .auth-buttons {
+        .header-actions {
             display: flex;
-            gap: 12px;
+            align-items: center;
+            gap: 16px;
         }
 
-        .login-btn {
-            background-color: #8c6a46;
-            color: #ffffff;
-            border: none;
-            padding: 10px 32px;
-            font-size: 16px;
-            font-weight: 600;
-            border-radius: 20px;
+        .theme-toggle-btn {
+            background: var(--bg-main);
+            border: 1px solid var(--border-color);
+            color: var(--text-main);
+            padding: 7px 14px;
+            border-radius: 6px;
             cursor: pointer;
-            transition: background-color 0.2s ease;
+            font-size: 0.85rem;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
 
-            .login-btn:hover {
-                background-color: #725435;
+            .theme-toggle-btn:hover {
+                border-color: var(--primary-accent);
             }
 
-        .register-btn {
-            background-color: transparent;
-            color: #8c6a46;
-            border: 2px solid #8c6a46;
-            padding: 10px 24px;
-            font-size: 16px;
+        .login-nav-btn {
+            background-color: var(--primary-accent);
+            color: #ffffff;
+            border: none;
+            padding: 9px 24px;
+            font-size: 14px;
             font-weight: 600;
-            border-radius: 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 12px rgba(2, 132, 199, 0.2);
+        }
+
+            .login-nav-btn:hover {
+                opacity: 0.9;
+                transform: translateY(-1px);
+            }
+
+        .register-nav-btn {
+            background-color: transparent;
+            color: var(--text-heading);
+            border: 1px solid var(--border-color);
+            padding: 9px 20px;
+            font-size: 14px;
+            font-weight: 600;
+            border-radius: 8px;
             cursor: pointer;
             transition: all 0.2s ease;
         }
 
-            .register-btn:hover {
-                background-color: #8c6a46;
-                color: #ffffff;
+            .register-nav-btn:hover {
+                border-color: var(--primary-accent);
+                color: var(--primary-accent);
             }
 
-        /* Hero Carousel Styling - Full Width Banner */
+        /* Hero Carousel Section with Split Layout */
         .hero-carousel {
             position: relative;
             width: 100vw;
@@ -96,83 +172,391 @@
             right: 50%;
             margin-left: -50vw;
             margin-right: -50vw;
-            height: 500px;
+            height: 420px;
             overflow: hidden;
-            background-color: #ffffff;
+            background-color: var(--bg-card);
             display: flex;
-            justify-content: center;
             align-items: center;
+            padding: 0 60px;
         }
 
-        .carousel-track {
-            position: relative;
-            width: 100%;
-            height: 100%;
-        }
-
-        .carousel-slide {
+        .carousel-bg-slide {
             position: absolute;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
             opacity: 0;
-            transition: opacity 1s ease-in-out;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            background-color: #ffffff;
+            transform: scale(1.02);
+            transition: opacity 1.2s ease-in-out, transform 1.2s ease-in-out;
+            z-index: 1;
         }
 
-            .carousel-slide.active {
+            .carousel-bg-slide.active {
                 opacity: 1;
+                transform: scale(1);
             }
 
-            .carousel-slide img {
+            .carousel-bg-slide img {
                 width: 100%;
                 height: 100%;
                 object-fit: cover;
-                background-color: #ffffff;
+                display: block;
+                filter: brightness(0.75);
+            }
+
+        /* Hero Content Container */
+        .hero-inner-content {
+            position: relative;
+            z-index: 3;
+            max-width: 1240px;
+            width: 100%;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 40px;
+        }
+
+        .hero-text-side {
+            flex: 1.1;
+            color: #ffffff;
+            text-shadow: 0 2px 8px rgba(0,0,0,0.4);
+            animation: fadeInLeft 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+
+        @@keyframes fadeInLeft {
+            from {
+                opacity: 0;
+                transform: translateX(-20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .hero-text-side h1 {
+            font-size: 42px;
+            font-weight: 800;
+            line-height: 1.15;
+            margin-bottom: 14px;
+            letter-spacing: -0.5px;
+        }
+
+        .hero-text-side p {
+            font-size: 16px;
+            line-height: 1.5;
+            color: #f1f5f9;
+            margin-bottom: 24px;
+            max-width: 520px;
+        }
+
+        .hero-stats-row {
+            display: flex;
+            gap: 32px;
+        }
+
+        .stat-box h3 {
+            font-size: 24px;
+            font-weight: 700;
+            color: #38bdf8;
+        }
+
+        .stat-box span {
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: #cbd5e1;
+            font-weight: 600;
+        }
+
+        /* Balanced Grid Floating Animal Cards Group (Right Side) */
+        .hero-visual-side {
+            flex: 0.9;
+            position: relative;
+            height: 340px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .grid-cards-group {
+            position: relative;
+            width: 400px;
+            height: 300px;
+        }
+
+        .floating-card {
+            position: absolute;
+            background: rgba(255, 255, 255, 0.92);
+            backdrop-filter: blur(6px);
+            padding: 8px 8px 12px 8px;
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            box-shadow: 0 14px 35px rgba(0,0,0,0.25);
+            width: 120px;
+            text-align: center;
+        }
+
+            .floating-card img {
+                width: 100%;
+                height: 75px;
+                object-fit: cover;
+                border-radius: 8px;
+            }
+
+            .floating-card span {
+                font-size: 11px;
+                font-weight: 700;
+                color: #0f172a;
+                margin-top: 6px;
                 display: block;
             }
 
-        /* Features Cards Grid Section */
+        /* Balanced Grid Layout & Floating Positions */
+        .card-pos-1 {
+            top: 20px;
+            left: 10px;
+            background: #ec4899; /* Vibrant pink card accent */
+            color: #ffffff;
+            animation: floatCard1 6s ease-in-out infinite;
+        }
+
+            .card-pos-1 span {
+                color: #ffffff;
+            }
+
+        .card-pos-2 {
+            top: 10px;
+            right: 20px;
+            background: #06b6d4; /* Teal card accent */
+            animation: floatCard2 7s ease-in-out infinite;
+        }
+
+            .card-pos-2 span {
+                color: #ffffff;
+            }
+
+        .card-pos-3 {
+            bottom: 20px;
+            left: 80px;
+            background: #f59e0b; /* Amber card accent */
+            animation: floatCard3 6.5s ease-in-out infinite;
+        }
+
+            .card-pos-3 span {
+                color: #ffffff;
+            }
+
+        @@keyframes floatCard1 {
+            0%, 100% {
+                transform: translateY(0px) rotate(-4deg);
+            }
+
+            50% {
+                transform: translateY(-10px) rotate(-1deg);
+            }
+        }
+
+        @@keyframes floatCard2 {
+            0%, 100% {
+                transform: translateY(0px) rotate(3deg);
+            }
+
+            50% {
+                transform: translateY(-12px) rotate(5deg);
+            }
+        }
+
+        @@keyframes floatCard3 {
+            0%, 100% {
+                transform: translateY(0px) rotate(2deg);
+            }
+
+            50% {
+                transform: translateY(-10px) rotate(-2deg);
+            }
+        }
+
+        /* Features Cards Grid */
         .features-container {
             display: flex;
             justify-content: space-between;
-            padding: 40px 60px;
-            max-width: 1280px;
+            padding: 40px 48px;
+            max-width: 1200px;
             margin: 0 auto;
-            gap: 20px;
+            gap: 24px;
+            animation: fadeInUp 0.7s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+
+        @@keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(12px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         .feature-card {
             text-align: center;
             flex: 1;
+            background: var(--bg-card);
+            padding: 22px;
+            border-radius: 10px;
+            border: 1px solid var(--border-color);
+            box-shadow: var(--card-shadow);
+            transition: transform 0.25s ease, box-shadow 0.25s ease;
         }
+
+            .feature-card:hover {
+                transform: translateY(-3px);
+                border-color: rgba(2, 132, 199, 0.4);
+            }
 
             .feature-card img {
                 width: 100%;
-                height: 180px;
+                height: 150px;
                 object-fit: cover;
-                border-radius: 2px;
+                border-radius: 6px;
             }
 
             .feature-card h3 {
                 margin-top: 14px;
-                font-size: 18px;
+                font-size: 16px;
                 font-weight: 700;
-                color: #000000;
+                color: var(--text-heading);
             }
 
             .feature-card p {
-                color: #444444;
-                font-size: 14px;
-                margin-top: 4px;
+                color: var(--text-muted);
+                font-size: 13px;
+                margin-top: 6px;
                 line-height: 1.4;
             }
 
-        /* Modal Overlay & Login Tabs */
+        /* --- STABLE PURE CSS/SVG ANIMATED WALKING DOG WIDGET --- */
+        .walking-dog-wrapper {
+            position: fixed;
+            bottom: 5px;
+            left: -100px;
+            width: 80px;
+            height: 60px;
+            z-index: 999;
+            pointer-events: none;
+            animation: walkAcrossScreen 16s linear infinite;
+        }
+
+        .css-dog-character {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            animation: dogBodyBounce 0.4s ease-in-out infinite alternate;
+        }
+
+            .css-dog-character .ear {
+                animation: earWiggle 0.5s ease-in-out infinite alternate;
+                transform-origin: top center;
+            }
+
+            .css-dog-character .tail {
+                animation: tailWag 0.3s ease-in-out infinite alternate;
+                transform-origin: bottom left;
+            }
+
+            .css-dog-character .leg-left {
+                animation: legMoveLeft 0.4s ease-in-out infinite alternate;
+                transform-origin: top center;
+            }
+
+            .css-dog-character .leg-right {
+                animation: legMoveRight 0.4s ease-in-out infinite alternate;
+                transform-origin: top center;
+            }
+
+        @@keyframes walkAcrossScreen {
+            0% {
+                left: -100px;
+                transform: scaleX(1);
+            }
+
+            49.9% {
+                left: calc(100vw + 20px);
+                transform: scaleX(1);
+            }
+
+            50% {
+                left: calc(100vw + 20px);
+                transform: scaleX(-1);
+            }
+
+            99.9% {
+                left: -100px;
+                transform: scaleX(-1);
+            }
+
+            100% {
+                left: -100px;
+                transform: scaleX(1);
+            }
+        }
+
+        @@keyframes dogBodyBounce {
+            0% {
+                transform: translateY(0);
+            }
+
+            100% {
+                transform: translateY(-4px);
+            }
+        }
+
+        @@keyframes earWiggle {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(8deg);
+            }
+        }
+
+        @@keyframes tailWag {
+            0% {
+                transform: rotate(-10deg);
+            }
+
+            100% {
+                transform: rotate(15deg);
+            }
+        }
+
+        @@keyframes legMoveLeft {
+            0% {
+                transform: rotate(-20deg);
+            }
+
+            100% {
+                transform: rotate(20deg);
+            }
+        }
+
+        @@keyframes legMoveRight {
+            0% {
+                transform: rotate(20deg);
+            }
+
+            100% {
+                transform: rotate(-20deg);
+            }
+        }
+
+        /* Modal Overlay & Login Card */
         .modal {
             display: none;
             position: fixed;
@@ -180,99 +564,137 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background-color: rgba(0, 0, 0, 0.5);
+            background-color: rgba(0, 0, 0, 0.6);
             justify-content: center;
             align-items: center;
-            z-index: 1000;
+            z-index: 2000;
+            backdrop-filter: blur(4px);
+            opacity: 0;
+            transition: opacity 0.3s ease;
         }
 
+            .modal.show {
+                display: flex;
+                opacity: 1;
+            }
+
         .modal-content {
-            background: #ffffff;
-            padding: 30px;
-            border-radius: 8px;
-            width: 380px;
+            background: var(--bg-card);
+            padding: 32px;
+            border-radius: 12px;
+            width: 420px;
             position: relative;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.2);
+            border: 1px solid var(--border-color);
+            transform: translateY(10px) scale(0.98);
+            transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .modal.show .modal-content {
+            transform: translateY(0) scale(1);
         }
 
         .close-btn {
             position: absolute;
-            right: 15px;
-            top: 10px;
-            font-size: 24px;
+            right: 18px;
+            top: 16px;
+            font-size: 20px;
             cursor: pointer;
-            color: #666;
+            color: var(--text-muted);
+            transition: color 0.2s ease;
         }
+
+            .close-btn:hover {
+                color: var(--text-heading);
+            }
 
         .tab-buttons {
             display: flex;
             margin-bottom: 20px;
-            border-radius: 4px;
+            border-radius: 8px;
             overflow: hidden;
-            border: 1px solid #ddd;
+            background-color: var(--bg-main);
+            border: 1px solid var(--border-color);
+            padding: 3px;
         }
 
         .tab-btn {
             flex: 1;
-            padding: 10px;
+            padding: 9px;
             border: none;
-            background-color: #f2f2f2;
+            background-color: transparent;
             cursor: pointer;
             font-weight: 600;
-            color: #555;
-            font-size: 14px;
+            color: var(--text-muted);
+            font-size: 13.5px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
         }
 
             .tab-btn.active {
-                background-color: #8c6a46;
-                color: #ffffff;
+                background-color: var(--bg-card);
+                color: var(--primary-accent);
+                box-shadow: 0 1px 3px rgba(0,0,0,0.05);
             }
 
         .form-group {
-            margin-bottom: 15px;
+            margin-bottom: 16px;
         }
 
             .form-group label {
                 display: block;
-                margin-bottom: 5px;
-                font-size: 14px;
+                margin-bottom: 6px;
+                font-size: 13px;
                 font-weight: 600;
+                color: var(--text-heading);
             }
 
             .form-group input {
                 width: 100%;
-                padding: 10px;
-                border: 1px solid #ccc;
-                border-radius: 4px;
+                padding: 10px 14px;
+                border: 1px solid var(--border-color);
+                border-radius: 8px;
                 font-size: 14px;
+                background-color: var(--input-bg);
+                color: var(--text-heading);
+                transition: all 0.2s ease;
             }
+
+                .form-group input:focus {
+                    outline: none;
+                    border-color: var(--primary-accent);
+                    box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.15);
+                }
 
         .submit-btn {
             width: 100%;
             padding: 11px;
-            background-color: #8c6a46;
+            background-color: var(--primary-accent);
             color: #ffffff;
             border: none;
-            border-radius: 4px;
-            font-size: 16px;
+            border-radius: 8px;
+            font-size: 15px;
             font-weight: 600;
             cursor: pointer;
-            margin-top: 5px;
+            margin-top: 6px;
+            transition: opacity 0.2s ease, transform 0.1s ease;
+            box-shadow: 0 4px 12px rgba(2, 132, 199, 0.25);
         }
 
             .submit-btn:hover {
-                background-color: #725435;
+                opacity: 0.9;
+                transform: translateY(-1px);
             }
 
         .error-msg {
-            color: #d9534f;
+            color: #ef4444;
             font-size: 13px;
             margin-bottom: 10px;
             text-align: center;
         }
 
         .success-msg {
-            color: #16a34a;
+            color: #10b981;
             font-size: 13px;
             margin-bottom: 10px;
             text-align: center;
@@ -281,49 +703,116 @@
 </head>
 <body>
 
-    <!-- Header containing Logo Image and Title -->
+    <!-- Header -->
     <header class="header">
         <div class="logo-container">
             <img src="/images/logopet.jpeg" alt="Logo" class="site-logo">
             <h1 class="logo-title">PetCare Service Site</h1>
         </div>
-        <div class="auth-buttons">
-            <button class="register-btn" onclick="openModal('register')">Register</button>
-            <button class="login-btn" onclick="openModal('login')">Log in</button>
+        <div class="header-actions">
+            <button id="themeToggle" class="theme-toggle-btn">
+                <i id="themeIcon" class="fa-solid fa-moon"></i>
+                <span id="themeText">Dark Mode</span>
+            </button>
+            <button class="register-nav-btn" onclick="openModal('register')">Register</button>
+            <button class="login-nav-btn" onclick="openModal('login')">Log in</button>
         </div>
     </header>
 
-    <!-- Auto-switching Hero Image Carousel -->
+    <!-- Hero Carousel Section with Encouraging Text & Balanced Floating Cards Grid -->
     <div class="hero-carousel">
-        <div class="carousel-slide active">
+        <!-- Background Slider Images -->
+        <div class="carousel-bg-slide active">
             <img src="/images/dog2.jpg" alt="Dog 2">
         </div>
-        <div class="carousel-slide">
+        <div class="carousel-bg-slide">
             <img src="/images/dog3.jpg" alt="Dog 3">
         </div>
-        <div class="carousel-slide">
+        <div class="carousel-bg-slide">
             <img src="/images/dog1.jpeg" alt="Dog 1">
+        </div>
+
+        <!-- Inner Content (Left Encouraging Text + Right Balanced Grid Cards) -->
+        <div class="hero-inner-content">
+            <div class="hero-text-side">
+                <h1>Give your pets the best care, even when you're busy.</h1>
+                <p>Track health records, book veterinary appointments instantly, and consult our AI-powered assistant for all your animal care needs.</p>
+                <div class="hero-stats-row">
+                    <div class="stat-box">
+                        <h3>100%</h3>
+                        <span>Dedicated Care</span>
+                    </div>
+                    <div class="stat-box">
+                        <h3>24/7</h3>
+                        <span>AI Assistant</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="hero-visual-side">
+                <div class="grid-cards-group">
+                    <div class="floating-card card-pos-1">
+                        <img src="/images/dog1.jpeg" alt="Pet 1">
+                        <span>Healthy Pet</span>
+                    </div>
+                    <div class="floating-card card-pos-2">
+                        <img src="/images/dog2.jpg" alt="Pet 2">
+                        <span>Vaccinated</span>
+                    </div>
+                    <div class="floating-card card-pos-3">
+                        <img src="/images/dog3.jpg" alt="Pet 3">
+                        <span>Checkup</span>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 
-    <!-- 3 Core Feature Columns -->
+    <!-- Features Section -->
     <main class="features-container">
         <div class="feature-card">
             <img src="https://images.unsplash.com/photo-1506784983877-45594efa4cbe?auto=format&fit=crop&w=400&q=80" alt="Appointments">
             <h3>Book Appointments</h3>
-            <p>Client can book an appointments</p>
+            <p>Client can book appointments easily</p>
         </div>
         <div class="feature-card">
             <img src="https://images.unsplash.com/photo-1628009368231-7bb7cfcb0def?auto=format&fit=crop&w=400&q=80" alt="HealthCare">
             <h3>HealthCare</h3>
-            <p>Client can see pets information</p>
+            <p>Client can review pet health records</p>
         </div>
         <div class="feature-card">
-            <img src="/images/chatbot.jpg" alt="AI Chatbot" style="object-fit: contain; background-color: #f9f9f9;">
+            <img src="/images/chatbot.jpg" alt="AI Chatbot" style="object-fit: contain; background-color: var(--bg-main);">
             <h3>AI-Chatbot</h3>
-            <p>AI-Chatbot can answer questions<br>about animal</p>
+            <p>AI-Chatbot can answer questions about animals</p>
         </div>
     </main>
+
+    <!-- WALKING DOG ANIMATION (PURE CSS SVG) -->
+    <div class="walking-dog-wrapper">
+        <svg class="css-dog-character" viewBox="0 0 120 90" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <!-- Tail -->
+            <path class="tail" d="M 25 45 C 10 35 5 25 10 15 C 15 20 20 30 28 42 Z" fill="#d97706" />
+            <!-- Back Legs -->
+            <rect class="leg-right" x="32" y="55" width="8" height="25" rx="4" fill="#b45309" />
+            <rect class="leg-left" x="72" y="55" width="8" height="25" rx="4" fill="#b45309" />
+            <!-- Body -->
+            <rect x="25" y="35" width="60" height="30" rx="15" fill="#f59e0b" />
+            <circle cx="45" cy="50" r="10" fill="#fef3c7" opacity="0.6" />
+            <!-- Front Legs -->
+            <rect class="leg-left" x="40" y="55" width="8" height="25" rx="4" fill="#f59e0b" />
+            <rect class="leg-right" x="80" y="55" width="8" height="25" rx="4" fill="#f59e0b" />
+            <!-- Head & Snout -->
+            <circle cx="85" cy="30" r="18" fill="#f59e0b" />
+            <path class="ear" d="M 75 16 C 70 5 62 10 68 22 Z" fill="#b45309" />
+            <ellipse cx="98" cy="34" rx="10" ry="7" fill="#fef3c7" />
+            <!-- Nose & Eye -->
+            <circle cx="106" cy="32" r="3.5" fill="#1e293b" />
+            <circle cx="90" cy="26" r="3" fill="#1e293b" />
+            <circle cx="91" cy="25" r="1" fill="#ffffff" />
+            <!-- Collar -->
+            <rect x="75" y="38" width="6" height="12" rx="2" fill="#0284c7" />
+        </svg>
+    </div>
 
     <!-- Modal Popup for Login & Register -->
     <div id="authModal" class="modal">
@@ -337,17 +826,29 @@
 
             <!-- LOGIN SECTION -->
             <div id="loginSection">
-                <div style="display: flex; gap: 5px; margin-bottom: 15px;">
+                <div style="display: flex; gap: 4px; margin-bottom: 16px; background: var(--bg-main); padding: 3px; border-radius: 8px; border: 1px solid var(--border-color);">
                     <button type="button" class="tab-btn active" id="clientTab" onclick="switchRole('client')">Client Login</button>
                     <button type="button" class="tab-btn" id="adminTab" onclick="switchRole('admin')">Admin Login</button>
                 </div>
 
-                <h2 id="modalTitle" style="font-size: 20px; margin-bottom: 15px;">Client Login</h2>
+                <h2 id="modalTitle" style="font-size: 18px; font-weight: 700; margin-bottom: 14px; color: var(--text-heading);">Client Login</h2>
                 <form id="loginForm" onsubmit="handleLogin(event)">
                     <input type="hidden" id="roleInput" value="client">
 
+                    <!-- Admin Extra Fields (Name & Position) -->
+                    <div id="adminExtraFields" style="display: none;">
+                        <div class="form-group">
+                            <label for="adminName">Admin Full Name</label>
+                            <input type="text" id="adminName" placeholder="e.g. Dr. Michael Radovan">
+                        </div>
+                        <div class="form-group">
+                            <label for="adminPosition">Position / Title</label>
+                            <input type="text" id="adminPosition" placeholder="e.g. Chief Veterinarian">
+                        </div>
+                    </div>
+
                     <div class="form-group">
-                        <label for="email">Email</label>
+                        <label for="email">Email Address</label>
                         <input type="email" id="email" required placeholder="Enter email">
                     </div>
 
@@ -356,19 +857,19 @@
                         <input type="password" id="password" required placeholder="Enter password">
                     </div>
 
-                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
-                        <a href="javascript:void(0)" onclick="openForgotPasswordModal()" style="font-size: 13px; color: #0284c7; text-decoration: none;">Forgot Password?</a>
+                    <div style="display: flex; justify-content: flex-end; align-items: center; margin-bottom: 14px;">
+                        <a href="javascript:void(0)" onclick="openForgotPasswordModal()" style="font-size: 13px; color: var(--primary-accent); text-decoration: none; font-weight: 500;">Forgot Password?</a>
                     </div>
 
                     <p id="errorMessage" class="error-msg"></p>
 
-                    <button type="submit" class="submit-btn">Login</button>
+                    <button type="submit" class="submit-btn">Sign In</button>
                 </form>
             </div>
 
             <!-- REGISTER SECTION -->
             <div id="registerSection" style="display: none;">
-                <h2 style="font-size: 20px; margin-bottom: 15px;">Create an Account</h2>
+                <h2 style="font-size: 18px; font-weight: 700; margin-bottom: 14px; color: var(--text-heading);">Create an Account</h2>
                 <form id="registerForm" onsubmit="handleRegister(event)">
                     <div class="form-group">
                         <label for="regName">Full Name</label>
@@ -376,7 +877,7 @@
                     </div>
 
                     <div class="form-group">
-                        <label for="regEmail">Email</label>
+                        <label for="regEmail">Email Address</label>
                         <input type="email" id="regEmail" required placeholder="Enter email">
                     </div>
 
@@ -387,7 +888,7 @@
 
                     <p id="regMessage" class="error-msg"></p>
 
-                    <button type="submit" class="submit-btn">Register</button>
+                    <button type="submit" class="submit-btn">Register Account</button>
                 </form>
             </div>
         </div>
@@ -395,10 +896,10 @@
 
     <!-- FORGOT / RESET PASSWORD MODAL -->
     <div id="forgotPasswordModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 2000; justify-content: center; align-items: center; backdrop-filter: blur(4px);">
-        <div style="background: #ffffff; padding: 24px; border-radius: 8px; width: 380px; max-width: 90%; box-shadow: 0 4px 15px rgba(0,0,0,0.2);">
+        <div style="background: var(--bg-card); padding: 28px; border-radius: 12px; width: 390px; max-width: 90%; box-shadow: 0 20px 25px -5px rgba(0,0,0,0.2); border: 1px solid var(--border-color); color: var(--text-main);">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
-                <h3 style="margin: 0; font-size: 18px; color: #000000;"><i class="fa-solid fa-key" style="color: #8c6a46;"></i> Reset Password</h3>
-                <button onclick="closeForgotPasswordModal()" style="background: none; border: none; font-size: 22px; cursor: pointer; color: #666;">&times;</button>
+                <h3 style="margin: 0; font-size: 17px; font-weight: 700; color: var(--text-heading);"><i class="fa-solid fa-key" style="color: var(--primary-accent); margin-right: 6px;"></i> Reset Password</h3>
+                <button onclick="closeForgotPasswordModal()" style="background: none; border: none; font-size: 20px; cursor: pointer; color: var(--text-muted);">&times;</button>
             </div>
             <form onsubmit="handleResetPassword(event)">
                 <div class="form-group">
@@ -409,9 +910,9 @@
                     <label>New Password</label>
                     <input type="password" id="resetNewPassword" placeholder="Enter new password" required />
                 </div>
-                <div style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 15px;">
-                    <button type="button" onclick="closeForgotPasswordModal()" style="padding: 10px 16px; border-radius: 4px; border: 1px solid #ccc; background: transparent; cursor: pointer; font-weight: 600;">Cancel</button>
-                    <button type="submit" class="submit-btn" style="width: auto; margin-top: 0; padding: 10px 18px;">Update Password</button>
+                <div style="display: flex; justify-content: flex-end; gap: 8px; margin-top: 18px;">
+                    <button type="button" onclick="closeForgotPasswordModal()" style="padding: 9px 14px; border-radius: 8px; border: 1px solid var(--border-color); background: transparent; cursor: pointer; font-weight: 600; color: var(--text-main); font-size: 13.5px;">Cancel</button>
+                    <button type="submit" class="submit-btn" style="width: auto; margin-top: 0; padding: 9px 18px;">Update Password</button>
                 </div>
             </form>
         </div>
@@ -420,24 +921,57 @@
     <!-- JAVASCRIPT LOGIC -->
     <script>
         let currentSlide = 0;
-        const slides = document.querySelectorAll('.carousel-slide');
+        const slides = document.querySelectorAll('.carousel-bg-slide');
 
         function showNextSlide() {
             slides[currentSlide].classList.remove('active');
             currentSlide = (currentSlide + 1) % slides.length;
             slides[currentSlide].classList.add('active');
         }
-        setInterval(showNextSlide, 4000);
+        setInterval(showNextSlide, 4500);
+
+        // Theme Toggle Logic Sync with Dashboard
+        const themeToggleBtn = document.getElementById('themeToggle');
+        const themeIcon = document.getElementById('themeIcon');
+        const themeText = document.getElementById('themeText');
+
+        const currentTheme = localStorage.getItem('theme') || 'light';
+        if (currentTheme === 'dark') {
+            document.documentElement.setAttribute('data-theme', 'dark');
+            themeIcon.className = 'fa-solid fa-sun';
+            themeText.innerText = 'Light Mode';
+        }
+
+        themeToggleBtn.addEventListener('click', () => {
+            let activeTheme = document.documentElement.getAttribute('data-theme');
+            if (activeTheme === 'dark') {
+                document.documentElement.setAttribute('data-theme', 'light');
+                localStorage.setItem('theme', 'light');
+                themeIcon.className = 'fa-solid fa-moon';
+                themeText.innerText = 'Dark Mode';
+            } else {
+                document.documentElement.setAttribute('data-theme', 'dark');
+                localStorage.setItem('theme', 'dark');
+                themeIcon.className = 'fa-solid fa-sun';
+                themeText.innerText = 'Light Mode';
+            }
+        });
 
         function openModal(mode) {
-            document.getElementById('authModal').style.display = 'flex';
+            const modal = document.getElementById('authModal');
+            modal.style.display = 'flex';
+            setTimeout(() => { modal.classList.add('show'); }, 10);
             switchMode(mode);
         }
 
         function closeModal() {
-            document.getElementById('authModal').style.display = 'none';
-            document.getElementById('errorMessage').innerText = '';
-            document.getElementById('regMessage').innerText = '';
+            const modal = document.getElementById('authModal');
+            modal.classList.remove('show');
+            setTimeout(() => {
+                modal.style.display = 'none';
+                document.getElementById('errorMessage').innerText = '';
+                document.getElementById('regMessage').innerText = '';
+            }, 300);
         }
 
         function switchMode(mode) {
@@ -464,6 +998,17 @@
             document.getElementById('modalTitle').innerText = (role === 'client' ? 'Client' : 'Admin') + ' Login';
             document.getElementById('clientTab').classList.toggle('active', role === 'client');
             document.getElementById('adminTab').classList.toggle('active', role === 'admin');
+
+            const adminFields = document.getElementById('adminExtraFields');
+            if (role === 'admin') {
+                adminFields.style.display = 'block';
+                document.getElementById('adminName').setAttribute('required', 'true');
+                document.getElementById('adminPosition').setAttribute('required', 'true');
+            } else {
+                adminFields.style.display = 'none';
+                document.getElementById('adminName').removeAttribute('required');
+                document.getElementById('adminPosition').removeAttribute('required');
+            }
         }
 
         async function handleRegister(event) {
@@ -504,7 +1049,19 @@
             const errorMsg = document.getElementById('errorMessage');
 
             errorMsg.className = "error-msg";
+            errorMsg.style.color = "#38bdf8";
             errorMsg.innerText = "Connecting...";
+
+            if (role === 'admin') {
+                const adminName = document.getElementById('adminName').value.trim();
+                const adminPosition = document.getElementById('adminPosition').value.trim();
+                if (adminName && adminPosition) {
+                    localStorage.setItem('admin_profile_data', JSON.stringify({
+                        name: adminName,
+                        position: adminPosition
+                    }));
+                }
+            }
 
             try {
                 const response = await fetch('/Account/Login', {

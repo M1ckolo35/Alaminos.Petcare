@@ -3,15 +3,16 @@
     Layout = null;
     ViewData["Title"] = "MyPetcare - Admin Dashboard";
 
-    // Retrieve the shared appointment list from ViewBag
+    // Retrieve the shared appointment list from ViewBag[cite: 5]
     var appointments = ViewBag.Appointments as List<MyPetcare.Models.AppointmentModel> ?? new List<MyPetcare.Models.AppointmentModel>();
 
-    // Retrieve the registered users list from the Model
+    // Retrieve the registered users list from the Model[cite: 5]
     var users = Model ?? Enumerable.Empty<MyPetcare.Models.User>();
 
-    // Calculate live summary statistics
+    // Calculate live summary statistics[cite: 5]
     int pendingCount = appointments.Count(a => a.Status.Equals("Pending", StringComparison.OrdinalIgnoreCase));
-    int confirmedCount = appointments.Count(a => a.Status.Equals("Confirmed", StringComparison.OrdinalIgnoreCase));
+    int confirmedCount = appointments.Count(a => a.Status.Equals("Confirmed", StringComparison.OrdinalIgnoreCase) || a.Status.Equals("Approved", StringComparison.OrdinalIgnoreCase));
+    int cancelledCount = appointments.Count(a => a.Status.Equals("Cancelled", StringComparison.OrdinalIgnoreCase) || a.Status.Equals("Rejected", StringComparison.OrdinalIgnoreCase));
     int totalAppointments = appointments.Count;
 }
 
@@ -21,55 +22,63 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"]</title>
+    <!-- FontAwesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
     <style>
         :root {
-            /* Light Theme (Default) */
-            --bg-main: #f4f6f9;
+            /* Professional Light Theme */
+            --bg-main: #f8fafc;
             --bg-card: #ffffff;
-            --bg-sidebar: #1e293b;
-            --text-main: #0f172a;
+            --bg-sidebar: #0f172a;
+            --text-main: #334155;
             --text-muted: #64748b;
-            --text-sidebar: #cbd5e1;
+            --text-heading: #0f172a;
+            --text-sidebar: #94a3b8;
             --border-color: #e2e8f0;
             --header-bg: #ffffff;
-            --primary-accent: #8b5cf6;
-            --card-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+            --primary-accent: #0284c7;
+            --card-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05), 0 1px 2px -1px rgba(0, 0, 0, 0.05);
             --table-hover: #f8fafc;
             --badge-pending-bg: #fef3c7;
-            --badge-pending-text: #d97706;
+            --badge-pending-text: #b45309;
             --badge-approved-bg: #d1fae5;
-            --badge-approved-text: #059669;
+            --badge-approved-text: #047857;
             --badge-rejected-bg: #fee2e2;
-            --badge-rejected-text: #dc2626;
+            --badge-rejected-text: #b91c1c;
+            --badge-rescheduled-bg: #e0f2fe;
+            --badge-rescheduled-text: #0369a1;
         }
 
         [data-theme="dark"] {
-            /* Deep Obsidian Cyber Dark Theme */
-            --bg-main: #090d16;
-            --bg-card: #131b2e;
-            --bg-sidebar: #060911;
-            --text-main: #f8fafc;
-            --text-muted: #94a3b8;
+            /* Modern Dark Enterprise Theme */
+            --bg-main: #0b0f19;
+            --bg-card: #111827;
+            --bg-sidebar: #0b0f19;
+            --text-main: #9ca3af;
+            --text-muted: #6b7280;
+            --text-heading: #f9fafb;
             --text-sidebar: #94a3b8;
-            --border-color: #1e293b;
-            --header-bg: #131b2e;
-            --card-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
-            --table-hover: #1e293b;
+            --border-color: #1f2937;
+            --header-bg: #111827;
+            --primary-accent: #38bdf8;
+            --card-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3);
+            --table-hover: #1f2937;
             --badge-pending-bg: #451a03;
             --badge-pending-text: #fbbf24;
             --badge-approved-bg: #064e3b;
             --badge-approved-text: #34d399;
             --badge-rejected-bg: #7f1d1d;
             --badge-rejected-text: #f87171;
+            --badge-rescheduled-bg: #075985;
+            --badge-rescheduled-text: #7dd3fc;
         }
 
         * {
             box-sizing: border-box;
             margin: 0;
             padding: 0;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            transition: background-color 0.25s ease, color 0.25s ease, border-color 0.25s ease;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
         }
 
         body {
@@ -80,14 +89,16 @@
             overflow: hidden;
         }
 
-        /* Sidebar Styling */
         .sidebar {
-            width: 260px;
+            width: 270px;
             background-color: var(--bg-sidebar);
+            border-right: 1px solid var(--border-color);
             display: flex;
             flex-direction: column;
             justify-content: space-between;
-            padding: 24px 16px;
+            padding: 28px 18px;
+            box-shadow: 4px 0 15px rgba(0, 0, 0, 0.03);
+            z-index: 10;
         }
 
         .brand {
@@ -95,15 +106,34 @@
             align-items: center;
             gap: 12px;
             color: #ffffff;
-            font-size: 1.25rem;
+            font-size: 1.15rem;
             font-weight: 700;
-            margin-bottom: 32px;
-            padding: 0 8px;
+            margin-bottom: 36px;
+            padding: 0 10px;
+            letter-spacing: -0.3px;
         }
 
-            .brand i {
-                color: #8b5cf6;
+            .brand .brand-icon-box {
+                width: 38px;
+                height: 38px;
+                border-radius: 10px;
+                background: linear-gradient(135deg, var(--primary-accent), #0369a1);
+                color: #ffffff;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 1.1rem;
+                box-shadow: 0 4px 12px rgba(2, 132, 199, 0.3);
             }
+
+        .sidebar-menu-label {
+            font-size: 0.7rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            color: #64748b;
+            letter-spacing: 0.8px;
+            padding: 0 10px 10px 10px;
+        }
 
         .nav-menu {
             list-style: none;
@@ -115,40 +145,96 @@
         .nav-link {
             display: flex;
             align-items: center;
-            gap: 12px;
-            padding: 12px 16px;
+            gap: 14px;
+            padding: 12px 14px;
             color: var(--text-sidebar);
             text-decoration: none;
             border-radius: 8px;
-            font-size: 0.95rem;
+            font-size: 0.9rem;
             font-weight: 500;
             cursor: pointer;
             position: relative;
-            transition: all 0.25s ease;
+            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
-            .nav-link:hover, .nav-link.active {
-                background-color: rgba(255, 255, 255, 0.1);
-                color: #ffffff;
+            .nav-link i {
+                font-size: 1rem;
+                width: 20px;
+                text-align: center;
+                transition: transform 0.2s ease;
             }
 
-                .nav-link.active::before {
-                    content: '';
-                    position: absolute;
-                    left: 0;
-                    top: 15%;
-                    height: 70%;
-                    width: 4px;
-                    background: #8b5cf6;
-                    border-radius: 0 4px 4px 0;
-                    box-shadow: 0 0 8px #8b5cf6;
+            .nav-link:hover {
+                background-color: rgba(255, 255, 255, 0.05);
+                color: #ffffff;
+                transform: translateX(3px);
+            }
+
+                .nav-link:hover i {
+                    transform: scale(1.1);
                 }
 
-        .logout-btn {
-            background-color: #ef4444;
-            color: white;
+            .nav-link.active {
+                font-weight: 600;
+                background: linear-gradient(90deg, rgba(2, 132, 199, 0.2), rgba(2, 132, 199, 0.05));
+                color: var(--primary-accent);
+                border-left: 3.5px solid var(--primary-accent);
+                border-radius: 4px 8px 8px 4px;
+            }
+
+                .nav-link.active i {
+                    color: var(--primary-accent);
+                }
+
+        .sidebar-footer {
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+            border-top: 1px solid rgba(255, 255, 255, 0.08);
+            padding-top: 18px;
+        }
+
+        .sidebar-admin-badge {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px 12px;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+            .sidebar-admin-badge .avatar-fallback {
+                width: 32px;
+                height: 32px;
+                border-radius: 50%;
+                background: var(--primary-accent);
+                color: white;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-weight: bold;
+                font-size: 0.85rem;
+            }
+
+        .edit-profile-icon-btn {
+            background: transparent;
             border: none;
-            padding: 12px;
+            color: var(--text-sidebar);
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: color 0.2s ease;
+        }
+
+            .edit-profile-icon-btn:hover {
+                color: var(--primary-accent);
+            }
+
+        .logout-btn {
+            background-color: rgba(239, 68, 68, 0.1);
+            color: #f87171;
+            border: 1px solid rgba(239, 68, 68, 0.2);
+            padding: 11px;
             border-radius: 8px;
             cursor: pointer;
             font-weight: 600;
@@ -157,13 +243,16 @@
             justify-content: center;
             gap: 8px;
             width: 100%;
+            font-size: 0.875rem;
+            transition: all 0.2s ease;
         }
 
             .logout-btn:hover {
-                background-color: #dc2626;
+                background-color: rgba(239, 68, 68, 0.2);
+                color: #ef4444;
+                transform: translateY(-1px);
             }
 
-        /* Main Content Container */
         .main-wrapper {
             flex: 1;
             display: flex;
@@ -171,19 +260,20 @@
             overflow-y: auto;
         }
 
-        /* Top Header Navigation */
         .header {
             background-color: var(--header-bg);
             border-bottom: 1px solid var(--border-color);
-            padding: 16px 32px;
+            padding: 18px 36px;
             display: flex;
             justify-content: space-between;
             align-items: center;
         }
 
         .header-title {
-            font-size: 1.5rem;
+            font-size: 1.25rem;
             font-weight: 700;
+            color: var(--text-heading);
+            letter-spacing: -0.3px;
         }
 
         .header-actions {
@@ -192,16 +282,15 @@
             gap: 20px;
         }
 
-        /* Theme Toggle Button */
         .theme-toggle-btn {
             background: var(--bg-main);
             border: 1px solid var(--border-color);
             color: var(--text-main);
-            padding: 8px 16px;
-            border-radius: 20px;
+            padding: 7px 14px;
+            border-radius: 6px;
             cursor: pointer;
-            font-size: 0.9rem;
-            font-weight: 600;
+            font-size: 0.85rem;
+            font-weight: 500;
             display: flex;
             align-items: center;
             gap: 8px;
@@ -216,16 +305,17 @@
             align-items: center;
             gap: 8px;
             font-weight: 600;
+            font-size: 0.875rem;
+            color: var(--text-heading);
         }
 
         .dashboard-body {
-            padding: 32px;
+            padding: 28px 36px;
             display: flex;
             flex-direction: column;
-            gap: 32px;
+            gap: 24px;
         }
 
-        /* Views Sections with Smooth Animation */
         .admin-section {
             display: none;
         }
@@ -233,8 +323,8 @@
             .admin-section.active {
                 display: flex;
                 flex-direction: column;
-                gap: 32px;
-                animation: fadeInSlideUp 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+                gap: 24px;
+                animation: fadeInSlideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
             }
 
         @@keyframes fadeInSlideUp {
@@ -249,42 +339,46 @@
             }
         }
 
-        /* Summary Stat Cards with Hover Lift */
         .stats-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            grid-template-columns: repeat(4, 1fr);
             gap: 20px;
         }
 
         .stat-card {
             background-color: var(--bg-card);
             border: 1px solid var(--border-color);
-            border-radius: 12px;
-            padding: 24px;
+            border-radius: 10px;
+            padding: 20px;
             display: flex;
             align-items: center;
-            gap: 20px;
+            justify-content: space-between;
             box-shadow: var(--card-shadow);
-            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.3s ease, border-color 0.3s ease;
-            backdrop-filter: blur(12px);
+            cursor: pointer;
+            transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.25s ease, border-color 0.25s ease;
         }
 
             .stat-card:hover {
-                transform: translateY(-5px);
-                box-shadow: 0 12px 24px -6px rgba(139, 92, 246, 0.25);
-                border-color: rgba(139, 92, 246, 0.4);
+                transform: translateY(-3px);
+                box-shadow: 0 10px 20px -5px rgba(2, 132, 199, 0.12);
+                border-color: var(--primary-accent);
+            }
+
+            .stat-card.active-filter {
+                border-color: var(--primary-accent);
+                background: linear-gradient(135deg, rgba(2, 132, 199, 0.05), transparent);
             }
 
         .stat-icon {
-            width: 56px;
-            height: 56px;
-            border-radius: 12px;
-            background-color: rgba(139, 92, 246, 0.1);
-            color: #8b5cf6;
+            width: 42px;
+            height: 42px;
+            border-radius: 8px;
+            background-color: rgba(2, 132, 199, 0.08);
+            color: var(--primary-accent);
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 1.5rem;
+            font-size: 1.1rem;
             transition: transform 0.3s ease;
         }
 
@@ -293,78 +387,98 @@
         }
 
         .stat-number {
-            font-size: 1.8rem;
-            font-weight: 800;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--text-heading);
             line-height: 1.2;
         }
 
         .stat-label {
             color: var(--text-muted);
-            font-size: 0.9rem;
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 4px;
         }
 
-        /* Tables and Cards */
         .table-card {
             background-color: var(--bg-card);
             border: 1px solid var(--border-color);
-            border-radius: 12px;
-            padding: 24px;
+            border-radius: 10px;
+            padding: 22px;
             box-shadow: var(--card-shadow);
             transition: transform 0.3s ease, box-shadow 0.3s ease;
         }
 
         .table-card-title {
-            font-size: 1.15rem;
-            font-weight: 700;
-            margin-bottom: 20px;
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 16px;
+            color: var(--text-heading);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
 
         table {
             width: 100%;
             border-collapse: collapse;
+            font-size: 0.875rem;
         }
 
         th, td {
             text-align: left;
-            padding: 14px 16px;
+            padding: 12px 14px;
             border-bottom: 1px solid var(--border-color);
-            font-size: 0.95rem;
         }
 
         th {
             color: var(--text-muted);
             font-weight: 600;
+            background-color: var(--bg-main);
+            cursor: pointer;
+            user-select: none;
+            transition: color 0.2s ease;
         }
+
+            th:hover {
+                color: var(--primary-accent);
+            }
+
+            th i {
+                margin-left: 6px;
+                font-size: 0.75rem;
+                color: var(--text-muted);
+            }
 
         tbody tr:hover {
             background-color: var(--table-hover);
         }
 
-        /* Badges & Buttons with Animations */
         .badge {
-            padding: 6px 12px;
-            border-radius: 20px;
-            font-size: 0.825rem;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 0.75rem;
             font-weight: 600;
             display: inline-block;
-            text-transform: capitalize;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
         }
 
         .badge-pending {
             background-color: var(--badge-pending-bg);
             color: var(--badge-pending-text);
-            position: relative;
-            box-shadow: 0 0 8px rgba(251, 191, 36, 0.3);
             animation: pulse-glow 2s infinite ease-in-out;
         }
 
         @@keyframes pulse-glow {
             0%, 100% {
-                box-shadow: 0 0 4px rgba(251, 191, 36, 0.2);
+                opacity: 1;
             }
 
             50% {
-                box-shadow: 0 0 12px rgba(251, 191, 36, 0.6);
+                opacity: 0.6;
             }
         }
 
@@ -378,53 +492,66 @@
             color: var(--badge-rejected-text);
         }
 
+        .badge-rescheduled {
+            background-color: var(--badge-rescheduled-bg);
+            color: var(--badge-rescheduled-text);
+        }
+
         .btn-action {
-            padding: 6px 14px;
-            border-radius: 6px;
+            padding: 6px 12px;
+            border-radius: 5px;
             border: none;
             font-weight: 600;
             cursor: pointer;
-            font-size: 0.85rem;
+            font-size: 0.8rem;
             margin-right: 4px;
-            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: transform 0.15s ease, opacity 0.2s ease;
         }
+
+            .btn-action:hover {
+                transform: translateY(-1px);
+            }
+
+            .btn-action:active {
+                transform: translateY(0) scale(0.97);
+            }
 
         .btn-approve {
-            background-color: #22c55e;
+            background-color: #047857;
             color: white;
         }
-
-            .btn-approve:hover {
-                background-color: #16a34a;
-                transform: translateY(-2px);
-                box-shadow: 0 4px 14px rgba(34, 197, 94, 0.4);
-            }
 
         .btn-reject {
-            background-color: #ef4444;
+            background-color: #b91c1c;
             color: white;
         }
 
-            .btn-reject:hover {
-                background-color: #dc2626;
-                transform: translateY(-2px);
-                box-shadow: 0 4px 14px rgba(239, 68, 68, 0.4);
-            }
-
-        .btn-action:active {
-            transform: translateY(0) scale(0.96);
+        .btn-delete {
+            background-color: #64748b;
+            color: white;
         }
 
         .btn-primary-custom {
-            background-color: #8b5cf6;
+            background-color: var(--primary-accent);
             color: white;
         }
 
-            .btn-primary-custom:hover {
-                background-color: #7c3aed;
+        .see-more-toggle {
+            display: inline-block;
+            margin-top: 14px;
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--primary-accent);
+            cursor: pointer;
+            background: none;
+            border: none;
+            text-decoration: underline;
+        }
+
+            .see-more-toggle:hover {
+                opacity: 0.8;
             }
 
-        /* Floating Chatbot Bounce */
         #chatToggleBtn {
             animation: floatBounce 3s infinite ease-in-out;
         }
@@ -440,45 +567,65 @@
         }
 
         #chatToggleBtn:hover {
-            transform: scale(1.1) !important;
-            box-shadow: 0 10px 25px rgba(59, 130, 246, 0.5) !important;
+            transform: scale(1.08) !important;
+            box-shadow: 0 8px 20px rgba(2, 132, 199, 0.3) !important;
         }
     </style>
 </head>
 <body>
 
-    <!-- Sidebar Navigation -->
+    <!-- Redesigned Modern Sidebar Navigation -->
     <aside class="sidebar">
         <div>
             <div class="brand">
-                <i class="fa-solid fa-paw"></i>
-                <span>MyPetcare Admin</span>
+                <div class="brand-icon-box">
+                    <i class="fa-solid fa-house-medical"></i>
+                </div>
+                <span>MyPetcare</span>
             </div>
+
+            <div class="sidebar-menu-label">Main Navigation</div>
             <ul class="nav-menu">
-                <li><a class="nav-link active" onclick="switchTab('dashboard', this)"><i class="fa-solid fa-house"></i> Dashboard</a></li>
-                <li><a class="nav-link" onclick="switchTab('appointments', this)"><i class="fa-regular fa-calendar-check"></i> Appointments</a></li>
-                <li><a class="nav-link" onclick="switchTab('clients', this)"><i class="fa-solid fa-users"></i> Clients</a></li>
-                <li><a class="nav-link" onclick="switchTab('pets', this)"><i class="fa-solid fa-dog"></i> Pets Records & Health</a></li>
+                <li><a class="nav-link active" onclick="switchTab('dashboard', this)"><i class="fa-solid fa-chart-pie"></i> <span>Dashboard</span></a></li>
+                <li><a class="nav-link" onclick="switchTab('appointments', this)"><i class="fa-regular fa-calendar-check"></i> <span>Appointments</span></a></li>
+                <li><a class="nav-link" onclick="switchTab('deletedLogs', this)"><i class="fa-solid fa-clock-rotate-left"></i> <span>Deleted Logs (Archive)</span></a></li>
+                <li><a class="nav-link" onclick="switchTab('announcements', this)"><i class="fa-solid fa-bullhorn"></i> <span>Announcements</span></a></li>
+                <li><a class="nav-link" onclick="switchTab('clients', this)"><i class="fa-solid fa-users"></i> <span>Clients Directory</span></a></li>
+                <li><a class="nav-link" onclick="switchTab('pets', this)"><i class="fa-solid fa-dog"></i> <span>Pet Records</span></a></li>
             </ul>
         </div>
-        <button class="logout-btn" onclick="window.location.href='/Account/Logout'">
-            <i class="fa-solid fa-right-from-bracket"></i> Logout
-        </button>
+
+        <div class="sidebar-footer">
+            <div class="sidebar-admin-badge">
+                <div style="display: flex; align-items: center; gap: 10px;">
+                    <div class="avatar-fallback" id="sidebarAvatar">SA</div>
+                    <div style="overflow: hidden;">
+                        <span id="sidebarAdminName" style="display: block; font-size: 0.8rem; font-weight: 600; color: #f8fafc; white-space: nowrap; text-overflow: ellipsis;">System Admin</span>
+                        <span id="sidebarAdminPosition" style="display: block; font-size: 0.7rem; color: #94a3b8;">Administrator Role</span>
+                    </div>
+                </div>
+                <button class="edit-profile-icon-btn" onclick="openAdminProfileModal()" title="Edit Admin Profile">
+                    <i class="fa-solid fa-pen-to-square"></i>
+                </button>
+            </div>
+            <button class="logout-btn" onclick="window.location.href='/Account/Logout'">
+                <i class="fa-solid fa-arrow-right-from-bracket"></i> Sign Out
+            </button>
+        </div>
     </aside>
 
     <!-- Main Content Area -->
     <div class="main-wrapper">
         <header class="header">
-            <h1 id="pageTitle" class="header-title">Admin Control Panel</h1>
+            <h1 id="pageTitle" class="header-title">Dashboard Overview</h1>
             <div class="header-actions">
-                <!-- Light / Dark Theme Switcher Button -->
                 <button id="themeToggle" class="theme-toggle-btn">
                     <i id="themeIcon" class="fa-solid fa-moon"></i>
                     <span id="themeText">Dark Mode</span>
                 </button>
                 <div class="user-profile">
-                    <i class="fa-solid fa-user-shield"></i>
-                    <span>Administrator / Vet</span>
+                    <i class="fa-solid fa-user-shield" style="color: var(--primary-accent);"></i>
+                    <span id="headerAdminName">System Administrator</span>
                 </div>
             </div>
         </header>
@@ -488,130 +635,135 @@
             <!-- TAB 1: DASHBOARD OVERVIEW -->
             <section id="dashboard" class="admin-section active">
                 <div class="stats-grid">
-                    <div class="stat-card">
-                        <div class="stat-icon"><i class="fa-solid fa-calendar-days"></i></div>
+                    <div class="stat-card" id="cardPending" onclick="filterAppointmentsByStatus('Pending')">
                         <div>
-                            <div class="stat-number">@pendingCount</div>
-                            <div class="stat-label">Pending Appointments</div>
+                            <div class="stat-label">Pending Review</div>
+                            <div class="stat-number" id="statPendingCount">@pendingCount</div>
                         </div>
+                        <div class="stat-icon"><i class="fa-solid fa-clock"></i></div>
                     </div>
-                    <div class="stat-card">
+                    <div class="stat-card" id="cardConfirmed" onclick="filterAppointmentsByStatus('Confirmed')">
+                        <div>
+                            <div class="stat-label">Confirmed</div>
+                            <div class="stat-number" id="statConfirmedCount">@confirmedCount</div>
+                        </div>
                         <div class="stat-icon"><i class="fa-solid fa-circle-check"></i></div>
-                        <div>
-                            <div class="stat-number">@confirmedCount</div>
-                            <div class="stat-label">Confirmed Appointments</div>
-                        </div>
                     </div>
-                    <div class="stat-card">
-                        <div class="stat-icon"><i class="fa-solid fa-list-check"></i></div>
+                    <div class="stat-card" id="cardCancelled" onclick="filterAppointmentsByStatus('Cancelled')">
                         <div>
-                            <div class="stat-number">@totalAppointments</div>
-                            <div class="stat-label">Total Bookings</div>
+                            <div class="stat-label">Cancelled / Rejected</div>
+                            <div class="stat-number" id="statCancelledCount">@cancelledCount</div>
                         </div>
+                        <div class="stat-icon" style="color: #b91c1c; background-color: rgba(185, 28, 28, 0.08);"><i class="fa-solid fa-circle-xmark"></i></div>
+                    </div>
+                    <div class="stat-card" id="cardAll" onclick="filterAppointmentsByStatus('All')">
+                        <div>
+                            <div class="stat-label">Total Bookings</div>
+                            <div class="stat-number" id="statTotalCount">@totalAppointments</div>
+                        </div>
+                        <div class="stat-icon"><i class="fa-solid fa-list-check"></i></div>
                     </div>
                 </div>
 
                 <div class="table-card">
-                    <h2 class="table-card-title">Recent Appointment Requests</h2>
+                    <h2 class="table-card-title">
+                        <span id="tableCardHeaderLabel">Recent Appointments & Activity Updates</span>
+                        <button id="clearFilterBtn" onclick="filterAppointmentsByStatus('All')" style="display:none; font-size: 0.75rem; background: var(--bg-main); border: 1px solid var(--border-color); color: var(--primary-accent); padding: 4px 10px; border-radius: 4px; cursor: pointer;">Show All</button>
+                    </h2>
                     <table>
                         <thead>
                             <tr>
-                                <th>Client Name</th>
-                                <th>Pet Name</th>
+                                <th onclick="sortDashboardTable('clientName')">Client Name <i id="sortIcon_dash_clientName" class="fa-solid fa-sort"></i></th>
+                                <th onclick="sortDashboardTable('petName')">Pet Name <i id="sortIcon_dash_petName" class="fa-solid fa-sort"></i></th>
                                 <th>Service Type</th>
-                                <th>Date & Time</th>
-                                <th>Status</th>
+                                <th onclick="sortDashboardTable('date')">Schedule Date <i id="sortIcon_dash_date" class="fa-solid fa-sort-down"></i></th>
+                                <th>Current Status</th>
                                 <th>Actions</th>
                             </tr>
                         </thead>
-                        <tbody>
-                            @if (appointments.Any())
-                            {
-                                foreach (var item in appointments)
-                                {
-                                    <tr>
-                                        <td><strong>@item.ClientName</strong></td>
-                                        <td>@item.PetName</td>
-                                        <td>@item.Service</td>
-                                        <td>@item.AppointmentDate.ToString("MMM dd, yyyy - hh:mm tt")</td>
-                                        <td>
-                                            <span class="badge badge-@item.Status.ToLower()">
-                                                @item.Status
-                                            </span>
-                                        </td>
-                                        <td>
-                                            @if (item.Status.Equals("Pending", StringComparison.OrdinalIgnoreCase))
-                                            {
-                                                <button class="btn-action btn-approve" onclick="updateStatus(@item.Id, 'Confirmed')">Approve</button>
-                                                <button class="btn-action btn-reject" onclick="updateStatus(@item.Id, 'Rejected')">Reject</button>
-                                            }
-                                            else
-                                            {
-                                                <span style="font-size: 0.85rem; color: var(--text-muted); font-weight: 600;">Processed</span>
-                                            }
-                                        </td>
-                                    </tr>
-                                }
-                            }
-                            else
-                            {
-                                <tr>
-                                    <td colspan="6" style="text-align: center; color: var(--text-muted);">No appointment requests found.</td>
-                                </tr>
-                            }
+                        <tbody id="dynamicDashboardAppointmentsBody">
+                            <!-- Dynamic rendered rows loaded via JavaScript syncing localStorage -->
                         </tbody>
                     </table>
+                    <div id="dashboardSeeMoreContainer" style="text-align: center;"></div>
                 </div>
             </section>
 
             <!-- TAB 2: APPOINTMENTS -->
             <section id="appointments" class="admin-section">
                 <div class="table-card">
-                    <h2 class="table-card-title">All Clinic Appointments</h2>
+                    <h2 class="table-card-title">All Clinic Appointments History</h2>
                     <table>
                         <thead>
                             <tr>
                                 <th>Booking ID</th>
-                                <th>Client</th>
-                                <th>Pet</th>
+                                <th onclick="sortAppointmentsTable('clientName')">Client <i id="sortIcon_appt_clientName" class="fa-solid fa-sort"></i></th>
+                                <th onclick="sortAppointmentsTable('petName')">Pet <i id="sortIcon_appt_petName" class="fa-solid fa-sort"></i></th>
                                 <th>Service</th>
-                                <th>Schedule</th>
+                                <th onclick="sortAppointmentsTable('date')">Schedule Date <i id="sortIcon_appt_date" class="fa-solid fa-sort-down"></i></th>
                                 <th>Status</th>
+                                <th>Actions</th>
                             </tr>
                         </thead>
-                        <tbody>
-                            @if (appointments != null && appointments.Any())
-                            {
-                                foreach (var item in appointments)
-                                {
-                                    <tr>
-                                        <td>#APT-@item.Id</td>
-                                        <td><strong>@item.ClientName</strong></td>
-                                        <td>@item.PetName</td>
-                                        <td>@item.Service</td>
-                                        <td>@item.AppointmentDate.ToString("MMM dd, yyyy - hh:mm tt")</td>
-                                        <td>
-                                            <span class="badge badge-@item.Status.ToLower()">
-                                                @item.Status
-                                            </span>
-                                        </td>
-                                    </tr>
-                                }
-                            }
-                            else
-                            {
-                                <tr>
-                                    <td colspan="6" style="text-align: center; color: var(--text-muted);">
-                                        No clinic appointments recorded.
-                                    </td>
-                                </tr>
-                            }
+                        <tbody id="dynamicAllAppointmentsBody">
+                            <!-- Dynamic rendered rows loaded via JavaScript syncing localStorage -->
+                        </tbody>
+                    </table>
+                    <div id="appointmentsSeeMoreContainer" style="text-align: center;"></div>
+                </div>
+            </section>
+
+            <!-- TAB 3: DELETED LOGS / ARCHIVE -->
+            <section id="deletedLogs" class="admin-section">
+                <div class="table-card">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+                        <h2 class="table-card-title" style="margin-bottom: 0;"><i class="fa-solid fa-clock-rotate-left"></i> Deleted Appointment Logs (Archive)</h2>
+                        <button onclick="clearDeletedLogsArchive()" class="btn-action btn-reject" style="font-size: 0.75rem;"><i class="fa-solid fa-trash-can"></i> Clear Archive</button>
+                    </div>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Client Name</th>
+                                <th>Pet Name</th>
+                                <th>Service</th>
+                                <th>Original Date</th>
+                                <th>Final Status Before Deletion</th>
+                                <th>Deleted Timestamp</th>
+                            </tr>
+                        </thead>
+                        <tbody id="dynamicDeletedLogsBody">
+                            <!-- Dynamic archived deleted logs loaded via JavaScript -->
                         </tbody>
                     </table>
                 </div>
             </section>
 
-            <!-- TAB 3: CLIENTS -->
+            <!-- TAB 4: ANNOUNCEMENTS MANAGEMENT -->
+            <section id="announcements" class="admin-section">
+                <div class="table-card" style="margin-bottom: 20px;">
+                    <h2 class="table-card-title"><i class="fa-solid fa-bullhorn"></i> Broadcast New Announcement</h2>
+                    <form onsubmit="postAnnouncement(event)">
+                        <div style="margin-bottom: 12px;">
+                            <label style="font-size: 0.85rem; font-weight: 600; display: block; margin-bottom: 4px;">Announcement Title</label>
+                            <input type="text" id="annTitle" placeholder="e.g. Free Anti-Rabies Drive This Saturday" style="width: 100%; padding: 10px; border-radius: 6px; border: 1px solid var(--border-color); background: var(--bg-main); color: var(--text-main);" required />
+                        </div>
+                        <div style="margin-bottom: 16px;">
+                            <label style="font-size: 0.85rem; font-weight: 600; display: block; margin-bottom: 4px;">Content Details</label>
+                            <textarea id="annContent" rows="3" placeholder="Enter complete information for clients..." style="width: 100%; padding: 10px; border-radius: 6px; border: 1px solid var(--border-color); background: var(--bg-main); color: var(--text-main);" required></textarea>
+                        </div>
+                        <button type="submit" class="btn-action btn-primary-custom" style="padding: 10px 20px; font-size: 0.9rem;"><i class="fa-solid fa-paper-plane"></i> Publish Announcement</button>
+                    </form>
+                </div>
+
+                <div class="table-card">
+                    <h2 class="table-card-title">Active Announcements List</h2>
+                    <div id="adminAnnouncementsList" style="display: flex; flex-direction: column; gap: 12px;">
+                        <!-- Dynamic Announcements Load Here -->
+                    </div>
+                </div>
+            </section>
+
+            <!-- TAB 5: CLIENTS -->
             <section id="clients" class="admin-section">
                 <div class="table-card">
                     <h2 class="table-card-title">Registered Client Directory</h2>
@@ -646,7 +798,7 @@
                             else
                             {
                                 <tr>
-                                    <td colspan="4" style="text-align: center; color: var(--text-muted);">No registered clients found.</td>
+                                    <td colspan="4" style="text-align: center; color: var(--text-muted); padding: 24px;">No registered clients found.</td>
                                 </tr>
                             }
                         </tbody>
@@ -654,49 +806,26 @@
                 </div>
             </section>
 
-            <!-- TAB 4: PETS RECORDS & HEALTHCARE UPDATE -->
+            <!-- TAB 6: PETS RECORDS & HEALTHCARE -->
             <section id="pets" class="admin-section">
                 <div class="table-card">
-                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-                        <h2 class="table-card-title" style="margin-bottom: 0;">Pets Medical & Healthcare Records</h2>
-                        <span style="font-size: 0.9rem; color: var(--text-muted);">Veterinary Update Module</span>
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+                        <h2 class="table-card-title" style="margin-bottom: 0;">Completed Appointments & Pet Medical Records</h2>
+                        <span style="font-size: 0.85rem; color: var(--text-muted);">Veterinary System</span>
                     </div>
                     <table>
                         <thead>
                             <tr>
-                                <th>Pet Name</th>
-                                <th>Species/Breed</th>
-                                <th>Owner</th>
-                                <th>Latest Diagnosis</th>
+                                <th onclick="sortPetsTable('petName')">Pet Name <i id="sortIcon_pet_petName" class="fa-solid fa-sort"></i></th>
+                                <th onclick="sortPetsTable('clientName')">Owner / Client <i id="sortIcon_pet_clientName" class="fa-solid fa-sort"></i></th>
+                                <th>Completed Service</th>
+                                <th>Latest Condition</th>
                                 <th>Vaccination Status</th>
                                 <th>Actions</th>
                             </tr>
                         </thead>
-                        <tbody>
-                            <tr>
-                                <td><strong>Max</strong></td>
-                                <td>Corgi (Dog)</td>
-                                <td>Emelyn Radovan</td>
-                                <td>Healthy / Annual Check-up</td>
-                                <td>Anti-Rabies (Updated)</td>
-                                <td>
-                                    <button class="btn-action btn-primary-custom" onclick="openVetModal('Max', 'Corgi (Dog)', 'Emelyn Radovan')">
-                                        <i class="fa-solid fa-notes-medical"></i> Update Health Record
-                                    </button>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td><strong>Luna</strong></td>
-                                <td>Domestic (Cat)</td>
-                                <td>Emelyn Radovan</td>
-                                <td>General Check-up Needed</td>
-                                <td>Vaccinated ✓</td>
-                                <td>
-                                    <button class="btn-action btn-primary-custom" onclick="openVetModal('Luna', 'Domestic (Cat)', 'Emelyn Radovan')">
-                                        <i class="fa-solid fa-notes-medical"></i> Update Health Record
-                                    </button>
-                                </td>
-                            </tr>
+                        <tbody id="dynamicPetRecordsBody">
+                            <!-- Dynamic Pet Records loaded from completed appointments & storage -->
                         </tbody>
                     </table>
                 </div>
@@ -705,83 +834,220 @@
         </main>
     </div>
 
+    <!-- CUSTOM CONFIRMATION MODAL WITH SOUND EFFECTS -->
+    <div id="customConfirmModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.6); z-index:999999; justify-content:center; align-items:center; backdrop-filter: blur(5px);">
+        <div style="background:var(--bg-card); padding:24px; border-radius:12px; width:380px; border:1px solid var(--border-color); color:var(--text-main); box-shadow: 0 10px 25px rgba(0,0,0,0.2); text-align: center;">
+            <div style="width: 48px; height: 48px; border-radius: 50%; background: #fee2e2; color: #b91c1c; display: inline-flex; align-items: center; justify-content: center; font-size: 1.2rem; margin-bottom: 12px;">
+                <i class="fa-solid fa-triangle-exclamation"></i>
+            </div>
+            <h3 id="confirmModalTitle" style="font-size: 1.1rem; color: var(--text-heading); margin-bottom: 8px;">Confirm Deletion</h3>
+            <p id="confirmModalMessage" style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 20px; line-height: 1.4;">Are you sure you want to delete this appointment? It will be archived in Deleted Logs.</p>
+            <div style="display:flex; justify-content:center; gap:10px;">
+                <button id="confirmModalCancelBtn" style="padding:8px 16px; border-radius:6px; border:1px solid var(--border-color); background:transparent; color:var(--text-main); cursor:pointer; font-size: 0.85rem; font-weight: 600;">Cancel</button>
+                <button id="confirmModalOkBtn" style="padding:8px 20px; border-radius:6px; border:none; background:#b91c1c; color:white; cursor:pointer; font-size: 0.85rem; font-weight: 600;">Yes, Delete</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ADMIN LOGIN MODAL -->
+    <div id="adminLoginModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.7); z-index:99999; justify-content:center; align-items:center; backdrop-filter: blur(6px);">
+        <div style="background:var(--bg-card); padding:30px; border-radius:12px; width:420px; border:1px solid var(--border-color); color:var(--text-main); box-shadow: 0 10px 30px rgba(0,0,0,0.3);">
+            <div style="text-align: center; margin-bottom: 20px;">
+                <div style="width: 50px; height: 50px; border-radius: 12px; background: linear-gradient(135deg, var(--primary-accent), #0369a1); color: white; display: inline-flex; align-items: center; justify-content: center; font-size: 1.4rem; margin-bottom: 10px;">
+                    <i class="fa-solid fa-user-shield"></i>
+                </div>
+                <h3 style="font-size: 1.25rem; color: var(--text-heading);">Admin Portal Access</h3>
+                <p style="font-size: 0.8rem; color: var(--text-muted);">Enter your credentials and position details to sign in</p>
+            </div>
+
+            <form onsubmit="handleAdminLogin(event)">
+                <div style="margin-bottom:12px;">
+                    <label style="font-size:0.8rem; font-weight:600; color: var(--text-muted);">Administrator Full Name:</label>
+                    <input type="text" id="loginAdminName" placeholder="e.g. Dr. Michael Radovan" style="width:100%; padding:10px; margin-top:4px; border-radius:6px; border:1px solid var(--border-color); background:var(--bg-main); color:var(--text-main); font-size: 0.85rem;" required />
+                </div>
+
+                <div style="margin-bottom:12px;">
+                    <label style="font-size:0.8rem; font-weight:600; color: var(--text-muted);">Position / Official Title:</label>
+                    <input type="text" id="loginAdminPosition" placeholder="e.g. Chief Veterinarian / System Admin" style="width:100%; padding:10px; margin-top:4px; border-radius:6px; border:1px solid var(--border-color); background:var(--bg-main); color:var(--text-main); font-size: 0.85rem;" required />
+                </div>
+
+                <div style="margin-bottom:16px;">
+                    <label style="font-size:0.8rem; font-weight:600; color: var(--text-muted);">Admin Access Code / Password:</label>
+                    <input type="password" id="loginAdminPass" placeholder="••••••••" style="width:100%; padding:10px; margin-top:4px; border-radius:6px; border:1px solid var(--border-color); background:var(--bg-main); color:var(--text-main); font-size: 0.85rem;" required />
+                </div>
+
+                <div style="display:flex; justify-content:space-between; gap:8px;">
+                    <button type="button" onclick="closeAdminLoginModal()" style="padding:9px 16px; border-radius:6px; border:1px solid var(--border-color); background:transparent; color:var(--text-main); cursor:pointer; font-size: 0.85rem;">Cancel</button>
+                    <button type="submit" class="btn-action btn-primary-custom" style="padding:9px 20px; font-size: 0.85rem;"><i class="fa-solid fa-right-to-bracket"></i> Sign In to Dashboard</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- ADMIN PROFILE EDIT MODAL -->
+    <div id="adminProfileModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.6); z-index:999; justify-content:center; align-items:center; backdrop-filter: blur(4px);">
+        <div style="background:var(--bg-card); padding:24px; border-radius:10px; width:400px; border:1px solid var(--border-color); color:var(--text-main); box-shadow: var(--card-shadow);">
+            <h3 style="margin-bottom:16px; font-size: 1.1rem; color: var(--text-heading);"><i class="fa-solid fa-user-gear" style="color: var(--primary-accent);"></i> Edit Admin Profile & Position</h3>
+
+            <div style="margin-bottom:12px;">
+                <label style="font-size:0.8rem; font-weight:600; color: var(--text-muted);">Administrator Name:</label>
+                <input type="text" id="editAdminName" placeholder="e.g. System Admin" style="width:100%; padding:9px; margin-top:4px; border-radius:6px; border:1px solid var(--border-color); background:var(--bg-main); color:var(--text-main); font-size: 0.85rem;" />
+            </div>
+
+            <div style="margin-bottom:16px;">
+                <label style="font-size:0.8rem; font-weight:600; color: var(--text-muted);">Position / Role Title:</label>
+                <input type="text" id="editAdminPosition" placeholder="e.g. Senior Veterinarian / Lead Admin" style="width:100%; padding:9px; margin-top:4px; border-radius:6px; border:1px solid var(--border-color); background:var(--bg-main); color:var(--text-main); font-size: 0.85rem;" />
+            </div>
+
+            <div style="display:flex; justify-content:flex-end; gap:8px;">
+                <button onclick="closeAdminProfileModal()" style="padding:7px 14px; border-radius:6px; border:1px solid var(--border-color); background:transparent; color:var(--text-main); cursor:pointer; font-size: 0.85rem;">Cancel</button>
+                <button onclick="saveAdminProfile()" class="btn-action btn-primary-custom" style="padding:7px 16px; font-size: 0.85rem;">Save Changes</button>
+            </div>
+        </div>
+    </div>
+
     <!-- VET HEALTHCARE UPDATE MODAL -->
-    <div id="vetModal" class="modal-overlay" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.6); z-index:999; justify-content:center; align-items:center;">
-        <div style="background:var(--bg-card); padding:30px; border-radius:12px; width:450px; border:1px solid var(--border-color); color:var(--text-main);">
-            <h3 style="margin-bottom:16px;">🩺 Update Pet Healthcare Record</h3>
+    <div id="vetModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.6); z-index:999; justify-content:center; align-items:center; backdrop-filter: blur(4px);">
+        <div style="background:var(--bg-card); padding:24px; border-radius:10px; width:440px; border:1px solid var(--border-color); color:var(--text-main); box-shadow: var(--card-shadow);">
+            <h3 style="margin-bottom:16px; font-size: 1.1rem; color: var(--text-heading);"><i class="fa-solid fa-notes-medical" style="color: var(--primary-accent);"></i> Update Pet Health Record</h3>
 
-            <input type="hidden" id="modalPetName" />
-
-            <div style="margin-bottom:12px;">
-                <label style="font-size:0.85rem; font-weight:600;">Pet Name:</label>
-                <input type="text" id="displayPetName" disabled style="width:100%; padding:8px; margin-top:4px; border-radius:6px; border:1px solid var(--border-color); background:var(--bg-main); color:var(--text-main);" />
-            </div>
+            <input type="hidden" id="modalPetKey" />
 
             <div style="margin-bottom:12px;">
-                <label style="font-size:0.85rem; font-weight:600;">Diagnosis / Condition:</label>
-                <input type="text" id="modalDiagnosis" placeholder="e.g. Healthy, Mild Fever, Deworming Needed" style="width:100%; padding:8px; margin-top:4px; border-radius:6px; border:1px solid var(--border-color); background:var(--bg-main); color:var(--text-main);" />
+                <label style="font-size:0.8rem; font-weight:600; color: var(--text-muted);">Pet & Owner Details:</label>
+                <input type="text" id="displayPetName" disabled style="width:100%; padding:8px; margin-top:4px; border-radius:6px; border:1px solid var(--border-color); background:var(--bg-main); color:var(--text-main); font-size: 0.85rem;" />
             </div>
 
             <div style="margin-bottom:12px;">
-                <label style="font-size:0.85rem; font-weight:600;">Vaccines / Medication Given:</label>
-                <input type="text" id="modalVaccines" placeholder="e.g. 5-in-1, Anti-Rabies" style="width:100%; padding:8px; margin-top:4px; border-radius:6px; border:1px solid var(--border-color); background:var(--bg-main); color:var(--text-main);" />
+                <label style="font-size:0.8rem; font-weight:600; color: var(--text-muted);">Diagnosis / Health Condition:</label>
+                <input type="text" id="modalDiagnosis" placeholder="e.g. Healthy, Recovering, Routine Check-up Done" style="width:100%; padding:8px; margin-top:4px; border-radius:6px; border:1px solid var(--border-color); background:var(--bg-main); color:var(--text-main); font-size: 0.85rem;" />
             </div>
 
             <div style="margin-bottom:12px;">
-                <label style="font-size:0.85rem; font-weight:600;">Weight (kg):</label>
-                <input type="number" step="0.1" id="modalWeight" placeholder="e.g. 8.5" style="width:100%; padding:8px; margin-top:4px; border-radius:6px; border:1px solid var(--border-color); background:var(--bg-main); color:var(--text-main);" />
+                <label style="font-size:0.8rem; font-weight:600; color: var(--text-muted);">Vaccination / Medication Status:</label>
+                <input type="text" id="modalVaccines" placeholder="e.g. Anti-Rabies Verified, Fully Vaccinated" style="width:100%; padding:8px; margin-top:4px; border-radius:6px; border:1px solid var(--border-color); background:var(--bg-main); color:var(--text-main); font-size: 0.85rem;" />
             </div>
 
-            <div style="margin-bottom:20px;">
-                <label style="font-size:0.85rem; font-weight:600;">Vet Notes & Recommendations:</label>
-                <textarea id="modalNotes" rows="3" placeholder="Additional treatment instructions..." style="width:100%; padding:8px; margin-top:4px; border-radius:6px; border:1px solid var(--border-color); background:var(--bg-main); color:var(--text-main);"></textarea>
-            </div>
-
-            <div style="display:flex; justify-content:flex-end; gap:10px;">
-                <button onclick="closeVetModal()" style="padding:8px 16px; border-radius:6px; border:1px solid var(--border-color); background:transparent; color:var(--text-main); cursor:pointer;">Cancel</button>
-                <button onclick="saveHealthRecord()" style="padding:8px 16px; border-radius:6px; border:none; background:#8b5cf6; color:white; font-weight:600; cursor:pointer;">Save Record</button>
+            <div style="display:flex; justify-content:flex-end; gap:8px;">
+                <button onclick="closeVetModal()" style="padding:7px 14px; border-radius:6px; border:1px solid var(--border-color); background:transparent; color:var(--text-main); cursor:pointer; font-size: 0.85rem;">Cancel</button>
+                <button onclick="saveHealthRecord()" class="btn-action btn-primary-custom" style="padding:7px 16px; font-size: 0.85rem;">Save Record</button>
             </div>
         </div>
     </div>
 
     <!-- FLOATING AI CHATBOT WIDGET -->
-    <div id="aiChatWidget" style="position: fixed; bottom: 24px; right: 24px; z-index: 10000; font-family: Arial, Helvetica, sans-serif;">
-        <button id="chatToggleBtn" onclick="toggleChatWindow()" style="width: 65px; height: 65px; border-radius: 50%; background: #ffffff; border: 2px solid #3b82f6; cursor: pointer; box-shadow: 0 8px 20px rgba(59, 130, 246, 0.3); display: flex; align-items: center; justify-content: center; overflow: hidden; padding: 0;">
+    <div id="aiChatWidget" style="position: fixed; bottom: 24px; right: 24px; z-index: 20000;">
+        <button id="chatToggleBtn" onclick="toggleChatWindow()" style="width: 54px; height: 54px; border-radius: 50%; background: #ffffff; border: 2px solid var(--primary-accent); cursor: pointer; box-shadow: 0 4px 12px rgba(0,0,0,0.15); display: flex; align-items: center; justify-content: center; overflow: hidden; padding: 0;">
             <img src="/images/chatbotLogo.jpg" alt="PetBot AI" style="width: 100%; height: 100%; object-fit: cover;" />
         </button>
 
-        <div id="chatWindow" style="display: none; position: absolute; bottom: 80px; right: 0; width: 360px; height: 490px; background-color: var(--bg-card, #ffffff); border: 1px solid var(--border-color, #e2e8f0); border-radius: 16px; box-shadow: 0 10px 30px rgba(0,0,0,0.15); flex-direction: column; overflow: hidden; color: var(--text-main, #000000);">
-            <div style="background: linear-gradient(135deg, #2563eb, #3b82f6); color: white; padding: 14px 16px; display: flex; justify-content: space-between; align-items: center;">
-                <div style="display: flex; align-items: center; gap: 10px;">
-                    <img src="/images/chatbotLogo.jpg" alt="PetBot Logo" style="width: 38px; height: 38px; border-radius: 50%; object-fit: cover; border: 2px solid white;" />
-                    <div>
-                        <h4 style="margin: 0; font-size: 1rem; font-weight: 700;">PetBot AI</h4>
-                        <span style="font-size: 0.75rem; opacity: 0.9; color: #dbeafe;">Online | AI Veterinary Assistant</span>
-                    </div>
+        <div id="chatWindow" style="display: none; position: absolute; bottom: 68px; right: 0; width: 340px; height: 460px; background-color: var(--bg-card); border: 1px solid var(--border-color); border-radius: 10px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); flex-direction: column; overflow: hidden; color: var(--text-main);">
+            <div style="background: var(--bg-sidebar); border-bottom: 1px solid var(--border-color); padding: 12px 16px; display: flex; justify-content: space-between; align-items: center;">
+                <div style="display: flex; align-items: center; gap: 8px;">
+                    <div style="width: 8px; height: 8px; border-radius: 50%; background: #10b981;"></div>
+                    <h4 style="margin: 0; font-size: 14px; font-weight: 600; color: #ffffff;">PetBot Admin Assistant</h4>
                 </div>
-                <button onclick="toggleChatWindow()" style="background: transparent; border: none; color: white; font-size: 1.2rem; cursor: pointer;">
+                <button onclick="toggleChatWindow()" style="background: transparent; border: none; color: var(--text-sidebar); font-size: 16px; cursor: pointer;">
                     <i class="fa-solid fa-xmark"></i>
                 </button>
             </div>
 
-            <div id="chatMessages" style="flex: 1; padding: 16px; overflow-y: auto; display: flex; flex-direction: column; gap: 12px; font-size: 0.9rem; background-color: var(--bg-main, #f8fafc);">
-                <div style="background: #eff6ff; color: #1e3a8a; padding: 10px 14px; border-radius: 12px; max-width: 85%; align-self: flex-start; border-left: 3px solid #3b82f6; line-height: 1.4;">
-                    Hello! I am <strong>PetBot</strong> 🐾 Ask me any questions about animal health, vaccinations, or clinic hours!
+            <div id="chatMessages" style="flex: 1; padding: 14px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; font-size: 13px; background-color: var(--bg-main);">
+                <div style="background: var(--bg-card); border: 1px solid var(--border-color); color: var(--text-main); padding: 10px 12px; border-radius: 8px; max-width: 85%; align-self: flex-start; line-height: 1.4;">
+                    Hello Admin! How can I assist you with clinical operations today?
                 </div>
             </div>
 
-            <div style="padding: 12px; border-top: 1px solid var(--border-color, #e2e8f0); display: flex; gap: 8px; background-color: var(--bg-card, #ffffff);">
-                <input type="text" id="chatInput" placeholder="Ask PetBot about pet care..." onkeypress="handleChatKeyPress(event)" style="flex: 1; padding: 10px 12px; border-radius: 8px; border: 1px solid var(--border-color, #cbd5e1); background-color: var(--bg-card, #ffffff); color: var(--text-main, #000000); font-size: 0.9rem; outline: none;" />
-                <button onclick="sendChatMessage()" style="background-color: #2563eb; color: white; border: none; padding: 0 16px; border-radius: 8px; cursor: pointer; font-weight: 600;">
+            <div style="padding: 10px; border-top: 1px solid var(--border-color); display: flex; gap: 6px; background-color: var(--bg-card);">
+                <input type="text" id="chatInput" placeholder="Type a message..." onkeypress="handleChatKeyPress(event)" style="flex: 1; padding: 8px 10px; border-radius: 6px; border: 1px solid var(--border-color); background-color: var(--bg-main); color: var(--text-main); font-size: 13px; outline: none;" />
+                <button onclick="sendChatMessage()" style="background-color: var(--primary-accent); color: white; border: none; padding: 0 14px; border-radius: 6px; cursor: pointer; font-size: 13px;">
                     <i class="fa-solid fa-paper-plane"></i>
                 </button>
             </div>
         </div>
     </div>
 
-    <!-- JAVASCRIPT FUNCTIONS -->
+    <!-- JAVASCRIPT LOGIC -->
     <script>
-        // Tab Switcher
+        let dashboardShowAll = false;
+        let appointmentsShowAll = false;
+        let currentStatusFilter = 'All';
+
+        let dashboardSortCol = 'date';
+        let dashboardSortDir = 'asc';
+
+        let appointmentsSortCol = 'date';
+        let appointmentsSortDir = 'asc';
+
+        let petsSortCol = 'petName';
+        let petsSortDir = 'asc';
+
+        document.addEventListener("DOMContentLoaded", () => {
+            loadAdminProfileInfo();
+            loadAdminAppointmentsTables();
+            loadPetRecordsTable();
+            loadDeletedLogsTable();
+        });
+
+        // Built-in Web Audio API sound generator (No external files needed!)
+        function playSound(type) {
+            try {
+                const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+
+                if (type === 'delete') {
+                    osc.type = 'sawtooth';
+                    osc.frequency.setValueAtTime(220, audioCtx.currentTime);
+                    osc.frequency.exponentialRampToValueAtTime(80, audioCtx.currentTime + 0.25);
+                    gain.gain.setValueAtTime(0.15, audioCtx.currentTime);
+                    gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.25);
+                    osc.start();
+                    osc.stop(audioCtx.currentTime + 0.25);
+                } else if (type === 'success') {
+                    osc.type = 'sine';
+                    osc.frequency.setValueAtTime(440, audioCtx.currentTime);
+                    osc.frequency.setValueAtTime(660, audioCtx.currentTime + 0.1);
+                    gain.gain.setValueAtTime(0.15, audioCtx.currentTime);
+                    gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.3);
+                    osc.start();
+                    osc.stop(audioCtx.currentTime + 0.3);
+                }
+            } catch (e) {
+                console.log('Audio Context not supported or blocked.');
+            }
+        }
+
+        // Custom confirmation modal implementation
+        function showCustomConfirm(message, onConfirm) {
+            playSound('delete');
+            const modal = document.getElementById('customConfirmModal');
+            const msgEl = document.getElementById('confirmModalMessage');
+            const okBtn = document.getElementById('confirmModalOkBtn');
+            const cancelBtn = document.getElementById('confirmModalCancelBtn');
+
+            msgEl.innerText = message;
+            modal.style.display = 'flex';
+
+            // Clean up previous event listeners
+            const newOkBtn = okBtn.cloneNode(true);
+            const newCancelBtn = cancelBtn.cloneNode(true);
+            okBtn.parentNode.replaceChild(newOkBtn, okBtn);
+            cancelBtn.parentNode.replaceChild(newCancelBtn, cancelBtn);
+
+            document.getElementById('confirmModalOkBtn').addEventListener('click', () => {
+                modal.style.display = 'none';
+                playSound('success');
+                if (onConfirm) onConfirm();
+            });
+
+            document.getElementById('confirmModalCancelBtn').addEventListener('click', () => {
+                modal.style.display = 'none';
+            });
+        }
+
         function switchTab(tabId, element) {
             document.querySelectorAll('.admin-section').forEach(sec => sec.classList.remove('active'));
             document.querySelectorAll('.nav-link').forEach(link => link.classList.remove('active'));
@@ -790,15 +1056,554 @@
             element.classList.add('active');
 
             const titles = {
-                'dashboard': 'Admin Control Panel',
-                'appointments': 'Appointments Management',
-                'clients': 'Registered Clients',
-                'pets': 'Pets Records & Healthcare'
+                'dashboard': 'Dashboard Overview',
+                'appointments': 'Appointments History',
+                'deletedLogs': 'Deleted Appointment Logs Archive',
+                'announcements': 'Clinic Announcements Manager',
+                'clients': 'Registered Clients Directory',
+                'pets': 'Pet Healthcare Records'
             };
             document.getElementById('pageTitle').innerText = titles[tabId];
+            if (tabId === 'announcements') loadAdminAnnouncements();
+            if (tabId === 'dashboard' || tabId === 'appointments') loadAdminAppointmentsTables();
+            if (tabId === 'deletedLogs') loadDeletedLogsTable();
+            if (tabId === 'pets') loadPetRecordsTable();
         }
 
-        // Theme Toggle Handler
+        function loadAdminProfileInfo() {
+            let profile = JSON.parse(localStorage.getItem('admin_profile_data') || '{"name": "System Administrator", "position": "Administrator Role"}');
+            document.getElementById('sidebarAdminName').innerText = profile.name;
+            document.getElementById('sidebarAdminPosition').innerText = profile.position;
+            document.getElementById('headerAdminName').innerText = profile.name;
+
+            let initials = profile.name.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase() || 'SA';
+            document.getElementById('sidebarAvatar').innerText = initials;
+        }
+
+        function openAdminLoginModal() {
+            let profile = JSON.parse(localStorage.getItem('admin_profile_data') || '{"name": "", "position": ""}');
+            document.getElementById('loginAdminName').value = profile.name || '';
+            document.getElementById('loginAdminPosition').value = profile.position || '';
+            document.getElementById('adminLoginModal').style.display = 'flex';
+        }
+
+        function closeAdminLoginModal() {
+            document.getElementById('adminLoginModal').style.display = 'none';
+        }
+
+        function handleAdminLogin(e) {
+            e.preventDefault();
+            let name = document.getElementById('loginAdminName').value.trim();
+            let position = document.getElementById('loginAdminPosition').value.trim();
+
+            if (!name || !position) {
+                alert('Please fill out both Name and Position fields.');
+                return;
+            }
+
+            let profile = { name: name, position: position };
+            localStorage.setItem('admin_profile_data', JSON.stringify(profile));
+
+            loadAdminProfileInfo();
+            closeAdminLoginModal();
+            alert(`Welcome back, ${name} (${position})!`);
+        }
+
+        function openAdminProfileModal() {
+            let profile = JSON.parse(localStorage.getItem('admin_profile_data') || '{"name": "System Administrator", "position": "Administrator Role"}');
+            document.getElementById('editAdminName').value = profile.name;
+            document.getElementById('editAdminPosition').value = profile.position;
+            document.getElementById('adminProfileModal').style.display = 'flex';
+        }
+
+        function closeAdminProfileModal() {
+            document.getElementById('adminProfileModal').style.display = 'none';
+        }
+
+        function saveAdminProfile() {
+            let name = document.getElementById('editAdminName').value.trim();
+            let position = document.getElementById('editAdminPosition').value.trim();
+
+            if (!name) {
+                alert('Admin name cannot be empty.');
+                return;
+            }
+
+            let profile = { name: name, position: position || 'Administrator Role' };
+            localStorage.setItem('admin_profile_data', JSON.stringify(profile));
+
+            loadAdminProfileInfo();
+            closeAdminProfileModal();
+            alert('Admin profile updated successfully!');
+        }
+
+        function toggleDashboardSeeMore() {
+            dashboardShowAll = !dashboardShowAll;
+            loadAdminAppointmentsTables();
+        }
+
+        function toggleAppointmentsSeeMore() {
+            appointmentsShowAll = !appointmentsShowAll;
+            loadAdminAppointmentsTables();
+        }
+
+        function filterAppointmentsByStatus(status) {
+            currentStatusFilter = status;
+
+            document.querySelectorAll('.stat-card').forEach(card => card.classList.remove('active-filter'));
+            if(status === 'Pending') document.getElementById('cardPending').classList.add('active-filter');
+            else if(status === 'Confirmed') document.getElementById('cardConfirmed').classList.add('active-filter');
+            else if(status === 'Cancelled') document.getElementById('cardCancelled').classList.add('active-filter');
+            else document.getElementById('cardAll').classList.add('active-filter');
+
+            const headerLabel = document.getElementById('tableCardHeaderLabel');
+            const clearBtn = document.getElementById('clearFilterBtn');
+            if(status === 'All') {
+                headerLabel.innerText = 'Recent Appointments & Activity Updates';
+                clearBtn.style.display = 'none';
+            } else {
+                headerLabel.innerText = `Filtered Appointments: ${status}`;
+                clearBtn.style.display = 'inline-block';
+            }
+
+            loadAdminAppointmentsTables();
+        }
+
+        function sortDashboardTable(col) {
+            if (dashboardSortCol === col) {
+                dashboardSortDir = dashboardSortDir === 'asc' ? 'desc' : 'asc';
+            } else {
+                dashboardSortCol = col;
+                dashboardSortDir = 'asc';
+            }
+            updateSortIcons('dash', dashboardSortCol, dashboardSortDir);
+            loadAdminAppointmentsTables();
+        }
+
+        function sortAppointmentsTable(col) {
+            if (appointmentsSortCol === col) {
+                appointmentsSortDir = appointmentsSortDir === 'asc' ? 'desc' : 'asc';
+            } else {
+                appointmentsSortCol = col;
+                appointmentsSortDir = 'asc';
+            }
+            updateSortIcons('appt', appointmentsSortCol, appointmentsSortDir);
+            loadAdminAppointmentsTables();
+        }
+
+        function sortPetsTable(col) {
+            if (petsSortCol === col) {
+                petsSortDir = petsSortDir === 'asc' ? 'desc' : 'asc';
+            } else {
+                petsSortCol = col;
+                petsSortDir = 'asc';
+            }
+            updateSortIcons('pet', petsSortCol, petsSortDir);
+            loadPetRecordsTable();
+        }
+
+        function updateSortIcons(tablePrefix, activeCol, dir) {
+            let cols = ['clientName', 'petName', 'date'];
+            cols.forEach(c => {
+                let icon = document.getElementById(`sortIcon_${tablePrefix}_${c}`);
+                if (icon) {
+                    if (c === activeCol) {
+                        icon.className = dir === 'asc' ? 'fa-solid fa-sort-up' : 'fa-solid fa-sort-down';
+                        icon.style.color = 'var(--primary-accent)';
+                    } else {
+                        icon.className = 'fa-solid fa-sort';
+                        icon.style.color = 'var(--text-muted)';
+                    }
+                }
+            });
+        }
+
+        function loadAdminAppointmentsTables() {
+            let serverAppointments = [];
+            @if (appointments.Any())
+            {
+                    foreach (var item in appointments)
+                    {
+                            @:serverAppointments.push({ id: '@item.Id', rawTimestamp: @item.AppointmentDate.Ticks, clientName: '@item.ClientName', petName: '@item.PetName', service: '@item.Service', date: '@item.AppointmentDate.ToString("MMM dd, yyyy - hh:mm tt")', status: '@item.Status' });
+                    }
+            }
+
+            let localSchedules = JSON.parse(localStorage.getItem('local_pet_appointments') || '[]');
+
+            let combinedOverrides = {};
+            let generalOverrides = JSON.parse(localStorage.getItem('appointment_status_overrides') || '{}');
+            Object.assign(combinedOverrides, generalOverrides);
+
+            let globalLogs = JSON.parse(localStorage.getItem('admin_appointment_logs') || '{}');
+            Object.assign(combinedOverrides, globalLogs);
+
+            for (let i = 0; i < localStorage.length; i++) {
+                let key = localStorage.key(i);
+                if (key && key.startsWith('appointment_status_overrides_')) {
+                    try {
+                        let clientOverrides = JSON.parse(localStorage.getItem(key) || '{}');
+                        Object.assign(combinedOverrides, clientOverrides);
+                    } catch(e) {}
+                }
+            }
+
+            let deletedIds = JSON.parse(localStorage.getItem('admin_deleted_appointment_ids') || '[]');
+
+            let combinedMap = {};
+            serverAppointments.forEach(item => { if(!deletedIds.includes(String(item.id))) combinedMap[item.id] = item; });
+            localSchedules.forEach(item => {
+                if(!item.rawTimestamp) item.rawTimestamp = new Date(item.rawDate || Date.now()).getTime();
+                if(!deletedIds.includes(String(item.id))) combinedMap[item.id] = item;
+            });
+
+            let allRecords = Object.values(combinedMap).map(item => {
+                if (item.id && combinedOverrides[item.id]) {
+                    item.status = combinedOverrides[item.id].status;
+                    if (combinedOverrides[item.id].date) {
+                        item.date = combinedOverrides[item.id].date;
+                        item.rawTimestamp = new Date(combinedOverrides[item.id].rawDate || combinedOverrides[item.id].date).getTime();
+                    }
+                }
+                return item;
+            });
+
+            let pCount = 0, cCount = 0, canCount = 0;
+            allRecords.forEach(a => {
+                let s = (a.status || '').toLowerCase();
+                if (s === 'pending') pCount++;
+                else if (s === 'confirmed' || s === 'approved') cCount++;
+                else if (s === 'cancelled' || s === 'rejected') canCount++;
+            });
+
+            document.getElementById('statPendingCount').innerText = pCount;
+            document.getElementById('statConfirmedCount').innerText = cCount;
+            document.getElementById('statCancelledCount').innerText = canCount;
+            document.getElementById('statTotalCount').innerText = allRecords.length;
+
+            let filteredRecords = allRecords;
+            if (currentStatusFilter !== 'All') {
+                filteredRecords = allRecords.filter(a => {
+                    let s = (a.status || '').toLowerCase();
+                    if (currentStatusFilter === 'Confirmed') return s === 'confirmed' || s === 'approved';
+                    if (currentStatusFilter === 'Cancelled') return s === 'cancelled' || s === 'rejected';
+                    return s === currentStatusFilter.toLowerCase();
+                });
+            }
+
+            let dashRecords = [...filteredRecords];
+            dashRecords.sort((a, b) => {
+                let valA, valB;
+                if (dashboardSortCol === 'date') {
+                    valA = a.rawTimestamp || new Date(a.date).getTime() || 0;
+                    valB = b.rawTimestamp || new Date(b.date).getTime() || 0;
+                } else {
+                    valA = (a[dashboardSortCol] || '').toLowerCase();
+                    valB = (b[dashboardSortCol] || '').toLowerCase();
+                }
+                if (valA < valB) return dashboardSortDir === 'asc' ? -1 : 1;
+                if (valA > valB) return dashboardSortDir === 'asc' ? 1 : -1;
+                return 0;
+            });
+
+            let dashboardBody = document.getElementById('dynamicDashboardAppointmentsBody');
+            let dashboardSeeMoreContainer = document.getElementById('dashboardSeeMoreContainer');
+
+            if (dashboardBody) {
+                dashboardBody.innerHTML = '';
+                if (dashRecords.length > 0) {
+                    let limit = dashboardShowAll ? dashRecords.length : 5;
+                    let visibleList = dashRecords.slice(0, limit);
+
+                    visibleList.forEach(item => {
+                        let badgeClass = (item.status || 'pending').toLowerCase();
+                        let actionHtml = '';
+
+                        if (item.status && item.status.toLowerCase() === 'pending') {
+                            actionHtml = `
+                                <button class="btn-action btn-approve" onclick="updateStatus('${item.id}', 'Confirmed')">Approve</button>
+                                <button class="btn-action btn-reject" onclick="updateStatus('${item.id}', 'Rejected')">Reject</button>
+                                <button class="btn-action btn-delete" onclick="promptDeleteAppointment('${item.id}')" title="Delete Record"><i class="fa-solid fa-trash"></i></button>
+                            `;
+                        } else {
+                            actionHtml = `
+                                <button class="btn-action btn-delete" onclick="promptDeleteAppointment('${item.id}')" title="Delete Record"><i class="fa-solid fa-trash"></i> Delete</button>
+                            `;
+                        }
+
+                        dashboardBody.innerHTML += `
+                            <tr>
+                                <td><strong>${item.clientName}</strong></td>
+                                <td>${item.petName}</td>
+                                <td>${item.service}</td>
+                                <td>${item.date}</td>
+                                <td><span class="badge badge-${badgeClass}">${item.status}</span></td>
+                                <td>${actionHtml}</td>
+                            </tr>
+                        `;
+                    });
+
+                    if (dashRecords.length > 5 && currentStatusFilter === 'All') {
+                        dashboardSeeMoreContainer.innerHTML = `
+                            <button class="see-more-toggle" onclick="toggleDashboardSeeMore()">
+                                ${dashboardShowAll ? 'See Less ▲' : `See More (${dashRecords.length - 5} more) ▼`}
+                            </button>
+                        `;
+                    } else {
+                        dashboardSeeMoreContainer.innerHTML = '';
+                    }
+                } else {
+                    dashboardBody.innerHTML = `<tr><td colspan="6" style="text-align: center; color: var(--text-muted); padding: 24px;">No appointment records found for this filter.</td></tr>`;
+                    dashboardSeeMoreContainer.innerHTML = '';
+                }
+            }
+
+            let apptRecords = [...allRecords];
+            apptRecords.sort((a, b) => {
+                let valA, valB;
+                if (appointmentsSortCol === 'date') {
+                    valA = a.rawTimestamp || new Date(a.date).getTime() || 0;
+                    valB = b.rawTimestamp || new Date(b.date).getTime() || 0;
+                } else {
+                    valA = (a[appointmentsSortCol] || '').toLowerCase();
+                    valB = (b[appointmentsSortCol] || '').toLowerCase();
+                }
+                if (valA < valB) return appointmentsSortDir === 'asc' ? -1 : 1;
+                if (valA > valB) return appointmentsSortDir === 'asc' ? 1 : -1;
+                return 0;
+            });
+
+            let allAppointmentsBody = document.getElementById('dynamicAllAppointmentsBody');
+            let appointmentsSeeMoreContainer = document.getElementById('appointmentsSeeMoreContainer');
+
+            if (allAppointmentsBody) {
+                allAppointmentsBody.innerHTML = '';
+                if (apptRecords.length > 0) {
+                    let limitAppt = appointmentsShowAll ? apptRecords.length : 8;
+                    let visibleApptList = apptRecords.slice(0, limitAppt);
+
+                    visibleApptList.forEach(item => {
+                        let badgeClass = (item.status || 'pending').toLowerCase();
+                        allAppointmentsBody.innerHTML += `
+                            <tr>
+                                <td>#APT-${item.id}</td>
+                                <td><strong>${item.clientName}</strong></td>
+                                <td>${item.petName}</td>
+                                <td>${item.service}</td>
+                                <td>${item.date}</td>
+                                <td><span class="badge badge-${badgeClass}">${item.status}</span></td>
+                                <td>
+                                    <button class="btn-action btn-delete" onclick="promptDeleteAppointment('${item.id}')" title="Delete Record"><i class="fa-solid fa-trash"></i> Delete</button>
+                                </td>
+                            </tr>
+                        `;
+                    });
+
+                    if (apptRecords.length > 8) {
+                        appointmentsSeeMoreContainer.innerHTML = `
+                            <button class="see-more-toggle" onclick="toggleAppointmentsSeeMore()">
+                                ${appointmentsShowAll ? 'See Less ▲' : `See More (${apptRecords.length - 8} more) ▼`}
+                            </button>
+                        `;
+                    } else {
+                        appointmentsSeeMoreContainer.innerHTML = '';
+                    }
+                } else {
+                    allAppointmentsBody.innerHTML = `<tr><td colspan="7" style="text-align: center; color: var(--text-muted); padding: 24px;">No clinic appointments recorded.</td></tr>`;
+                    appointmentsSeeMoreContainer.innerHTML = '';
+                }
+            }
+        }
+
+        // Trigger custom confirmation modal instead of native browser popup
+        function promptDeleteAppointment(id) {
+            showCustomConfirm('Are you sure you want to delete this appointment? It will be archived in Deleted Logs.', () => {
+                deleteAppointmentAction(id);
+            });
+        }
+
+        function deleteAppointmentAction(id) {
+            let serverAppointments = [];
+            @if (appointments.Any())
+            {
+                    foreach (var item in appointments)
+                    {
+                            @:serverAppointments.push({ id: '@item.Id', clientName: '@item.ClientName', petName: '@item.PetName', service: '@item.Service', date: '@item.AppointmentDate.ToString("MMM dd, yyyy - hh:mm tt")', status: '@item.Status' });
+                    }
+            }
+            let localSchedules = JSON.parse(localStorage.getItem('local_pet_appointments') || '[]');
+            let all = [...serverAppointments, ...localSchedules];
+            let target = all.find(a => String(a.id) === String(id));
+
+            let deletedArchive = JSON.parse(localStorage.getItem('admin_deleted_appointment_logs') || '[]');
+            let deletedIds = JSON.parse(localStorage.getItem('admin_deleted_appointment_ids') || '[]');
+
+            if (target) {
+                target.deletedAt = new Date().toLocaleString('en-US', { month: 'short', day: 'numeric', year: 'numeric', hour: '2-digit', minute: '2-digit' });
+                deletedArchive.unshift(target);
+            }
+            if (!deletedIds.includes(String(id))) {
+                deletedIds.push(String(id));
+            }
+
+            localStorage.setItem('admin_deleted_appointment_logs', JSON.stringify(deletedArchive));
+            localStorage.setItem('admin_deleted_appointment_ids', JSON.stringify(deletedIds));
+
+            loadAdminAppointmentsTables();
+            loadDeletedLogsTable();
+            loadPetRecordsTable();
+        }
+
+        function loadDeletedLogsTable() {
+            let deletedArchive = JSON.parse(localStorage.getItem('admin_deleted_appointment_logs') || '[]');
+            let tbody = document.getElementById('dynamicDeletedLogsBody');
+
+            if (tbody) {
+                tbody.innerHTML = '';
+                if (deletedArchive.length > 0) {
+                    deletedArchive.forEach(item => {
+                        let badgeClass = (item.status || 'pending').toLowerCase();
+                        tbody.innerHTML += `
+                            <tr>
+                                <td><strong>${item.clientName}</strong></td>
+                                <td>${item.petName}</td>
+                                <td>${item.service}</td>
+                                <td>${item.date || item.rawDate || 'N/A'}</td>
+                                <td><span class="badge badge-${badgeClass}">${item.status || 'Unknown'}</span></td>
+                                <td style="color: var(--text-muted); font-size: 0.8rem;">${item.deletedAt || 'Just now'}</td>
+                            </tr>
+                        `;
+                    });
+                } else {
+                    tbody.innerHTML = `<tr><td colspan="6" style="text-align: center; color: var(--text-muted); padding: 24px;">No deleted appointment records found in archive.</td></tr>`;
+                }
+            }
+        }
+
+        function clearDeletedLogsArchive() {
+            showCustomConfirm('Are you sure you want to clear all archived deleted logs?', () => {
+                localStorage.removeItem('admin_deleted_appointment_logs');
+                loadDeletedLogsTable();
+            });
+        }
+
+        function loadPetRecordsTable() {
+            let serverAppointments = [];
+            @if (appointments.Any())
+            {
+                    foreach (var item in appointments)
+                    {
+                            @:serverAppointments.push({ id: '@item.Id', clientName: '@item.ClientName', petName: '@item.PetName', service: '@item.Service', status: '@item.Status' });
+                    }
+            }
+
+            let localSchedules = JSON.parse(localStorage.getItem('local_pet_appointments') || '[]');
+            let deletedIds = JSON.parse(localStorage.getItem('admin_deleted_appointment_ids') || '[]');
+
+            let combinedOverrides = {};
+            let generalOverrides = JSON.parse(localStorage.getItem('appointment_status_overrides') || '{}');
+            Object.assign(combinedOverrides, generalOverrides);
+            let globalLogs = JSON.parse(localStorage.getItem('admin_appointment_logs') || '{}');
+            Object.assign(combinedOverrides, globalLogs);
+            for (let i = 0; i < localStorage.length; i++) {
+                let key = localStorage.key(i);
+                if (key && key.startsWith('appointment_status_overrides_')) {
+                    try {
+                        let clientOverrides = JSON.parse(localStorage.getItem(key) || '{}');
+                        Object.assign(combinedOverrides, clientOverrides);
+                    } catch(e) {}
+                }
+            }
+
+            let petHealthRecords = JSON.parse(localStorage.getItem('vet_pet_health_records') || '{}');
+
+            let combinedMap = {};
+            serverAppointments.forEach(item => { if(!deletedIds.includes(String(item.id))) combinedMap[item.id] = item; });
+            localSchedules.forEach(item => { if(!deletedIds.includes(String(item.id))) combinedMap[item.id] = item; });
+
+            let allRecords = Object.values(combinedMap).map(item => {
+                if (item.id && combinedOverrides[item.id]) {
+                    item.status = combinedOverrides[item.id].status;
+                }
+                return item;
+            });
+
+            let completedAppointments = allRecords.filter(a => {
+                let s = (a.status || '').toLowerCase();
+                return s === 'confirmed' || s === 'approved' || s === 'completed';
+            });
+
+            completedAppointments.sort((a, b) => {
+                let valA = (a[petsSortCol] || '').toLowerCase();
+                let valB = (b[petsSortCol] || '').toLowerCase();
+                if (valA < valB) return petsSortDir === 'asc' ? -1 : 1;
+                if (valA > valB) return petsSortDir === 'asc' ? 1 : -1;
+                return 0;
+            });
+
+            let petRecordsBody = document.getElementById('dynamicPetRecordsBody');
+            if (petRecordsBody) {
+                petRecordsBody.innerHTML = '';
+                if (completedAppointments.length > 0) {
+                    completedAppointments.forEach(item => {
+                        let recordKey = item.id || (item.petName + '_' + item.clientName);
+                        let healthInfo = petHealthRecords[recordKey] || {
+                            diagnosis: 'Healthy / Routine Check-up Completed',
+                            vaccines: 'Anti-Rabies / Service Verified'
+                        };
+
+                        petRecordsBody.innerHTML += `
+                            <tr>
+                                <td><strong>${item.petName}</strong></td>
+                                <td>${item.clientName}</td>
+                                <td><span style="color: var(--primary-accent); font-weight: 500;">${item.service}</span></td>
+                                <td>${healthInfo.diagnosis}</td>
+                                <td><span class="badge badge-approved">${healthInfo.vaccines}</span></td>
+                                <td>
+                                    <button class="btn-action btn-primary-custom" onclick="openVetModal('${item.id || ''}', '${item.petName}', '${item.clientName}', '${healthInfo.diagnosis}', '${healthInfo.vaccines}')">
+                                        <i class="fa-solid fa-notes-medical"></i> Update Record
+                                    </button>
+                                </td>
+                            </tr>
+                        `;
+                    });
+                } else {
+                    petRecordsBody.innerHTML = `<tr><td colspan="6" style="text-align: center; color: var(--text-muted); padding: 24px;">No completed or confirmed appointments available for pet record updates yet.</td></tr>`;
+                }
+            }
+        }
+
+        function openVetModal(id, petName, owner, diagnosis, vaccines) {
+            document.getElementById('modalPetKey').value = id;
+            document.getElementById('displayPetName').value = petName + " (Owner: " + owner + ")";
+            document.getElementById('modalDiagnosis').value = diagnosis;
+            document.getElementById('modalVaccines').value = vaccines;
+            document.getElementById('vetModal').style.display = 'flex';
+        }
+
+        function closeVetModal() {
+            document.getElementById('vetModal').style.display = 'none';
+        }
+
+        function saveHealthRecord() {
+            let key = document.getElementById('modalPetKey').value;
+            let diagnosis = document.getElementById('modalDiagnosis').value.trim();
+            let vaccines = document.getElementById('modalVaccines').value.trim();
+
+            if (!key) {
+                alert('Invalid record identifier.');
+                return;
+            }
+
+            let petHealthRecords = JSON.parse(localStorage.getItem('vet_pet_health_records') || '{}');
+            petHealthRecords[key] = { diagnosis, vaccines };
+            localStorage.setItem('vet_pet_health_records', JSON.stringify(petHealthRecords));
+
+            playSound('success');
+            alert('Pet health record successfully updated by veterinarian!');
+            closeVetModal();
+            loadPetRecordsTable();
+        }
+
         const themeToggleBtn = document.getElementById('themeToggle');
         const themeIcon = document.getElementById('themeIcon');
         const themeText = document.getElementById('themeText');
@@ -825,8 +1630,27 @@
             }
         });
 
-        // Appointment Status Update Handler (Approve / Reject)
         async function updateStatus(id, newStatus) {
+            playSound('success');
+            let statusOverrides = JSON.parse(localStorage.getItem('appointment_status_overrides') || '{}');
+            statusOverrides[id] = { status: newStatus };
+            localStorage.setItem('appointment_status_overrides', JSON.stringify(statusOverrides));
+
+            let globalAdminLogs = JSON.parse(localStorage.getItem('admin_appointment_logs') || '{}');
+            globalAdminLogs[id] = { status: newStatus };
+            localStorage.setItem('admin_appointment_logs', JSON.stringify(globalAdminLogs));
+
+            for (let i = 0; i < localStorage.length; i++) {
+                let key = localStorage.key(i);
+                if (key && key.startsWith('appointment_status_overrides_')) {
+                    try {
+                        let clientOverrides = JSON.parse(localStorage.getItem(key) || '{}');
+                        clientOverrides[id] = { status: newStatus };
+                        localStorage.setItem(key, JSON.stringify(clientOverrides));
+                    } catch (e) {}
+                }
+            }
+
             try {
                 const response = await fetch('/Home/UpdateAppointmentStatus', {
                     method: 'POST',
@@ -835,79 +1659,99 @@
                 });
 
                 const result = await response.json();
-                if (result.success) {
-                    location.reload();
-                } else {
-                    alert(result.message || 'Failed to update status.');
-                }
+                loadAdminAppointmentsTables();
+                loadPetRecordsTable();
             } catch (err) {
                 console.error(err);
-                alert('An error occurred while communicating with the server.');
+                loadAdminAppointmentsTables();
+                loadPetRecordsTable();
             }
         }
 
-        // Animated Stat Counters on Load
-        document.addEventListener("DOMContentLoaded", () => {
-            const counters = document.querySelectorAll('.stat-number');
-            counters.forEach(counter => {
-                const target = +counter.innerText;
-                if (isNaN(target)) return;
+        function postAnnouncement(e) {
+            e.preventDefault();
+            const title = document.getElementById('annTitle').value.trim();
+            const content = document.getElementById('annContent').value.trim();
+            const dateStr = new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
 
-                let count = 0;
-                const speed = Math.max(1, Math.ceil(target / 20));
+            let list = JSON.parse(localStorage.getItem('clinic_announcements') || '[]');
+            list.unshift({ title, content, date: dateStr });
+            localStorage.setItem('clinic_announcements', JSON.stringify(list));
 
-                const updateCount = () => {
-                    count += speed;
-                    if (count < target) {
-                        counter.innerText = count;
-                        setTimeout(updateCount, 40);
-                    } else {
-                        counter.innerText = target;
-                    }
-                };
-                updateCount();
+            playSound('success');
+            alert('Announcement published successfully!');
+            document.getElementById('annTitle').value = '';
+            document.getElementById('annContent').value = '';
+            loadAdminAnnouncements();
+        }
+
+        function loadAdminAnnouncements() {
+            let list = JSON.parse(localStorage.getItem('clinic_announcements') || '[]');
+            if (list.length === 0) {
+                list = [{ title: 'Community Anti-Rabies Drive', content: 'Scheduled this Saturday at the Alaminos City Veterinary Office facility.', date: 'Nov 10, 2026' }];
+                localStorage.setItem('clinic_announcements', JSON.stringify(list));
+            }
+
+            const container = document.getElementById('adminAnnouncementsList');
+            container.innerHTML = '';
+            list.forEach((ann, idx) => {
+                container.innerHTML += `
+                    <div style="background: var(--bg-main); padding: 14px; border-radius: 8px; border: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: flex-start;">
+                        <div>
+                            <strong style="color: var(--text-heading); display: block; margin-bottom: 2px;">${ann.title}</strong>
+                            <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 4px;">${ann.content}</p>
+                            <span style="font-size: 0.75rem; color: var(--primary-accent);">${ann.date}</span>
+                        </div>
+                        <button onclick="deleteAnnouncement(${idx})" class="btn-action btn-reject" style="padding: 4px 8px; font-size: 0.75rem;"><i class="fa-solid fa-trash"></i></button>
+                    </div>
+                `;
             });
-        });
-
-        // Vet Healthcare Modal Handlers
-        function openVetModal(petName, species, owner) {
-            document.getElementById('modalPetName').value = petName;
-            document.getElementById('displayPetName').value = petName + " (" + species + " - Owner: " + owner + ")";
-            document.getElementById('vetModal').style.display = 'flex';
         }
 
-        function closeVetModal() {
-            document.getElementById('vetModal').style.display = 'none';
+        function deleteAnnouncement(index) {
+            playSound('delete');
+            let list = JSON.parse(localStorage.getItem('clinic_announcements') || '[]');
+            list.splice(index, 1);
+            localStorage.setItem('clinic_announcements', JSON.stringify(list));
+            loadAdminAnnouncements();
         }
 
-        function saveHealthRecord() {
-            alert('Pet health record updated successfully!');
-            closeVetModal();
-        }
-
-        // Chatbot Window Toggle
+        let isChatOpen = false;
         function toggleChatWindow() {
-            const win = document.getElementById('chatWindow');
-            win.style.display = win.style.display === 'flex' ? 'none' : 'flex';
+            isChatOpen = !isChatOpen;
+            document.getElementById('chatWindow').style.display = isChatOpen ? 'flex' : 'none';
         }
 
-        function sendChatMessage() {
-            const input = document.getElementById('chatInput');
-            const msg = input.value.trim();
-            if(!msg) return;
+        function handleChatKeyPress(event) {
+            if (event.key === 'Enter') sendChatMessage();
+        }
+
+        async function sendChatMessage() {
+            const inputField = document.getElementById('chatInput');
+            const messageText = inputField.value.trim();
+            if (!messageText) return;
 
             const chatMessages = document.getElementById('chatMessages');
-            chatMessages.innerHTML += `<div style="background: #2563eb; color: white; padding: 10px 14px; border-radius: 12px; max-width: 85%; align-self: flex-end; line-height: 1.4;">${msg}</div>`;
-            input.value = '';
+            chatMessages.innerHTML += `<div style="background: var(--primary-accent); color: white; padding: 8px 12px; border-radius: 6px; max-width: 85%; align-self: flex-end; font-size: 13px;">${escapeHtml(messageText)}</div>`;
+            inputField.value = '';
+            chatMessages.scrollTop = chatMessages.scrollHeight;
 
-            setTimeout(() => {
-                chatMessages.innerHTML += `<div style="background: #eff6ff; color: #1e3a8a; padding: 10px 14px; border-radius: 12px; max-width: 85%; align-self: flex-start; border-left: 3px solid #3b82f6; line-height: 1.4;">Thank you for your question! Our veterinary team will assist you shortly. 🐾</div>`;
+            try {
+                const response = await fetch('/Chat/SendMessage', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ message: messageText })
+                });
+                const data = await response.json();
+                chatMessages.innerHTML += `<div style="background: var(--bg-card); border: 1px solid var(--border-color); color: var(--text-main); padding: 8px 12px; border-radius: 6px; max-width: 85%; align-self: flex-start; font-size: 13px;">${data.reply}</div>`;
                 chatMessages.scrollTop = chatMessages.scrollHeight;
-            }, 1000);
+            } catch (error) {
+                chatMessages.innerHTML += `<div style="background: #fee2e2; color: #dc2626; padding: 8px 12px; border-radius: 6px; font-size: 13px;">Connection error.</div>`;
+            }
         }
 
-        function handleChatKeyPress(e) {
-            if(e.key === 'Enter') sendChatMessage();
+        function escapeHtml(text) {
+            return text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
         }
     </script>
 </body>
