@@ -1982,7 +1982,7 @@
                 const response = await fetch('/Chat/SendMessage', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ message: messageText })
+                    body: JSON.stringify({ messagge: messageText })
                 });
                 const data = await response.json();
                 chatMessages.innerHTML += `<div style="background: var(--card-bg); border: 1px solid var(--border-color); color: var(--heading-color); padding: 8px 12px; border-radius: 6px; max-width: 85%; align-self: flex-start; font-size: 13px;">${data.reply}</div>`;
