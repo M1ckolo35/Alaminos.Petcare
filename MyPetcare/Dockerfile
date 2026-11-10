@@ -4,9 +4,9 @@ WORKDIR /src
 
 COPY . .
 
-RUN dotnet restore "MyPetcare/MyPetcare.csproj"
+RUN dotnet restore "MyPetcare.csproj"
 
-RUN dotnet publish "MyPetcare/MyPetcare.csproj" -c Release -o /app/publish
+RUN dotnet publish "MyPetcare.csproj" -c Release -o /app/publish
 
 FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS final
 WORKDIR /app
