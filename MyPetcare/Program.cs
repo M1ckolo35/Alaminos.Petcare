@@ -1,3 +1,4 @@
+
 using Microsoft.EntityFrameworkCore;
 using MyPetcare.Data;
 
@@ -6,18 +7,21 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 
-// Get Connection String from appsettings.json
-var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+// Get SQLite connection string
+var connectionString = builder.Configuration.GetConnectionString("DefaultConnection")
+    ?? "Data Source=mypetcare.db";
 
-// Register DbContext with SQLite for Linux/Render compatibility
+// Register DbContext with SQLite
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlite(connectionString));
 
 var app = builder.Build();
 
+// Create database if it doesn't exist
 using (var scope = app.Services.CreateScope())
 {
     var services = scope.ServiceProvider;
+
     try
     {
         var context = services.GetRequiredService<ApplicationDbContext>();
