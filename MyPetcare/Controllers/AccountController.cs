@@ -83,10 +83,21 @@ namespace MyPetcare.Controllers
                 return Json(new { success = false, message = "Please fill in all required fields." });
             }
 
-            // GMAIL VALIDATION: Enforce @gmail.com for clients
-            if (!model.Email.Trim().EndsWith("@gmail.com", StringComparison.OrdinalIgnoreCase))
+            // ROLE-BASED EMAIL VALIDATION: Enforce domain based on selected role
+            if (!string.IsNullOrEmpty(model.Role) && model.Role.Equals("admin", StringComparison.OrdinalIgnoreCase))
             {
-                return Json(new { success = false, message = "Registration requires a valid @gmail.com address." });
+                if (!model.Email.Trim().EndsWith("@admin.com", StringComparison.OrdinalIgnoreCase))
+                {
+                    return Json(new { success = false, message = "Admin registration requires a valid @admin.com address." });
+                }
+            }
+            else
+            {
+                // Default / Client role validation
+                if (!model.Email.Trim().EndsWith("@gmail.com", StringComparison.OrdinalIgnoreCase))
+                {
+                    return Json(new { success = false, message = "Client registration requires a valid @gmail.com address." });
+                }
             }
 
             // PASSWORD STRENGTH VALIDATION: At least 8 characters, letters, numbers, and special characters
@@ -108,16 +119,20 @@ namespace MyPetcare.Controllers
 
             try
             {
+                var userRole = (!string.IsNullOrEmpty(model.Role) && model.Role.Equals("admin", StringComparison.OrdinalIgnoreCase))
+                    ? "Admin"
+                    : "Client Account";
+
                 var newUser = new User
                 {
                     FullName = string.IsNullOrWhiteSpace(model.Name) ? model.Email.Split('@')[0] : model.Name,
                     Email = model.Email.Trim(),
                     Password = model.Password,
-                    Role = "Client Account" // Matches the role label in your UI
+                    Role = userRole
                 };
 
                 _context.Users.Add(newUser);
-                _context.SaveChanges(); // Saves directly to SQL Server
+                _context.SaveChanges(); // Saves to Supabase PostgreSQL database
 
                 return Json(new { success = true, message = "Registration successful!" });
             }
@@ -142,7 +157,7 @@ namespace MyPetcare.Controllers
                 return Json(new { success = false, message = "Password must be at least 8 characters long and include letters, numbers, and special characters." });
             }
 
-            // Find the user by email in the SQL Server database
+            // Find the user by email in the database
             var user = _context.Users.FirstOrDefault(u => u.Email.ToLower() == model.Email.ToLower());
             if (user == null)
             {
@@ -153,7 +168,7 @@ namespace MyPetcare.Controllers
             {
                 // Update the password
                 user.Password = model.NewPassword;
-                _context.SaveChanges(); // Save changes to SQL Server
+                _context.SaveChanges();
 
                 return Json(new { success = true, message = "Password updated successfully! You can now log in." });
             }
@@ -166,7 +181,6 @@ namespace MyPetcare.Controllers
         [HttpGet]
         public IActionResult Logout()
         {
-            // Redirect the user back to the landing page or login page
             return RedirectToAction("Index", "Account");
         }
 
@@ -218,7 +232,7 @@ namespace MyPetcare.Controllers
         }
     }
 
-    // Model para sa Login
+    // Model for Login
     public class LoginModel
     {
         public string Email { get; set; } = string.Empty;
@@ -226,12 +240,13 @@ namespace MyPetcare.Controllers
         public string Role { get; set; } = string.Empty;
     }
 
-    // DTO para saluhin ang casing mula sa frontend form ng Register
+    // DTO for capturing registration payload from frontend
     public class RegisterApiDto
     {
         public string Name { get; set; } = string.Empty;
         public string Email { get; set; } = string.Empty;
         public string Password { get; set; } = string.Empty;
+        public string Role { get; set; } = string.Empty;
     }
 
     // DTO for Forgot Password requests
