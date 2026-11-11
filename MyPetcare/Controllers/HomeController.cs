@@ -46,6 +46,8 @@ namespace MyPetcare.Controllers
 
             return View("~/Views/Admin/Dashboard.cshtml", usersList);
         }
+        [HttpGet]
+        public IActionResult Health() => Ok("ok");
 
         [HttpPost]
         public IActionResult CreateAppointment([FromBody] AppointmentModel model)
