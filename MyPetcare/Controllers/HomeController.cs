@@ -11,22 +11,22 @@ namespace MyPetcare.Controllers
     {
         private readonly ApplicationDbContext _context;
 
-        // Inject ApplicationDbContext so data persists directly into SQL Server
         public HomeController(ApplicationDbContext context)
         {
             _context = context;
         }
+
         [HttpGet]
         public IActionResult ClientDashboard(string name = "Pet Owner")
         {
-            // 1. Assign to a strict string variable (Prevents CS1963 dynamic error)
             string clientName = string.IsNullOrEmpty(name) ? "Emelynradovan" : name;
             ViewBag.ClientName = clientName;
-            // 2. Find the user's email from the database safely
-            var matchedUser = _context.Users.FirstOrDefault(u => u.Email.Contains(clientName));
-            ViewBag.UserEmail = matchedUser?.Email ?? $"{clientName.ToLowerInvariant()}@gmail.com";
 
-            // 3. Query SQL Server specifically for this logged-in user's appointments
+            // PostgreSQL is case-sensitive, so compare in lowercase
+            string lowerName = clientName.ToLowerInvariant();
+            var matchedUser = _context.Users.FirstOrDefault(u => u.Email.ToLower().Contains(lowerName));
+            ViewBag.UserEmail = matchedUser?.Email ?? $"{lowerName}@gmail.com";
+
             ViewBag.Appointments = _context.Appointments
                 .Where(a => a.ClientName == clientName)
                 .OrderByDescending(a => a.Id)
@@ -38,12 +38,10 @@ namespace MyPetcare.Controllers
         [HttpGet]
         public IActionResult AdminDashboard()
         {
-            // Fetch all appointments from SQL Server
             ViewBag.Appointments = _context.Appointments
                 .OrderByDescending(a => a.Id)
                 .ToList();
 
-            // Fetch all registered users from SQL Server and pass them as the Model
             var usersList = _context.Users.ToList();
 
             return View("~/Views/Admin/Dashboard.cshtml", usersList);
@@ -59,14 +57,29 @@ namespace MyPetcare.Controllers
 
             model.Status = "Pending";
 
-            // 3. Save the new appointment directly to your SQL Server database
-            _context.Appointments.Add(model);
-            _context.SaveChanges();
+            // Npgsql only accepts UTC DateTime for timestamptz columns.
+            // SpecifyKind keeps the exact time the user picked and labels it UTC.
+            model.AppointmentDate = DateTime.SpecifyKind(model.AppointmentDate, DateTimeKind.Utc);
+
+            try
+            {
+                _context.Appointments.Add(model);
+                _context.SaveChanges();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.ToString()); // visible in Render's Logs tab
+                return Json(new
+                {
+                    success = false,
+                    message = "Could not save appointment: " + ex.GetBaseException().Message
+                });
+            }
 
             return Json(new
             {
                 success = true,
-                message = "Appointment successfully recorded in SQL Server!",
+                message = "Appointment successfully recorded!",
                 appointment = new
                 {
                     id = model.Id,
@@ -79,7 +92,6 @@ namespace MyPetcare.Controllers
             });
         }
 
-        // Endpoint called by Admin to Approve or Reject
         [HttpPost]
         public IActionResult UpdateAppointmentStatus([FromBody] StatusUpdateModel model)
         {
@@ -89,7 +101,7 @@ namespace MyPetcare.Controllers
             if (appointment != null)
             {
                 appointment.Status = model.Status; // "Confirmed" or "Rejected"
-                _context.SaveChanges(); // Save the status update to SQL Server
+                _context.SaveChanges();
 
                 return Json(new { success = true, message = $"Appointment status updated to {model.Status}." });
             }
