@@ -9,9 +9,9 @@ builder.Services.AddControllersWithViews();
 // Get Connection String from appsettings.json
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 
-// Register DbContext with SQL Server (IBALIK DITO SA SQL SERVER)
+// Register DbContext with SQLite for Linux/Render compatibility
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
-    options.UseSqlServer(connectionString));
+    options.UseSqlite(connectionString));
 
 var app = builder.Build();
 
