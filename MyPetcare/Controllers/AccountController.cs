@@ -83,24 +83,16 @@ namespace MyPetcare.Controllers
                 return Json(new { success = false, message = "Please fill in all required fields." });
             }
 
-            // ROLE-BASED EMAIL VALIDATION: Enforce domain based on selected role
-            if (!string.IsNullOrEmpty(model.Role) && model.Role.Equals("admin", StringComparison.OrdinalIgnoreCase))
+            string email = model.Email.Trim();
+            bool isAdminEmail = email.EndsWith("@admin.com", StringComparison.OrdinalIgnoreCase);
+            bool isClientEmail = email.EndsWith("@gmail.com", StringComparison.OrdinalIgnoreCase);
+
+            // Allow @gmail.com (client) or @admin.com (admin)
+            if (!isAdminEmail && !isClientEmail)
             {
-                if (!model.Email.Trim().EndsWith("@admin.com", StringComparison.OrdinalIgnoreCase))
-                {
-                    return Json(new { success = false, message = "Admin registration requires a valid @admin.com address." });
-                }
-            }
-            else
-            {
-                // Default / Client role validation
-                if (!model.Email.Trim().EndsWith("@gmail.com", StringComparison.OrdinalIgnoreCase))
-                {
-                    return Json(new { success = false, message = "Client registration requires a valid @gmail.com address." });
-                }
+                return Json(new { success = false, message = "Use @gmail.com for client accounts or @admin.com for admin accounts." });
             }
 
-            // PASSWORD STRENGTH VALIDATION: At least 8 characters, letters, numbers, and special characters
             var passwordRegex = new System.Text.RegularExpressions.Regex(@"^(?=.*[A-Za-z])(?=.*\d)(?=.*[^A-Za-z0-9]).{8,}$");
             if (!passwordRegex.IsMatch(model.Password))
             {
@@ -111,34 +103,29 @@ namespace MyPetcare.Controllers
                 });
             }
 
-            // Check if the email already exists in the database
-            if (_context.Users.Any(u => u.Email.ToLower() == model.Email.ToLower()))
+            if (_context.Users.Any(u => u.Email.ToLower() == email.ToLower()))
             {
                 return Json(new { success = false, message = "Email is already registered!" });
             }
 
             try
             {
-                var userRole = (!string.IsNullOrEmpty(model.Role) && model.Role.Equals("admin", StringComparison.OrdinalIgnoreCase))
-                    ? "Admin"
-                    : "Client Account";
-
                 var newUser = new User
                 {
-                    FullName = string.IsNullOrWhiteSpace(model.Name) ? model.Email.Split('@')[0] : model.Name,
-                    Email = model.Email.Trim(),
+                    FullName = string.IsNullOrWhiteSpace(model.Name) ? email.Split('@')[0] : model.Name,
+                    Email = email,
                     Password = model.Password,
-                    Role = userRole
+                    Role = isAdminEmail ? "Admin Account" : "Client Account"
                 };
 
                 _context.Users.Add(newUser);
-                _context.SaveChanges(); // Saves to Supabase PostgreSQL database
+                _context.SaveChanges();
 
                 return Json(new { success = true, message = "Registration successful!" });
             }
             catch (Exception ex)
             {
-                return Json(new { success = false, message = "An error occurred: " + ex.Message });
+                return Json(new { success = false, message = "An error occurred: " + ex.GetBaseException().Message });
             }
         }
 
@@ -157,7 +144,7 @@ namespace MyPetcare.Controllers
                 return Json(new { success = false, message = "Password must be at least 8 characters long and include letters, numbers, and special characters." });
             }
 
-            // Find the user by email in the database
+            // Find the user by email in the SQL Server database
             var user = _context.Users.FirstOrDefault(u => u.Email.ToLower() == model.Email.ToLower());
             if (user == null)
             {
@@ -168,7 +155,7 @@ namespace MyPetcare.Controllers
             {
                 // Update the password
                 user.Password = model.NewPassword;
-                _context.SaveChanges();
+                _context.SaveChanges(); // Save changes to SQL Server
 
                 return Json(new { success = true, message = "Password updated successfully! You can now log in." });
             }
@@ -181,6 +168,7 @@ namespace MyPetcare.Controllers
         [HttpGet]
         public IActionResult Logout()
         {
+            // Redirect the user back to the landing page or login page
             return RedirectToAction("Index", "Account");
         }
 
@@ -232,7 +220,7 @@ namespace MyPetcare.Controllers
         }
     }
 
-    // Model for Login
+    // Model para sa Login
     public class LoginModel
     {
         public string Email { get; set; } = string.Empty;
@@ -240,13 +228,12 @@ namespace MyPetcare.Controllers
         public string Role { get; set; } = string.Empty;
     }
 
-    // DTO for capturing registration payload from frontend
+    // DTO para saluhin ang casing mula sa frontend form ng Register
     public class RegisterApiDto
     {
         public string Name { get; set; } = string.Empty;
         public string Email { get; set; } = string.Empty;
         public string Password { get; set; } = string.Empty;
-        public string Role { get; set; } = string.Empty;
     }
 
     // DTO for Forgot Password requests
