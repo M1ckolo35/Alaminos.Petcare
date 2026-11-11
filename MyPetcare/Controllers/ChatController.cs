@@ -5,47 +5,40 @@ namespace MyPetcare.Controllers // Palitan ito ayon sa exact namespace ng iyong 
     public class ChatController : Controller
     {
         [HttpPost]
-        public IActionResult SendMessage([FromBody] ChatModel model)
+        public async Task<IActionResult> SendMessage([FromBody] ChatModel model)
         {
             if (model == null || string.IsNullOrWhiteSpace(model.Message))
             {
-                return Json(new { reply = "Please ask me any question about animals, pets, or veterinary care!" });
+                return Json(new { success = false, reply = "Please ask a question about animals or pet care." });
             }
 
-            string userMsg = model.Message.ToLower();
+            string userQuery = model.Message.ToLower().Trim();
             string botReply = "";
 
-            // Comprehensive animal knowledge base logic
-            if (userMsg.Contains("dog dont want") || userMsg.Contains("hate") || userMsg.Contains("dislike") || userMsg.Contains("things that dog"))
+            // Comprehensive animal topic handler
+            if (userQuery.Contains("dog") || userQuery.Contains("puppy"))
             {
-                botReply = "Dogs generally dislike tight hugs, loud sudden noises, strong chemical scents like citrus or vinegar, being disturbed while eating, and having their nose or sensitive paws touched roughly.";
+                botReply = $"Regarding dogs ({model.Message}): Dogs thrive on routine, regular exercise, balanced nutrition (rich in proteins), and mental stimulation like chew toys and fetch. Always keep toxic foods like chocolate, grapes, and onions away from them!";
             }
-            else if (userMsg.Contains("cat") || userMsg.Contains("pusa"))
+            else if (userQuery.Contains("cat") || userQuery.Contains("kitten"))
             {
-                botReply = "Cats are independent animals that communicate through purring, meowing, and tail movements. They need fresh water, high-protein diets, scratching posts, and regular litter box maintenance!";
+                botReply = $"Regarding cats ({model.Message}): Cats require fresh water, high-protein diets (as obligate carnivores), clean litter boxes, and vertical spaces like scratching posts or cat trees to keep them active and stress-free.";
             }
-            else if (userMsg.Contains("eat") || userMsg.Contains("food") || userMsg.Contains("feed") || userMsg.Contains("poison") || userMsg.Contains("chocolate"))
+            else if (userQuery.Contains("food") || userQuery.Contains("eat") || userQuery.Contains("diet") || userQuery.Contains("favourite"))
             {
-                botReply = "Many common foods are dangerous to animals! For example, chocolate, onions, garlic, grapes, and xylitol (artificial sweetener) are toxic to dogs and cats. Always check if a food is safe before feeding your pets.";
+                botReply = $"Great question about animal nutrition/preferences ('{model.Message}')! Most domestic pets require species-appropriate diets formulated with essential vitamins, minerals, and proteins. Avoid feeding them processed human junk food, bones that splinter, or toxic ingredients.";
             }
-            else if (userMsg.Contains("vaccine") || userMsg.Contains("rabies") || userMsg.Contains("shot"))
+            else if (userQuery.Contains("health") || userQuery.Contains("sick") || userQuery.Contains("vaccine") || userQuery.Contains("vet"))
             {
-                botReply = "Core vaccines protect pets from severe illnesses. Dogs need Rabies, Parvovirus, and Distemper shots, while cats need FVRCP and Rabies vaccines, typically starting at 6 to 8 weeks of age.";
-            }
-            else if (userMsg.Contains("sleep") || userMsg.Contains("rest"))
-            {
-                botReply = "Most adult dogs sleep around 12 to 14 hours a day, while cats can sleep up to 15 hours a day. Puppies and kittens need even more sleep—up to 18-20 hours—to support their rapid growth!";
-            }
-            else if (userMsg.Contains("groom") || userMsg.Contains("bath") || userMsg.Contains("ligo"))
-            {
-                botReply = "Regular grooming keeps animals healthy. Dogs usually need bathing every 3 to 4 weeks depending on their coat, while cats mostly groom themselves but benefit from weekly brushing to prevent hairballs.";
+                botReply = $"Pet health is crucial! For '{model.Message}', regular veterinary check-ups, up-to-date vaccinations, deworming, and parasite prevention are key to a long, healthy life. If symptoms persist, consulting a licensed veterinarian is always recommended.";
             }
             else
             {
-                botReply = $"That's a very interesting question about '{model.Message}'. Animals have unique behaviors, health needs, and instincts. For specific medical diagnoses or tailored care routines regarding this animal, our clinic experts are always ready to help!";
+                // General fallback that still provides helpful animal information instead of deflecting
+                botReply = $"That's a fascinating question about animals: '{model.Message}'. Animals exhibit diverse behaviors, unique nutritional requirements, and specialized health needs. Providing a safe environment, proper diet, and love ensures optimal pet welfare!";
             }
 
-            return Json(new { reply = botReply });
+            return Json(new { success = true, reply = botReply });
         }
     }
 
