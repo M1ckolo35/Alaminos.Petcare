@@ -13,8 +13,7 @@ var connectionString = builder.Configuration.GetConnectionString("DefaultConnect
 
 // Register DbContext with SQLite
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
-    options.UseSqlite(connectionString));
-
+    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 var app = builder.Build();
 
 // Create database if it doesn't exist
