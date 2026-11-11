@@ -1,9 +1,33 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using System.Text;
+using System.Text.Json;
 
-namespace MyPetcare.Controllers // Palitan ito ayon sa exact namespace ng iyong project kung kinakailangan
+namespace MyPetcare.Controllers
 {
     public class ChatController : Controller
     {
+        private readonly IHttpClientFactory _httpClientFactory;
+        private readonly IConfiguration _config;
+        private readonly ILogger<ChatController> _logger;
+
+        private const string SystemPrompt =
+            "You are the friendly assistant of MyPetcare, a pet care service site. " +
+            "Answer any question about animals: dogs, cats, rabbits, birds, fish, reptiles, livestock, " +
+            "wildlife, and exotic pets. Cover care, feeding, behavior, training, breeds, grooming, " +
+            "vaccination, common illnesses, lifespan, and fun facts. Give a different, specific answer " +
+            "for each question, in the same language the user writes in (English, Tagalog, or Taglish). " +
+            "Keep replies short (under 150 words) unless the user asks for detail. For symptoms that " +
+            "sound serious (poisoning, bleeding, trouble breathing, seizures), tell the user to see a " +
+            "veterinarian right away. Never give exact medication doses. If a question has nothing to " +
+            "do with animals, politely say you only help with animal and pet topics.";
+
+        public ChatController(IHttpClientFactory httpClientFactory, IConfiguration config, ILogger<ChatController> logger)
+        {
+            _httpClientFactory = httpClientFactory;
+            _config = config;
+            _logger = logger;
+        }
+
         [HttpPost]
         public async Task<IActionResult> SendMessage([FromBody] ChatModel model)
         {
@@ -12,38 +36,77 @@ namespace MyPetcare.Controllers // Palitan ito ayon sa exact namespace ng iyong 
                 return Json(new { success = false, reply = "Please ask a question about animals or pet care." });
             }
 
-            string userQuery = model.Message.ToLower().Trim();
-            string botReply = "";
-
-            // Comprehensive animal topic handler
-            if (userQuery.Contains("dog") || userQuery.Contains("puppy"))
+            var apiKey = _config["ANTHROPIC_API_KEY"];
+            if (string.IsNullOrWhiteSpace(apiKey))
             {
-                botReply = $"Regarding dogs ({model.Message}): Dogs thrive on routine, regular exercise, balanced nutrition (rich in proteins), and mental stimulation like chew toys and fetch. Always keep toxic foods like chocolate, grapes, and onions away from them!";
-            }
-            else if (userQuery.Contains("cat") || userQuery.Contains("kitten"))
-            {
-                botReply = $"Regarding cats ({model.Message}): Cats require fresh water, high-protein diets (as obligate carnivores), clean litter boxes, and vertical spaces like scratching posts or cat trees to keep them active and stress-free.";
-            }
-            else if (userQuery.Contains("food") || userQuery.Contains("eat") || userQuery.Contains("diet") || userQuery.Contains("favourite"))
-            {
-                botReply = $"Great question about animal nutrition/preferences ('{model.Message}')! Most domestic pets require species-appropriate diets formulated with essential vitamins, minerals, and proteins. Avoid feeding them processed human junk food, bones that splinter, or toxic ingredients.";
-            }
-            else if (userQuery.Contains("health") || userQuery.Contains("sick") || userQuery.Contains("vaccine") || userQuery.Contains("vet"))
-            {
-                botReply = $"Pet health is crucial! For '{model.Message}', regular veterinary check-ups, up-to-date vaccinations, deworming, and parasite prevention are key to a long, healthy life. If symptoms persist, consulting a licensed veterinarian is always recommended.";
-            }
-            else
-            {
-                // General fallback that still provides helpful animal information instead of deflecting
-                botReply = $"That's a fascinating question about animals: '{model.Message}'. Animals exhibit diverse behaviors, unique nutritional requirements, and specialized health needs. Providing a safe environment, proper diet, and love ensures optimal pet welfare!";
+                _logger.LogError("ANTHROPIC_API_KEY is not set.");
+                return Json(new { success = false, reply = "The chatbot is not configured yet." });
             }
 
-            return Json(new { success = true, reply = botReply });
+            // Conversation: last 10 turns of history (optional) + the new message
+            var messages = new List<object>();
+            if (model.History != null)
+            {
+                foreach (var h in model.History.TakeLast(10))
+                {
+                    if (string.IsNullOrWhiteSpace(h.Content)) continue;
+                    var role = h.Role == "assistant" ? "assistant" : "user";
+                    messages.Add(new { role, content = h.Content });
+                }
+            }
+            messages.Add(new { role = "user", content = model.Message.Trim() });
+
+            var body = new
+            {
+                model = "claude-haiku-5-5",
+                max_tokens = 400,
+                system = SystemPrompt,
+                messages
+            };
+
+            try
+            {
+                var client = _httpClientFactory.CreateClient();
+                client.Timeout = TimeSpan.FromSeconds(30);
+
+                var request = new HttpRequestMessage(HttpMethod.Post, "https://api.anthropic.com/v1/messages")
+                {
+                    Content = new StringContent(JsonSerializer.Serialize(body), Encoding.UTF8, "application/json")
+                };
+                request.Headers.Add("x-api-key", apiKey);
+                request.Headers.Add("anthropic-version", "2023-06-01");
+
+                var response = await client.SendAsync(request);
+                var json = await response.Content.ReadAsStringAsync();
+
+                if (!response.IsSuccessStatusCode)
+                {
+                    _logger.LogError("Claude API error {Status}: {Body}", (int)response.StatusCode, json);
+                    return Json(new { success = false, reply = "Sorry, I couldn't answer right now. Please try again." });
+                }
+
+                using var doc = JsonDocument.Parse(json);
+                var reply = doc.RootElement.GetProperty("content")[0].GetProperty("text").GetString();
+
+                return Json(new { success = true, reply });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Chat failed");
+                return Json(new { success = false, reply = "Sorry, something went wrong. Please try again." });
+            }
         }
     }
 
     public class ChatModel
     {
         public string? Message { get; set; }
+        public List<ChatTurn>? History { get; set; }   // optional, for follow-up questions
+    }
+
+    public class ChatTurn
+    {
+        public string Role { get; set; } = "user";      // "user" or "assistant"
+        public string Content { get; set; } = string.Empty;
     }
 }
