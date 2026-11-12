@@ -1,18 +1,4 @@
-﻿Naayos at na-optimize ko na ang iyong admin dashboard para maging **fully responsive sa lahat ng device** (cellphone/CP, tablet, at desktop).
-
-### **Mga Pagbabagong Ginawa para sa Responsive Design:**
-
-1. **Adaptive Sidebar:** Kapag binuksan sa mobile (`max-width: 992px`), awtomatiko itong magiging top navigation bar sa halip na fixed sidebar para hindi sakupin ang buong screen.
-2. **Flexible Stats Grid:** Ang 4-column stat cards ay magiging 2 columns sa tablets at magiging 1 column (stacked) sa mga mobile phones.
-3. **Responsive Tables (`overflow-x: auto`)**: Nilagyan ng scroll wrapper ang mga table para hindi masira o lumagpas ang layout kapag tiningnan sa maliit na screen ng cellphone.
-4. **Mobile Chat Window**: Na-adjust ang sukat at pwesto ng PetBot widget para maging komportable at madaling gamitin sa mobile touchscreens.
-
----
-
-### **Ang Updated at Responsive na Code (`AdminDashboard.cshtml`):**
-
-```cshtml
-@model IEnumerable<MyPetcare.Models.User>
+﻿@model IEnumerable<MyPetcare.Models.User>
 @{
     Layout = null;
     ViewData["Title"] = "MyPetcare - Admin Dashboard";
@@ -108,14 +94,14 @@
             justify-content: space-between;
             padding: 28px 18px;
             box-shadow: 4px 0 15px rgba(0, 0, 0, 0.03);
-            z-index: 10;
+            z-index: 1000;
             overflow-y: auto;
         }
 
         .brand {
             display: flex;
             align-items: center;
-            gap: 12px;
+            justify-content: space-between;
             color: #ffffff;
             font-size: 1.15rem;
             font-weight: 700;
@@ -124,18 +110,34 @@
             letter-spacing: -0.3px;
         }
 
-            .brand .brand-icon-box {
-                width: 38px;
-                height: 38px;
-                border-radius: 10px;
-                background: linear-gradient(135deg, var(--primary-accent), #0369a1);
-                color: #ffffff;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                font-size: 1.1rem;
-                box-shadow: 0 4px 12px rgba(2, 132, 199, 0.3);
-            }
+        .brand-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .brand .brand-icon-box {
+            width: 38px;
+            height: 38px;
+            border-radius: 10px;
+            background: linear-gradient(135deg, var(--primary-accent), #0369a1);
+            color: #ffffff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.1rem;
+            box-shadow: 0 4px 12px rgba(2, 132, 199, 0.3);
+        }
+
+        .close-sidebar-btn {
+            display: none;
+            background: transparent;
+            border: none;
+            color: var(--text-sidebar);
+            font-size: 1.2rem;
+            cursor: pointer;
+            padding: 4px;
+        }
 
         .sidebar-menu-label {
             font-size: 0.7rem;
@@ -219,6 +221,7 @@
                 justify-content: center;
                 font-weight: bold;
                 font-size: 0.85rem;
+                flex-shrink: 0;
             }
 
         .edit-profile-icon-btn {
@@ -261,6 +264,7 @@
             display: flex;
             flex-direction: column;
             overflow-y: auto;
+            min-width: 0;
         }
 
         .header {
@@ -270,6 +274,38 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
+            gap: 12px;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            min-width: 0;
+        }
+
+        .mobile-menu-btn {
+            display: none;
+            background: var(--bg-main);
+            border: 1px solid var(--border-color);
+            color: var(--text-heading);
+            width: 38px;
+            height: 38px;
+            border-radius: 8px;
+            font-size: 1.05rem;
+            cursor: pointer;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .sidebar-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 999;
+            backdrop-filter: blur(2px);
         }
 
         .header-title {
@@ -277,12 +313,16 @@
             font-weight: 700;
             color: var(--text-heading);
             letter-spacing: -0.3px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
 
         .header-actions {
             display: flex;
             align-items: center;
-            gap: 20px;
+            gap: 16px;
+            flex-shrink: 0;
         }
 
         .theme-toggle-btn {
@@ -382,6 +422,7 @@
             align-items: center;
             justify-content: center;
             font-size: 1.1rem;
+            flex-shrink: 0;
         }
 
         .stat-number {
@@ -393,7 +434,7 @@
 
         .stat-label {
             color: var(--text-muted);
-            font-size: 0.8rem;
+            font-size: 0.78rem;
             font-weight: 600;
             text-transform: uppercase;
             letter-spacing: 0.5px;
@@ -425,19 +466,20 @@
             width: 100%;
             overflow-x: auto;
             -webkit-overflow-scrolling: touch;
+            border-radius: 6px;
         }
 
         table {
             width: 100%;
             border-collapse: collapse;
             font-size: 0.875rem;
-            min-width: 600px;
         }
 
         th, td {
             text-align: left;
             padding: 12px 14px;
             border-bottom: 1px solid var(--border-color);
+            white-space: nowrap;
         }
 
         th {
@@ -489,7 +531,6 @@
             cursor: pointer;
             font-size: 0.8rem;
             margin-right: 4px;
-            margin-bottom: 4px;
         }
 
         .btn-approve {
@@ -526,82 +567,144 @@
 
         /* --- MOBILE & TABLET MEDIA QUERIES --- */
         @@media (max-width: 992px) {
-            body
+            body {
+                flex-direction: column;
+                height: auto;
+                min-height: 100vh;
+                overflow-y: auto;
+                overflow-x: hidden;
+            }
 
-        {
-            flex-direction: column;
-            height: auto;
-            overflow: auto;
-        }
+            .mobile-menu-btn {
+                display: inline-flex;
+            }
 
-        .sidebar {
-            width: 100%;
-            height: auto;
-            max-height: 300px;
-            position: relative;
-            padding: 16px;
-        }
+            .close-sidebar-btn {
+                display: block;
+            }
 
-        .main-wrapper {
-            height: auto;
-            overflow: visible;
-        }
+            .sidebar {
+                position: fixed;
+                top: 0;
+                left: -280px;
+                width: 270px;
+                height: 100vh;
+                z-index: 1000;
+                transition: left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            }
 
-        .stats-grid {
-            grid-template-columns: repeat(2, 1fr) !important;
-            gap: 12px;
-        }
+                .sidebar.open {
+                    left: 0;
+                }
 
-        .header {
-            padding: 14px 20px;
-            flex-direction: column;
-            gap: 12px;
-            align-items: flex-start;
-        }
+            .sidebar-overlay.open {
+                display: block;
+            }
 
-        .dashboard-body {
-            padding: 16px;
-            gap: 16px;
-        }
+            .main-wrapper {
+                height: auto;
+                overflow: visible;
+            }
 
+            .header {
+                padding: 14px 18px;
+                position: sticky;
+                top: 0;
+                z-index: 900;
+            }
+
+            .header-title {
+                font-size: 1.05rem;
+            }
+
+            .dashboard-body {
+                padding: 16px;
+                gap: 16px;
+            }
+
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 12px;
+            }
+
+            .stat-card {
+                padding: 15px;
+            }
+
+            .stat-number {
+                font-size: 1.3rem;
+            }
         }
 
         @@media (max-width: 576px) {
-            .stats-grid
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 10px;
+            }
 
-        {
-            grid-template-columns: 1fr !important;
-        }
+            .stat-card {
+                padding: 12px;
+            }
 
-        .header-actions {
-            width: 100%;
-            justify-content: space-between;
-        }
+            .stat-label {
+                font-size: 0.7rem;
+            }
 
-        .table-card {
-            padding: 14px;
-        }
+            .stat-icon {
+                width: 34px;
+                height: 34px;
+                font-size: 0.95rem;
+            }
 
-        #chatWindow {
-            width: 92vw !important;
-            right: 4vw !important;
-            bottom: 70px !important;
-            height: 400px !important;
-        }
+            #themeText, #headerAdminName {
+                display: none;
+            }
 
+            .theme-toggle-btn {
+                padding: 8px 10px;
+            }
+
+            .table-card {
+                padding: 14px;
+            }
+
+            th, td {
+                padding: 10px 10px;
+                font-size: 0.8rem;
+            }
+
+            #aiChatWidget {
+                bottom: 16px !important;
+                right: 16px !important;
+            }
+
+            #chatWindow {
+                width: 92vw !important;
+                right: 0 !important;
+                bottom: 64px !important;
+                height: 400px !important;
+            }
         }
     </style>
 </head>
 <body>
 
+    <!-- Mobile Sidebar Overlay -->
+    <div id="sidebarOverlay" class="sidebar-overlay" onclick="toggleMobileSidebar()"></div>
+
     <!-- Sidebar Navigation -->
-    <aside class="sidebar">
+    <aside id="adminSidebar" class="sidebar">
         <div>
             <div class="brand">
-                <div class="brand-icon-box">
-                    <i class="fa-solid fa-house-medical"></i>
+                <div class="brand-left">
+                    <div class="brand-icon-box">
+                        <i class="fa-solid fa-house-medical"></i>
+                    </div>
+                    <span>MyPetcare</span>
                 </div>
-                <span>MyPetcare</span>
+                <button class="close-sidebar-btn" onclick="toggleMobileSidebar()" aria-label="Close Menu">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
             </div>
 
             <div class="sidebar-menu-label">Main Navigation</div>
@@ -617,11 +720,11 @@
 
         <div class="sidebar-footer">
             <div class="sidebar-admin-badge">
-                <div style="display: flex; align-items: center; gap: 10px;">
+                <div style="display: flex; align-items: center; gap: 10px; min-width: 0;">
                     <div class="avatar-fallback" id="sidebarAvatar">SA</div>
                     <div style="overflow: hidden;">
-                        <span id="sidebarAdminName" style="display: block; font-size: 0.8rem; font-weight: 600; color: #f8fafc; white-space: nowrap; text-overflow: ellipsis;">System Admin</span>
-                        <span id="sidebarAdminPosition" style="display: block; font-size: 0.7rem; color: #94a3b8;">Administrator Role</span>
+                        <span id="sidebarAdminName" style="display: block; font-size: 0.8rem; font-weight: 600; color: #f8fafc; white-space: nowrap; text-overflow: ellipsis; overflow: hidden;">System Admin</span>
+                        <span id="sidebarAdminPosition" style="display: block; font-size: 0.7rem; color: #94a3b8; white-space: nowrap; text-overflow: ellipsis; overflow: hidden;">Administrator Role</span>
                     </div>
                 </div>
                 <button class="edit-profile-icon-btn" onclick="openAdminProfileModal()" title="Edit Admin Profile">
@@ -637,7 +740,12 @@
     <!-- Main Content Area -->
     <div class="main-wrapper">
         <header class="header">
-            <h1 id="pageTitle" class="header-title">Dashboard Overview</h1>
+            <div class="header-left">
+                <button class="mobile-menu-btn" onclick="toggleMobileSidebar()" aria-label="Open Menu">
+                    <i class="fa-solid fa-bars"></i>
+                </button>
+                <h1 id="pageTitle" class="header-title">Dashboard Overview</h1>
+            </div>
             <div class="header-actions">
                 <button id="themeToggle" class="theme-toggle-btn">
                     <i id="themeIcon" class="fa-solid fa-moon"></i>
@@ -905,7 +1013,7 @@
     </div>
 
     <!-- ADMIN PROFILE EDIT MODAL -->
-    <div id="adminProfileModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.6); z-index:999; justify-content:center; align-items:center; backdrop-filter: blur(4px); padding: 16px;">
+    <div id="adminProfileModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.6); z-index:9999; justify-content:center; align-items:center; backdrop-filter: blur(4px); padding: 16px;">
         <div style="background:var(--bg-card); padding:24px; border-radius:10px; width:100%; max-width:400px; border:1px solid var(--border-color); color:var(--text-main); box-shadow: var(--card-shadow);">
             <h3 style="margin-bottom:16px; font-size: 1.1rem; color: var(--text-heading);"><i class="fa-solid fa-user-gear" style="color: var(--primary-accent);"></i> Edit Admin Profile</h3>
 
@@ -927,7 +1035,7 @@
     </div>
 
     <!-- VET HEALTHCARE UPDATE MODAL -->
-    <div id="vetModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.6); z-index:999; justify-content:center; align-items:center; backdrop-filter: blur(4px); padding: 16px;">
+    <div id="vetModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.6); z-index:9999; justify-content:center; align-items:center; backdrop-filter: blur(4px); padding: 16px;">
         <div style="background:var(--bg-card); padding:24px; border-radius:10px; width:100%; max-width:440px; border:1px solid var(--border-color); color:var(--text-main); box-shadow: var(--card-shadow);">
             <h3 style="margin-bottom:16px; font-size: 1.1rem; color: var(--text-heading);"><i class="fa-solid fa-notes-medical" style="color: var(--primary-accent);"></i> Update Pet Health Record</h3>
 
@@ -1009,6 +1117,13 @@
             loadDeletedLogsTable();
         });
 
+        function toggleMobileSidebar() {
+            const sidebar = document.getElementById('adminSidebar');
+            const overlay = document.getElementById('sidebarOverlay');
+            sidebar.classList.toggle('open');
+            overlay.classList.toggle('open');
+        }
+
         function playSound(type) {
             try {
                 const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
@@ -1085,6 +1200,14 @@
             if (tabId === 'dashboard' || tabId === 'appointments') loadAdminAppointmentsTables();
             if (tabId === 'deletedLogs') loadDeletedLogsTable();
             if (tabId === 'pets') loadPetRecordsTable();
+
+            // Auto-close sidebar on mobile after selecting a tab
+            if (window.innerWidth <= 992) {
+                const sidebar = document.getElementById('adminSidebar');
+                if (sidebar.classList.contains('open')) {
+                    toggleMobileSidebar();
+                }
+            }
         }
 
         function loadAdminProfileInfo() {
