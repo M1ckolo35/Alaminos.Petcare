@@ -133,28 +133,45 @@
             top: 0;
             left: 0;
             overflow-y: auto;
+            z-index: 1000;
         }
 
         .sidebar-top .brand {
             display: flex;
             align-items: center;
-            gap: 12px;
+            justify-content: space-between;
             margin-bottom: 20px;
         }
 
-            .sidebar-top .brand img {
-                width: 36px;
-                height: 36px;
-                border-radius: 8px;
-                object-fit: cover;
-            }
+        .brand-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
 
-            .sidebar-top .brand h2 {
-                font-size: 16px;
-                font-weight: 700;
-                color: var(--heading-color);
-                letter-spacing: -0.3px;
-            }
+        .sidebar-top .brand img {
+            width: 36px;
+            height: 36px;
+            border-radius: 8px;
+            object-fit: cover;
+        }
+
+        .sidebar-top .brand h2 {
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--heading-color);
+            letter-spacing: -0.3px;
+        }
+
+        .close-sidebar-btn {
+            display: none;
+            background: transparent;
+            border: none;
+            color: var(--text-muted);
+            font-size: 1.2rem;
+            cursor: pointer;
+            padding: 4px;
+        }
 
         /* Admin Team & Online Status Box in Sidebar */
         .sidebar-admin-section {
@@ -204,11 +221,11 @@
         }
 
             .online-dot.active {
-                background-color: #10b981; /* Green if online */
+                background-color: #10b981;
             }
 
             .online-dot.offline {
-                background-color: #94a3b8; /* Gray if offline */
+                background-color: #94a3b8;
             }
 
         .nav-links {
@@ -241,6 +258,12 @@
                 font-weight: 600;
             }
 
+        .sidebar-bottom {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
         .theme-toggle-btn {
             display: flex;
             align-items: center;
@@ -253,7 +276,6 @@
             font-size: 14px;
             border-radius: 6px;
             cursor: pointer;
-            margin-bottom: 10px;
             width: 100%;
             text-align: left;
         }
@@ -285,6 +307,7 @@
             flex-direction: column;
             height: 100vh;
             overflow-y: auto;
+            min-width: 0;
         }
 
         .dashboard-header {
@@ -296,15 +319,50 @@
             align-items: center;
             position: sticky;
             top: 0;
-            z-index: 100;
+            z-index: 900;
+            gap: 12px;
         }
 
-            .dashboard-header h1 {
-                font-size: 20px;
-                font-weight: 700;
-                color: var(--heading-color);
-                letter-spacing: -0.3px;
-            }
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            min-width: 0;
+        }
+
+        .mobile-menu-btn {
+            display: none;
+            background: var(--bg-main);
+            border: 1px solid var(--border-color);
+            color: var(--heading-color);
+            width: 38px;
+            height: 38px;
+            border-radius: 8px;
+            font-size: 1.05rem;
+            cursor: pointer;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .sidebar-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 999;
+            backdrop-filter: blur(2px);
+        }
+
+        .dashboard-header h1 {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--heading-color);
+            letter-spacing: -0.3px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
 
         .user-profile {
             display: flex;
@@ -314,6 +372,7 @@
             padding: 4px 10px;
             border-radius: 20px;
             border: 1px solid transparent;
+            flex-shrink: 0;
         }
 
             .user-profile:hover {
@@ -393,6 +452,7 @@
                 align-items: center;
                 justify-content: center;
                 font-size: 15px;
+                flex-shrink: 0;
             }
 
             .metric-card .value {
@@ -417,17 +477,25 @@
             gap: 10px;
         }
 
+        .table-responsive {
+            width: 100%;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+
         .table {
             width: 100%;
             border-collapse: collapse;
             text-align: left;
             font-size: 13px;
+            min-width: 500px;
         }
 
             .table th, .table td {
                 padding: 12px 10px;
                 border-bottom: 1px solid var(--table-border);
                 color: var(--text-color);
+                white-space: nowrap;
             }
 
             .table th {
@@ -632,16 +700,124 @@
             justify-content: center;
             position: relative;
         }
+
+        /* --- MOBILE & TABLET MEDIA QUERIES --- */
+        @@media (max-width: 992px) {
+            body {
+                flex-direction: column;
+                height: auto;
+                min-height: 100vh;
+                overflow-y: auto;
+                overflow-x: hidden;
+            }
+
+            .mobile-menu-btn {
+                display: inline-flex;
+            }
+
+            .close-sidebar-btn {
+                display: block;
+            }
+
+            .sidebar {
+                position: fixed;
+                top: 0;
+                left: -280px;
+                width: 280px;
+                height: 100vh;
+                z-index: 1000;
+                transition: left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            }
+
+                .sidebar.open {
+                    left: 0;
+                }
+
+            .sidebar-overlay.open {
+                display: block;
+            }
+
+            .main-content {
+                height: auto;
+                overflow: visible;
+            }
+
+            .dashboard-header {
+                padding: 14px 18px;
+            }
+
+                .dashboard-header h1 {
+                    font-size: 1.1rem;
+                }
+
+            .dashboard-body {
+                padding: 16px;
+                gap: 16px;
+            }
+
+            .metrics-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 12px;
+            }
+
+            .lower-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @@media (max-width: 576px) {
+            .metrics-grid {
+                grid-template-columns: 1fr;
+                gap: 10px;
+            }
+
+            .metric-card {
+                padding: 16px;
+            }
+
+            .canva-modal-body {
+                grid-template-columns: 1fr;
+                height: auto;
+            }
+
+            .canva-canvas-viewport {
+                height: 220px;
+            }
+
+            .user-profile span:first-child {
+                display: none !important;
+            }
+
+            #aiChatWidget {
+                bottom: 16px !important;
+                right: 16px !important;
+            }
+
+            #chatWindow {
+                width: 92vw !important;
+                right: 0 !important;
+                bottom: 64px !important;
+                height: 400px !important;
+            }
+        }
     </style>
 </head>
 <body>
 
+    <!-- Mobile Sidebar Overlay -->
+    <div id="sidebarOverlay" class="sidebar-overlay" onclick="toggleMobileSidebar()"></div>
+
     <!-- Sidebar -->
-    <aside class="sidebar">
+    <aside id="clientSidebar" class="sidebar">
         <div class="sidebar-top">
             <div class="brand">
-                <img src="/images/logopet.jpeg" alt="Logo">
-                <h2>PetCare Portal</h2>
+                <div class="brand-left">
+                    <img src="/images/logopet.jpeg" alt="Logo">
+                    <h2>PetCare Portal</h2>
+                </div>
+                <button class="close-sidebar-btn" onclick="toggleMobileSidebar()" aria-label="Close Menu">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
             </div>
 
             <!-- ALL ADMIN PERSONNEL LIST & ONLINE STATUS WIDGET -->
@@ -661,7 +837,7 @@
                 <li><a href="#" onclick="openProfileModal(); return false;"><i class="fa-solid fa-wand-magic-sparkles"></i> Pet Studio</a></li>
             </ul>
         </div>
-        <div>
+        <div class="sidebar-bottom">
             <button class="theme-toggle-btn" onclick="toggleTheme()">
                 <i class="fa-solid fa-moon" id="themeIcon"></i> <span id="themeText">Dark Mode</span>
             </button>
@@ -672,7 +848,12 @@
     <!-- Main Content Area -->
     <main class="main-content">
         <header class="dashboard-header">
-            <h1 id="headerMainTitle">Dashboard Overview</h1>
+            <div class="header-left">
+                <button class="mobile-menu-btn" onclick="toggleMobileSidebar()" aria-label="Open Menu">
+                    <i class="fa-solid fa-bars"></i>
+                </button>
+                <h1 id="headerMainTitle">Dashboard Overview</h1>
+            </div>
             <div style="display: flex; gap: 12px; align-items: center;">
                 <button class="action-btn" id="headerBookBtn" style="display: none;" onclick="openAppointmentModal()"><i class="fa-solid fa-plus"></i> Book an Appointment</button>
                 <div class="user-profile" onclick="openProfileModal()" title="Customize Profile">
@@ -680,7 +861,7 @@
                         <span style="display: block; font-weight: 600; font-size: 13px; color: var(--heading-color);" id="headerDisplayName">@ViewBag.ClientName</span>
                         <span style="font-size: 11px; color: var(--text-muted);">Client Portal</span>
                     </div>
-                    <div id="headerAvatarContainer" style="width: 38px; height: 38px; border-radius: 50%; overflow: hidden; border: 1.5px solid var(--primary-accent); background: #ffffff; display: flex; align-items: center; justify-content: center;">
+                    <div id="headerAvatarContainer" style="width: 38px; height: 38px; border-radius: 50%; overflow: hidden; border: 1.5px solid var(--primary-accent); background: #ffffff; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
                         <svg id="headerPetSvg" viewBox="0 0 200 200" width="34" height="34">
                             <g id="headerSvgContent">
                                 <ellipse cx="100" cy="120" rx="40" ry="32" fill="#0284c7" />
@@ -733,22 +914,24 @@
                 <div class="lower-grid">
                     <div style="display: flex; flex-direction: column; gap: 24px;">
                         <div class="card" id="appointmentsCardSection">
-                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; flex-wrap: wrap; gap: 10px;">
                                 <h3><i class="fa-solid fa-calendar-days" style="color: var(--primary-accent);"></i> Scheduled Appointments</h3>
                                 <button class="action-btn" onclick="openAppointmentModal()"><i class="fa-solid fa-plus"></i> New Booking</button>
                             </div>
-                            <table class="table">
-                                <thead>
-                                    <tr>
-                                        <th>Pet Record</th>
-                                        <th>Service Type</th>
-                                        <th>Schedule Date</th>
-                                        <th>Status</th>
-                                        <th>Actions</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="combinedAppointmentsTableBody"></tbody>
-                            </table>
+                            <div class="table-responsive">
+                                <table class="table">
+                                    <thead>
+                                        <tr>
+                                            <th>Pet Record</th>
+                                            <th>Service Type</th>
+                                            <th>Schedule Date</th>
+                                            <th>Status</th>
+                                            <th>Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="combinedAppointmentsTableBody"></tbody>
+                                </table>
+                            </div>
                             <div id="dashboardSeeMoreContainer" style="text-align: center; margin-top: 10px;"></div>
                         </div>
                     </div>
@@ -853,7 +1036,7 @@
             <!-- TAB 3: MY PETS PAGE VIEW -->
             <div id="tabMyPets" style="display: none; flex-direction: column; gap: 24px;">
                 <div class="card" style="padding: 24px;">
-                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 10px;">
                         <h3 style="margin: 0; font-size: 18px; color: var(--heading-color); display: flex; align-items: center; gap: 10px;">
                             <i class="fa-solid fa-shield-dog" style="color: var(--primary-accent);"></i> Registered Pet Profiles
                         </h3>
@@ -866,7 +1049,7 @@
     </main>
 
     <!-- RESCHEDULE MODAL -->
-    <div id="rescheduleModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 30000; justify-content: center; align-items: center; backdrop-filter: blur(4px);">
+    <div id="rescheduleModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 30000; justify-content: center; align-items: center; backdrop-filter: blur(4px); padding: 16px;">
         <div class="card" style="width: 380px; max-width: 90%; border-radius: 12px; padding: 22px;">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
                 <h3 style="margin: 0; font-size: 16px;"><i class="fa-solid fa-clock-rotate-left" style="color: var(--primary-accent);"></i> Reschedule Appointment</h3>
@@ -891,7 +1074,7 @@
     </div>
 
     <!-- CANCEL MODAL -->
-    <div id="cancelModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 30000; justify-content: center; align-items: center; backdrop-filter: blur(4px);">
+    <div id="cancelModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 30000; justify-content: center; align-items: center; backdrop-filter: blur(4px); padding: 16px;">
         <div class="card" style="width: 360px; max-width: 90%; border-radius: 12px; padding: 22px;">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px;">
                 <h3 style="margin: 0; font-size: 16px; color: #ef4444;"><i class="fa-solid fa-triangle-exclamation"></i> Cancel Appointment</h3>
@@ -907,7 +1090,7 @@
     </div>
 
     <!-- MY PETS MODAL -->
-    <div id="myPetsModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 30000; justify-content: center; align-items: center; backdrop-filter: blur(4px);">
+    <div id="myPetsModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 30000; justify-content: center; align-items: center; backdrop-filter: blur(4px); padding: 16px;">
         <div class="card" style="width: 420px; max-width: 90%; border-radius: 12px; padding: 22px;">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
                 <h3 style="margin: 0; font-size: 16px;"><i class="fa-solid fa-shield-dog" style="color: var(--primary-accent);"></i> Register New Pet Info</h3>
@@ -944,7 +1127,7 @@
     </div>
 
     <!-- PET STUDIO MODAL -->
-    <div id="profileModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 30000; justify-content: center; align-items: center; backdrop-filter: blur(4px);">
+    <div id="profileModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 30000; justify-content: center; align-items: center; backdrop-filter: blur(4px); padding: 16px;">
         <div class="card" style="width: 740px; max-width: 95%; border-radius: 12px; padding: 20px;">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px;">
                 <h3 style="margin: 0; font-size: 16px;"><i class="fa-solid fa-wand-magic-sparkles" style="color: var(--primary-accent);"></i> Pet Avatar Studio (Edit Anytime)</h3>
@@ -1005,8 +1188,8 @@
                     </svg>
                 </div>
             </div>
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 14px;">
-                <input type="text" id="modalDisplayName" value="@ViewBag.ClientName" style="width: 260px; padding: 7px 10px; border-radius: 6px; border: 1px solid var(--border-color); background: var(--bg-main); color: var(--text-color); font-size: 13px;" />
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 14px; flex-wrap: wrap; gap: 10px;">
+                <input type="text" id="modalDisplayName" value="@ViewBag.ClientName" style="width: 260px; max-width: 100%; padding: 7px 10px; border-radius: 6px; border: 1px solid var(--border-color); background: var(--bg-main); color: var(--text-color); font-size: 13px;" />
                 <div style="display: flex; gap: 8px;">
                     <button type="button" onclick="closeProfileModal()" style="padding: 7px 14px; border-radius: 6px; border: 1px solid var(--border-color); background: transparent; color: var(--text-color); cursor: pointer; font-weight: 500; font-size: 13px;">Cancel</button>
                     <button type="button" class="action-btn" onclick="saveProfileChanges()" style="padding: 7px 16px; font-size: 13px;">Save Changes</button>
@@ -1016,7 +1199,7 @@
     </div>
 
     <!-- BOOK APPOINTMENT MODAL -->
-    <div id="appointmentModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 30000; justify-content: center; align-items: center; backdrop-filter: blur(4px);">
+    <div id="appointmentModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 30000; justify-content: center; align-items: center; backdrop-filter: blur(4px); padding: 16px;">
         <div class="card" style="width: 400px; max-width: 90%; border-radius: 12px; padding: 22px;">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
                 <h3 style="margin: 0; font-size: 16px;"><i class="fa-solid fa-calendar-plus" style="color: var(--primary-accent);"></i> New Appointment Request</h3>
@@ -1112,12 +1295,10 @@
             loadClientAnnouncements();
             loadAppointmentsPageView();
             renderClientCalendar();
-            loadAdminTeamSidebar(); // Load all admins and online status
+            loadAdminTeamSidebar();
 
-            // Auto-refresh admin status every 5 seconds para real-time ang green/gray dot
             setInterval(loadAdminTeamSidebar, 5000);
 
-            // Automatic Click Sound Effect Global Listener para sa lahat ng Buttons, Links, at Tabs
             document.addEventListener('click', (e) => {
                 const target = e.target.closest('button, a, .canva-asset-card, .color-swatch');
                 if (target) {
@@ -1126,22 +1307,24 @@
             });
         });
 
-        // Load all Admins and check if they are currently Online
+        function toggleMobileSidebar() {
+            const sidebar = document.getElementById('clientSidebar');
+            const overlay = document.getElementById('sidebarOverlay');
+            sidebar.classList.toggle('open');
+            overlay.classList.toggle('open');
+        }
+
         function loadAdminTeamSidebar() {
             const container = document.getElementById('sidebarAdminTeamContainer');
             if (!container) return;
 
-            // Kunin ang listahan ng lahat ng admins (maaaring i-save ng Admin dashboard sa localStorage, o maglagay ng default kung nag-iisa pa lang)
             let adminsList = JSON.parse(localStorage.getItem('admin_team_directory') || '[]');
-
-            // Kung walang naka-save na directory, idagdag ang kasalukuyang admin profile bilang default
             let currentAdmin = JSON.parse(localStorage.getItem('admin_profile_data') || '{"name": "System Administrator", "position": "Administrator Role"}');
 
             if (adminsList.length === 0) {
                 adminsList = [{ id: 'admin_1', name: currentAdmin.name, position: currentAdmin.position }];
             }
 
-            // Kunin ang online heartbeats ng mga admin (sine-save ng admin dashboard habang aktibo sila)
             let onlineHeartbeats = JSON.parse(localStorage.getItem('admin_online_heartbeats') || '{}');
             let now = new Date().getTime();
 
@@ -1149,11 +1332,9 @@
             adminsList.forEach(adm => {
                 let initials = adm.name ? adm.name.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase() : 'AD';
 
-                // Active/Online kung nag-ping o nag-update sa loob ng huling 30 segundo (30000ms)
                 let lastActiveTime = onlineHeartbeats[adm.id || adm.name] || 0;
                 let isOnline = (now - lastActiveTime) < 30000;
 
-                // Kung ang kasalukuyang client ay naka-open din o nagpasa ng active signal, o kung active session:
                 let dotClass = isOnline ? 'active' : 'offline';
                 let statusText = isOnline ? 'Online' : 'Offline';
 
@@ -1177,7 +1358,6 @@
             container.innerHTML = html;
         }
 
-        // Click / Pop Sound Effect gamit ang Web Audio API
         function playClickSound() {
             try {
                 const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
@@ -1201,7 +1381,6 @@
             }
         }
 
-        // Success / Notification Chime Sound Effect
         function playSuccessSound() {
             try {
                 const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
@@ -1209,8 +1388,8 @@
                 const gainNode = audioCtx.createGain();
 
                 osc.type = 'sine';
-                osc.frequency.setValueAtTime(587.33, audioCtx.currentTime); // Note D5
-                osc.frequency.exponentialRampToValueAtTime(880, audioCtx.currentTime + 0.15); // Note A5
+                osc.frequency.setValueAtTime(587.33, audioCtx.currentTime);
+                osc.frequency.exponentialRampToValueAtTime(880, audioCtx.currentTime + 0.15);
 
                 gainNode.gain.setValueAtTime(0.15, audioCtx.currentTime);
                 gainNode.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.3);
@@ -1225,7 +1404,6 @@
             }
         }
 
-        // Malaki, Malinaw at May Sound Effect na Custom Toast Notification
         function showCustomToast(message, type = 'success') {
             const existingToast = document.getElementById('activeCustomToast');
             if (existingToast) existingToast.remove();
@@ -1357,6 +1535,13 @@
                 headerTitle.innerText = 'My Pets Directory';
                 headerBookBtn.style.display = 'inline-flex';
                 loadSavedPets();
+            }
+
+            if (window.innerWidth <= 992) {
+                const sidebar = document.getElementById('clientSidebar');
+                if (sidebar.classList.contains('open')) {
+                    toggleMobileSidebar();
+                }
             }
         }
 
@@ -1512,10 +1697,10 @@
             let dbAppointments = [];
             @if (clientAppointments.Any())
             {
-                        foreach (var item in clientAppointments)
-                        {
-                                    @:dbAppointments.push({ petName: '@item.PetName', service: '@item.Service', date: '@item.AppointmentDate.ToString("MMM dd, yyyy - hh:mm tt")', status: '@item.Status', id: '@item.Id' });
-                        }
+                    foreach (var item in clientAppointments)
+                    {
+                            @:dbAppointments.push({ petName: '@item.PetName', service: '@item.Service', date: '@item.AppointmentDate.ToString("MMM dd, yyyy - hh:mm tt")', status: '@item.Status', id: '@item.Id' });
+                    }
             }
 
             let statusOverrides = JSON.parse(localStorage.getItem('appointment_status_overrides_' + userIdentifier) || '{}');
@@ -1584,18 +1769,20 @@
                             </div>
                             <span style="font-size: 11px; font-weight: 600; text-transform: uppercase; background: var(--card-bg); border: 1px solid var(--border-color); padding: 4px 10px; border-radius: 6px; color: var(--text-muted);">Pet Record</span>
                         </div>
-                        <table class="table" style="margin: 0;">
-                            <thead>
-                                <tr>
-                                    <th style="padding-left: 20px;">SERVICE</th>
-                                    <th>APPOINTMENT DATE</th>
-                                    <th style="padding-right: 20px;">STATUS</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                ${rowsHtml}
-                            </tbody>
-                        </table>
+                        <div class="table-responsive">
+                            <table class="table" style="margin: 0;">
+                                <thead>
+                                    <tr>
+                                        <th style="padding-left: 20px;">SERVICE</th>
+                                        <th>APPOINTMENT DATE</th>
+                                        <th style="padding-right: 20px;">STATUS</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    ${rowsHtml}
+                                </tbody>
+                            </table>
+                        </div>
                         ${seeMoreBtnHtml}
                     </div>
                 `;
@@ -1640,10 +1827,10 @@
             let dbAppointments = [];
             @if (clientAppointments.Any())
             {
-                        foreach (var item in clientAppointments)
-                        {
-                                    @:dbAppointments.push({ id: '@item.Id', petName: '@item.PetName', service: '@item.Service', date: '@item.AppointmentDate.ToString("MMM dd, yyyy - hh:mm tt")', rawDate: '@item.AppointmentDate.ToString("yyyy-MM-ddTHH:mm")', status: '@item.Status' });
-                        }
+                    foreach (var item in clientAppointments)
+                    {
+                            @:dbAppointments.push({ id: '@item.Id', petName: '@item.PetName', service: '@item.Service', date: '@item.AppointmentDate.ToString("MMM dd, yyyy - hh:mm tt")', rawDate: '@item.AppointmentDate.ToString("yyyy-MM-ddTHH:mm")', status: '@item.Status' });
+                    }
             }
 
             let statusOverrides = JSON.parse(localStorage.getItem('appointment_status_overrides_' + userIdentifier) || '{}');
@@ -1950,7 +2137,7 @@
                     closeAppointmentModal();
                     setTimeout(() => location.reload(), 1000);
                 } else {
-                    showCustomToast('Server error: Hindi nai-save ang appointment.', 'error', 'error');
+                    showCustomToast('Server error: Hindi nai-save ang appointment.', 'error');
                 }
             } catch (err) {
                 console.error('Fetch error:', err);
@@ -1982,7 +2169,7 @@
                 const response = await fetch('/Chat/SendMessage', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ messagge: messageText })
+                    body: JSON.stringify({ message: messageText })
                 });
                 const data = await response.json();
                 chatMessages.innerHTML += `<div style="background: var(--card-bg); border: 1px solid var(--border-color); color: var(--heading-color); padding: 8px 12px; border-radius: 6px; max-width: 85%; align-self: flex-start; font-size: 13px;">${data.reply}</div>`;
