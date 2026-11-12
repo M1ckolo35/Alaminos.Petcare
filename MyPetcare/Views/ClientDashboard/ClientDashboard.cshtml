@@ -70,6 +70,7 @@
             display: flex;
             height: 100vh;
             overflow: hidden;
+            width: 100vw;
         }
 
         @@keyframes slideInToast {
@@ -119,9 +120,11 @@
                 animation: fadeOutToast 0.3s ease forwards;
             }
 
+        /* FIXED SIDEBAR */
         .sidebar {
             width: 280px;
             min-width: 280px;
+            max-width: 280px;
             height: 100vh;
             background-color: var(--sidebar-bg);
             border-right: 1px solid var(--border-color);
@@ -129,9 +132,8 @@
             flex-direction: column;
             justify-content: space-between;
             padding: 24px;
-            position: sticky;
-            top: 0;
-            left: 0;
+            position: relative;
+            flex-shrink: 0;
             overflow-y: auto;
             z-index: 1000;
         }
@@ -307,6 +309,7 @@
             flex-direction: column;
             height: 100vh;
             overflow-y: auto;
+            overflow-x: hidden;
             min-width: 0;
         }
 
@@ -385,19 +388,7 @@
             display: flex;
             flex-direction: column;
             gap: 24px;
-            animation: fadeInSlideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-        }
-
-        @@keyframes fadeInSlideUp {
-            from {
-                opacity: 0;
-                transform: translateY(12px) scale(0.99);
-            }
-
-            to {
-                opacity: 1;
-                transform: translateY(0) scale(1);
-            }
+            max-width: 100%;
         }
 
         .card, .metric-card {
@@ -406,22 +397,21 @@
             padding: 22px;
             box-shadow: var(--card-shadow);
             border: 1px solid var(--border-color);
-            transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.25s ease, border-color 0.25s ease;
         }
 
-            .card:hover, .metric-card:hover {
-                transform: translateY(-2px);
-                box-shadow: 0 10px 20px -5px rgba(2, 132, 199, 0.1);
-                border-color: rgba(2, 132, 199, 0.25);
-            }
-
+        /* HORIZONTAL METRICS CARDS */
         .metrics-grid {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
+            display: flex;
+            flex-direction: row;
             gap: 20px;
+            overflow-x: auto;
+            padding-bottom: 4px;
+            width: 100%;
         }
 
         .metric-card {
+            flex: 1;
+            min-width: 210px;
             display: flex;
             flex-direction: column;
             justify-content: space-between;
@@ -542,12 +532,9 @@
             cursor: pointer;
             font-weight: 600;
             font-size: 13px;
-            transition: transform 0.15s ease, box-shadow 0.15s ease;
         }
 
             .action-btn:hover {
-                transform: translateY(-1px);
-                box-shadow: 0 4px 12px rgba(2, 132, 199, 0.25);
                 opacity: 0.95;
             }
 
@@ -562,11 +549,6 @@
             cursor: pointer;
         }
 
-            .btn-outline-warning:hover {
-                background: #d97706;
-                color: white;
-            }
-
         .btn-outline-danger {
             background: transparent;
             border: 1px solid #ef4444;
@@ -577,11 +559,6 @@
             font-weight: 600;
             cursor: pointer;
         }
-
-            .btn-outline-danger:hover {
-                background: #ef4444;
-                color: white;
-            }
 
         .see-more-toggle {
             display: inline-block;
@@ -595,37 +572,30 @@
             text-decoration: underline;
         }
 
-            .see-more-toggle:hover {
-                opacity: 0.8;
-            }
-
-        #chatToggleBtn {
-            animation: floatBounce 3s infinite ease-in-out;
-        }
-
-        @@keyframes floatBounce {
-            0%, 100% {
-                transform: translateY(0);
-            }
-
-            50% {
-                transform: translateY(-5px);
-            }
-        }
-
-        #chatToggleBtn:hover {
-            transform: scale(1.08) !important;
-            box-shadow: 0 8px 20px rgba(2, 132, 199, 0.35) !important;
+        /* FIXED PET STUDIO MODAL SCROLLING & SUBMIT/CANCEL BUTTONS */
+        .pet-studio-modal-card {
+            width: 740px;
+            max-width: 95%;
+            max-height: 90vh;
+            border-radius: 12px;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            background: var(--card-bg);
         }
 
         .canva-modal-body {
             display: grid;
             grid-template-columns: 280px 1fr;
-            height: 440px;
+            flex: 1;
+            min-height: 0;
+            max-height: 52vh;
             border-radius: 8px;
             overflow: hidden;
             border: 1px solid var(--border-color);
             background: var(--card-bg);
+            margin-bottom: 14px;
         }
 
         .canva-sidebar {
@@ -685,7 +655,6 @@
             border-radius: 50%;
             cursor: pointer;
             border: 2px solid transparent;
-            transition: transform 0.15s ease;
         }
 
             .color-swatch:hover, .color-swatch.active {
@@ -699,6 +668,7 @@
             align-items: center;
             justify-content: center;
             position: relative;
+            overflow: hidden;
         }
 
         /* --- MOBILE & TABLET MEDIA QUERIES --- */
@@ -708,7 +678,6 @@
                 height: auto;
                 min-height: 100vh;
                 overflow-y: auto;
-                overflow-x: hidden;
             }
 
             .mobile-menu-btn {
@@ -724,6 +693,7 @@
                 top: 0;
                 left: -280px;
                 width: 280px;
+                max-width: 280px;
                 height: 100vh;
                 z-index: 1000;
                 transition: left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
@@ -756,48 +726,22 @@
             }
 
             .metrics-grid {
-                grid-template-columns: repeat(2, 1fr);
-                gap: 12px;
+                flex-direction: column;
+                overflow-x: visible;
             }
 
             .lower-grid {
                 grid-template-columns: 1fr;
             }
-        }
-
-        @@media (max-width: 576px) {
-            .metrics-grid {
-                grid-template-columns: 1fr;
-                gap: 10px;
-            }
-
-            .metric-card {
-                padding: 16px;
-            }
 
             .canva-modal-body {
                 grid-template-columns: 1fr;
-                height: auto;
+                max-height: none;
             }
 
-            .canva-canvas-viewport {
-                height: 220px;
-            }
-
-            .user-profile span:first-child {
-                display: none !important;
-            }
-
-            #aiChatWidget {
-                bottom: 16px !important;
-                right: 16px !important;
-            }
-
-            #chatWindow {
-                width: 92vw !important;
-                right: 0 !important;
-                bottom: 64px !important;
-                height: 400px !important;
+            .pet-studio-modal-card {
+                max-height: 95vh;
+                overflow-y: auto;
             }
         }
     </style>
@@ -880,6 +824,7 @@
         <div class="dashboard-body">
             <!-- TAB 1: DASHBOARD OVERVIEW -->
             <div id="tabDashboard" style="display: flex; flex-direction: column; gap: 24px;">
+                <!-- HORIZONTAL METRICS CARDS -->
                 <div class="metrics-grid">
                     <div class="metric-card">
                         <div class="metric-header">
@@ -937,7 +882,6 @@
                     </div>
 
                     <div style="display: flex; flex-direction: column; gap: 24px;">
-                        <!-- STANDALONE / NORMAL REFERENCE CALENDAR WIDGET WITH MOVING BLUE CIRCLE -->
                         <div class="card">
                             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px;">
                                 <h3 style="margin: 0; font-size: 15px; display: flex; align-items: center; gap: 8px;">
@@ -957,11 +901,8 @@
                                 <div style="font-size: 11px; font-weight: 700; color: var(--text-muted); padding-bottom: 6px;">Th</div>
                                 <div style="font-size: 11px; font-weight: 700; color: var(--text-muted); padding-bottom: 6px;">Fr</div>
                                 <div style="font-size: 11px; font-weight: 700; color: var(--text-muted); padding-bottom: 6px;">Sa</div>
-                                <div id="calendarDaysContainer" style="display: contents;">
-                                    <!-- Dynamic month calendar grid rendered via JavaScript -->
-                                </div>
+                                <div id="calendarDaysContainer" style="display: contents;"></div>
                             </div>
-                            <!-- Selected Date Display Indicator -->
                             <div id="selectedDateDisplay" style="margin-top: 12px; font-size: 12px; color: var(--text-muted); text-align: center; border-top: 1px dashed var(--border-color); padding-top: 8px;">
                                 Click any day to view details
                             </div>
@@ -972,7 +913,6 @@
                             <ul id="clientAnnouncementsContainer" style="list-style: none; display: flex; flex-direction: column; gap: 10px; font-size: 13px; color: var(--text-muted);"></ul>
                         </div>
 
-                        <!-- ALAMINOS CITY SLAUGHTER HOUSE MAP CARD -->
                         <div class="card">
                             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
                                 <h3 style="margin: 0; font-size: 15px; display: flex; align-items: center; gap: 8px;">
@@ -984,19 +924,7 @@
                                 <i class="fa-solid fa-location-pin" style="color: var(--primary-accent); margin-right: 4px;"></i> Alaminos City Slaughter House, Pangasinan
                             </p>
                             <div style="width: 100%; height: 210px; border-radius: 8px; overflow: hidden; border: 1px solid var(--border-color); position: relative;">
-                                <iframe width="100%"
-                                        height="100%"
-                                        style="border:0;"
-                                        loading="lazy"
-                                        allowfullscreen
-                                        referrerpolicy="no-referrer-when-downgrade"
-                                        src="https://maps.google.com/maps?q=Alaminos%20City%20Slaughter%20House%20Pangasinan&t=&z=15&ie=UTF8&iwloc=&output=embed">
-                                </iframe>
-                            </div>
-                            <div style="margin-top: 12px; text-align: right;">
-                                <a href="https://www.google.com/maps/place//data=!4m2!3m1!19sChIJ0cFvI7jckzMR_aYeb58mPsg" target="_blank" class="action-btn" style="text-decoration: none; font-size: 12px; padding: 6px 12px; display: inline-flex; align-items: center; gap: 6px;">
-                                    <i class="fa-solid fa-arrow-up-right-from-square"></i> Open in Google Maps
-                                </a>
+                                <iframe width="100%" height="100%" style="border:0;" loading="lazy" allowfullscreen referrerpolicy="no-referrer-when-downgrade" src="https://maps.google.com/maps?q=Alaminos%20City%20Slaughter%20House%20Pangasinan&t=&z=15&ie=UTF8&iwloc=&output=embed"></iframe>
                             </div>
                         </div>
                     </div>
@@ -1006,16 +934,15 @@
             <!-- TAB 2: APPOINTMENTS PAGE VIEW -->
             <div id="tabAppointments" style="display: none; flex-direction: column; gap: 24px;">
                 <p style="font-size: 13px; color: var(--text-muted); margin-top: -10px;">View and manage the appointment history for each of your pets.</p>
-
-                <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; max-width: 500px;">
-                    <div class="metric-card">
+                <div style="display: flex; gap: 20px; max-width: 500px;">
+                    <div class="metric-card" style="flex:1;">
                         <div class="metric-header">
                             <h4>Total appointments</h4>
                             <div class="icon-box"><i class="fa-solid fa-calendar-check"></i></div>
                         </div>
                         <div class="value" id="metricTotalAppointments">0</div>
                     </div>
-                    <div class="metric-card">
+                    <div class="metric-card" style="flex:1;">
                         <div class="metric-header">
                             <h4>Pets with records</h4>
                             <div class="icon-box"><i class="fa-solid fa-paw"></i></div>
@@ -1023,12 +950,7 @@
                         <div class="value" id="metricPetsWithRecords">0</div>
                     </div>
                 </div>
-
                 <div style="display: flex; flex-direction: column; gap: 16px;">
-                    <div>
-                        <h3 style="font-size: 15px; font-weight: 600; color: var(--heading-color);">Your pets' records</h3>
-                        <p style="font-size: 12px; color: var(--text-muted);">Each pet has its own appointment history below.</p>
-                    </div>
                     <div id="groupedAppointmentsContainer" style="display: flex; flex-direction: column; gap: 20px;"></div>
                 </div>
             </div>
@@ -1126,11 +1048,11 @@
         </div>
     </div>
 
-    <!-- PET STUDIO MODAL -->
+    <!-- PET STUDIO MODAL (FIXED WITH VISIBLE SUBMIT/CANCEL) -->
     <div id="profileModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 30000; justify-content: center; align-items: center; backdrop-filter: blur(4px); padding: 16px;">
-        <div class="card" style="width: 740px; max-width: 95%; border-radius: 12px; padding: 20px;">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px;">
-                <h3 style="margin: 0; font-size: 16px;"><i class="fa-solid fa-wand-magic-sparkles" style="color: var(--primary-accent);"></i> Pet Avatar Studio (Edit Anytime)</h3>
+        <div class="card pet-studio-modal-card">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; flex-shrink: 0;">
+                <h3 style="margin: 0; font-size: 16px;"><i class="fa-solid fa-wand-magic-sparkles" style="color: var(--primary-accent);"></i> Pet Avatar Studio</h3>
                 <button onclick="closeProfileModal()" style="background: none; border: none; font-size: 18px; cursor: pointer; color: var(--text-muted);">&times;</button>
             </div>
             <div class="canva-modal-body">
@@ -1171,7 +1093,7 @@
                     </div>
                 </div>
                 <div class="canva-canvas-viewport">
-                    <svg id="canvaPetSvg" viewBox="0 0 200 200" width="220" height="220">
+                    <svg id="canvaPetSvg" viewBox="0 0 200 200" width="180" height="180">
                         <g id="svgTailLayer"></g>
                         <ellipse id="svgBody" cx="100" cy="120" rx="40" ry="32" fill="#0284c7" />
                         <rect id="svgLegLeft" x="72" y="140" width="12" height="22" rx="6" fill="#0369a1" />
@@ -1188,8 +1110,8 @@
                     </svg>
                 </div>
             </div>
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 14px; flex-wrap: wrap; gap: 10px;">
-                <input type="text" id="modalDisplayName" value="@ViewBag.ClientName" style="width: 260px; max-width: 100%; padding: 7px 10px; border-radius: 6px; border: 1px solid var(--border-color); background: var(--bg-main); color: var(--text-color); font-size: 13px;" />
+            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; flex-shrink: 0;">
+                <input type="text" id="modalDisplayName" value="@ViewBag.ClientName" style="width: 240px; max-width: 100%; padding: 7px 10px; border-radius: 6px; border: 1px solid var(--border-color); background: var(--bg-main); color: var(--text-color); font-size: 13px;" />
                 <div style="display: flex; gap: 8px;">
                     <button type="button" onclick="closeProfileModal()" style="padding: 7px 14px; border-radius: 6px; border: 1px solid var(--border-color); background: transparent; color: var(--text-color); cursor: pointer; font-weight: 500; font-size: 13px;">Cancel</button>
                     <button type="button" class="action-btn" onclick="saveProfileChanges()" style="padding: 7px 16px; font-size: 13px;">Save Changes</button>
