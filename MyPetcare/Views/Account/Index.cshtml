@@ -79,7 +79,6 @@
                 opacity: 0;
                 transform: translateY(-10px);
             }
-
             to {
                 opacity: 1;
                 transform: translateY(0);
@@ -128,9 +127,9 @@
             gap: 6px;
         }
 
-            .theme-toggle-btn:hover {
-                border-color: var(--primary-accent);
-            }
+        .theme-toggle-btn:hover {
+            border-color: var(--primary-accent);
+        }
 
         .login-nav-btn {
             background-color: var(--primary-accent);
@@ -145,10 +144,10 @@
             box-shadow: 0 4px 12px rgba(2, 132, 199, 0.2);
         }
 
-            .login-nav-btn:hover {
-                opacity: 0.9;
-                transform: translateY(-1px);
-            }
+        .login-nav-btn:hover {
+            opacity: 0.9;
+            transform: translateY(-1px);
+        }
 
         .register-nav-btn {
             background-color: transparent;
@@ -162,10 +161,10 @@
             transition: all 0.2s ease;
         }
 
-            .register-nav-btn:hover {
-                border-color: var(--primary-accent);
-                color: var(--primary-accent);
-            }
+        .register-nav-btn:hover {
+            border-color: var(--primary-accent);
+            color: var(--primary-accent);
+        }
 
         /* Hero Carousel Section with Fully Responsive Split Layout */
         .hero-carousel {
@@ -191,20 +190,20 @@
             z-index: 1;
         }
 
-            .carousel-bg-slide.active {
-                opacity: 1;
-                transform: scale(1);
-            }
+        .carousel-bg-slide.active {
+            opacity: 1;
+            transform: scale(1);
+        }
 
-            .carousel-bg-slide img {
-                width: 100%;
-                height: 100%;
-                object-fit: cover;
-                display: block;
-                filter: brightness(0.7);
-            }
+        .carousel-bg-slide img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+            filter: brightness(0.7);
+        }
 
-        /* Hero Content Container */
+        /* Hero Content Container - Horizontal Setup Maintained */
         .hero-inner-content {
             position: relative;
             z-index: 3;
@@ -212,6 +211,7 @@
             width: 100%;
             margin: 0 auto;
             display: flex;
+            flex-direction: row;
             justify-content: space-between;
             align-items: center;
             gap: 30px;
@@ -229,7 +229,6 @@
                 opacity: 0;
                 transform: translateX(-20px);
             }
-
             to {
                 opacity: 1;
                 transform: translateX(0);
@@ -237,7 +236,7 @@
         }
 
         .hero-text-side h1 {
-            font-size: clamp(28px, 4vw, 42px);
+            font-size: clamp(24px, 3.5vw, 42px);
             font-weight: 800;
             line-height: 1.15;
             margin-bottom: 12px;
@@ -245,7 +244,7 @@
         }
 
         .hero-text-side p {
-            font-size: clamp(14px, 1.8vw, 16px);
+            font-size: clamp(13px, 1.5vw, 16px);
             line-height: 1.5;
             color: #f1f5f9;
             margin-bottom: 20px;
@@ -271,11 +270,11 @@
             font-weight: 600;
         }
 
-        /* Balanced Grid Floating Animal Cards Group (Right Side) */
+        /* Balanced Grid Floating Animal Cards Group (Right Side - Scaled Down for Balance) */
         .hero-visual-side {
             flex: 0.8;
             position: relative;
-            height: 300px;
+            height: 280px;
             display: flex;
             justify-content: center;
             align-items: center;
@@ -284,36 +283,36 @@
         .grid-cards-group {
             position: relative;
             width: 100%;
-            max-width: 360px;
-            height: 280px;
+            max-width: 320px;
+            height: 260px;
         }
 
         .floating-card {
             position: absolute;
             background: rgba(255, 255, 255, 0.92);
             backdrop-filter: blur(6px);
-            padding: 6px 6px 10px 6px;
-            border-radius: 10px;
+            padding: 5px;
+            border-radius: 8px;
             border: 1px solid rgba(255, 255, 255, 0.5);
-            box-shadow: 0 14px 35px rgba(0,0,0,0.25);
-            width: 110px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.25);
+            width: 95px;
             text-align: center;
         }
 
-            .floating-card img {
-                width: 100%;
-                height: 65px;
-                object-fit: cover;
-                border-radius: 6px;
-            }
+        .floating-card img {
+            width: 100%;
+            height: 52px;
+            object-fit: cover;
+            border-radius: 5px;
+        }
 
-            .floating-card span {
-                font-size: 10.5px;
-                font-weight: 700;
-                color: #0f172a;
-                margin-top: 4px;
-                display: block;
-            }
+        .floating-card span {
+            font-size: 9.5px;
+            font-weight: 700;
+            color: #0f172a;
+            margin-top: 3px;
+            display: block;
+        }
 
         /* Balanced Grid Layout & Floating Positions */
         .card-pos-1 {
@@ -323,10 +322,7 @@
             color: #ffffff;
             animation: floatCard1 6s ease-in-out infinite;
         }
-
-            .card-pos-1 span {
-                color: #ffffff;
-            }
+        .card-pos-1 span { color: #ffffff; }
 
         .card-pos-2 {
             top: 5px;
@@ -334,56 +330,33 @@
             background: #06b6d4;
             animation: floatCard2 7s ease-in-out infinite;
         }
-
-            .card-pos-2 span {
-                color: #ffffff;
-            }
+        .card-pos-2 span { color: #ffffff; }
 
         .card-pos-3 {
             bottom: 10px;
-            left: 60px;
+            left: 50px;
             background: #f59e0b;
             animation: floatCard3 6.5s ease-in-out infinite;
         }
-
-            .card-pos-3 span {
-                color: #ffffff;
-            }
+        .card-pos-3 span { color: #ffffff; }
 
         @@keyframes floatCard1 {
-            0%, 100% {
-                transform: translateY(0px) rotate(-4deg);
-            }
-
-            50% {
-                transform: translateY(-8px) rotate(-1deg);
-            }
+            0%, 100% { transform: translateY(0px) rotate(-4deg); }
+            50% { transform: translateY(-8px) rotate(-1deg); }
         }
-
         @@keyframes floatCard2 {
-            0%, 100% {
-                transform: translateY(0px) rotate(3deg);
-            }
-
-            50% {
-                transform: translateY(-10px) rotate(5deg);
-            }
+            0%, 100% { transform: translateY(0px) rotate(3deg); }
+            50% { transform: translateY(-10px) rotate(5deg); }
         }
-
         @@keyframes floatCard3 {
-            0%, 100% {
-                transform: translateY(0px) rotate(2deg);
-            }
-
-            50% {
-                transform: translateY(-8px) rotate(-2deg);
-            }
+            0%, 100% { transform: translateY(0px) rotate(2deg); }
+            50% { transform: translateY(-8px) rotate(-2deg); }
         }
 
-        /* Features Cards Responsive Grid */
+        /* Features Cards Responsive Grid (Horizontal Row Layout) */
         .features-container {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            grid-template-columns: repeat(3, minmax(0, 1fr));
             padding: 30px 24px;
             max-width: 1200px;
             margin: 0 auto;
@@ -397,7 +370,6 @@
                 opacity: 0;
                 transform: translateY(12px);
             }
-
             to {
                 opacity: 1;
                 transform: translateY(0);
@@ -405,40 +377,43 @@
         }
 
         .feature-card {
-            text-align: center;
+            text-align: left;
             background: var(--bg-card);
-            padding: 20px;
+            padding: 16px;
             border-radius: 10px;
             border: 1px solid var(--border-color);
             box-shadow: var(--card-shadow);
             transition: transform 0.25s ease, box-shadow 0.25s ease;
+            display: flex;
+            align-items: center;
+            gap: 14px;
         }
 
-            .feature-card:hover {
-                transform: translateY(-3px);
-                border-color: rgba(2, 132, 199, 0.4);
-            }
+        .feature-card:hover {
+            transform: translateY(-3px);
+            border-color: rgba(2, 132, 199, 0.4);
+        }
 
-            .feature-card img {
-                width: 100%;
-                height: 140px;
-                object-fit: cover;
-                border-radius: 6px;
-            }
+        .feature-card img {
+            width: 75px;
+            height: 75px;
+            object-fit: cover;
+            border-radius: 6px;
+            flex-shrink: 0;
+        }
 
-            .feature-card h3 {
-                margin-top: 12px;
-                font-size: 15px;
-                font-weight: 700;
-                color: var(--text-heading);
-            }
+        .feature-info h3 {
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--text-heading);
+            margin-bottom: 4px;
+        }
 
-            .feature-card p {
-                color: var(--text-muted);
-                font-size: 12.5px;
-                margin-top: 6px;
-                line-height: 1.4;
-            }
+        .feature-info p {
+            color: var(--text-muted);
+            font-size: 11.5px;
+            line-height: 1.35;
+        }
 
         /* WALKING DOG ANIMATION */
         .walking-dog-wrapper {
@@ -459,102 +434,23 @@
             animation: dogBodyBounce 0.4s ease-in-out infinite alternate;
         }
 
-            .css-dog-character .ear {
-                animation: earWiggle 0.5s ease-in-out infinite alternate;
-                transform-origin: top center;
-            }
-
-            .css-dog-character .tail {
-                animation: tailWag 0.3s ease-in-out infinite alternate;
-                transform-origin: bottom left;
-            }
-
-            .css-dog-character .leg-left {
-                animation: legMoveLeft 0.4s ease-in-out infinite alternate;
-                transform-origin: top center;
-            }
-
-            .css-dog-character .leg-right {
-                animation: legMoveRight 0.4s ease-in-out infinite alternate;
-                transform-origin: top center;
-            }
+        .css-dog-character .ear { animation: earWiggle 0.5s ease-in-out infinite alternate; transform-origin: top center; }
+        .css-dog-character .tail { animation: tailWag 0.3s ease-in-out infinite alternate; transform-origin: bottom left; }
+        .css-dog-character .leg-left { animation: legMoveLeft 0.4s ease-in-out infinite alternate; transform-origin: top center; }
+        .css-dog-character .leg-right { animation: legMoveRight 0.4s ease-in-out infinite alternate; transform-origin: top center; }
 
         @@keyframes walkAcrossScreen {
-            0% {
-                left: -100px;
-                transform: scaleX(1);
-            }
-
-            49.9% {
-                left: calc(100vw + 20px);
-                transform: scaleX(1);
-            }
-
-            50% {
-                left: calc(100vw + 20px);
-                transform: scaleX(-1);
-            }
-
-            99.9% {
-                left: -100px;
-                transform: scaleX(-1);
-            }
-
-            100% {
-                left: -100px;
-                transform: scaleX(1);
-            }
+            0% { left: -100px; transform: scaleX(1); }
+            49.9% { left: calc(100vw + 20px); transform: scaleX(1); }
+            50% { left: calc(100vw + 20px); transform: scaleX(-1); }
+            99.9% { left: -100px; transform: scaleX(-1); }
+            100% { left: -100px; transform: scaleX(1); }
         }
-
-        @@keyframes dogBodyBounce {
-            0% {
-                transform: translateY(0);
-            }
-
-            100% {
-                transform: translateY(-3px);
-            }
-        }
-
-        @@keyframes earWiggle {
-            0% {
-                transform: rotate(0deg);
-            }
-
-            100% {
-                transform: rotate(8deg);
-            }
-        }
-
-        @@keyframes tailWag {
-            0% {
-                transform: rotate(-10deg);
-            }
-
-            100% {
-                transform: rotate(15deg);
-            }
-        }
-
-        @@keyframes legMoveLeft {
-            0% {
-                transform: rotate(-20deg);
-            }
-
-            100% {
-                transform: rotate(20deg);
-            }
-        }
-
-        @@keyframes legMoveRight {
-            0% {
-                transform: rotate(20deg);
-            }
-
-            100% {
-                transform: rotate(-20deg);
-            }
-        }
+        @@keyframes dogBodyBounce { 0% { transform: translateY(0); } 100% { transform: translateY(-3px); } }
+        @@keyframes earWiggle { 0% { transform: rotate(0deg); } 100% { transform: rotate(8deg); } }
+        @@keyframes tailWag { 0% { transform: rotate(-10deg); } 100% { transform: rotate(15deg); } }
+        @@keyframes legMoveLeft { 0% { transform: rotate(-20deg); } 100% { transform: rotate(20deg); } }
+        @@keyframes legMoveRight { 0% { transform: rotate(20deg); } 100% { transform: rotate(-20deg); } }
 
         /* Modal Overlay & Login Card (Fully Responsive) */
         .modal {
@@ -574,10 +470,10 @@
             padding: 16px;
         }
 
-            .modal.show {
-                display: flex;
-                opacity: 1;
-            }
+        .modal.show {
+            display: flex;
+            opacity: 1;
+        }
 
         .modal-content {
             background: var(--bg-card);
@@ -608,9 +504,7 @@
             transition: color 0.2s ease;
         }
 
-            .close-btn:hover {
-                color: var(--text-heading);
-            }
+        .close-btn:hover { color: var(--text-heading); }
 
         .tab-buttons {
             display: flex;
@@ -635,23 +529,23 @@
             transition: all 0.2s ease;
         }
 
-            .tab-btn.active {
-                background-color: var(--bg-card);
-                color: var(--primary-accent);
-                box-shadow: 0 1px 3px rgba(0,0,0,0.05);
-            }
+        .tab-btn.active {
+            background-color: var(--bg-card);
+            color: var(--primary-accent);
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        }
 
         .form-group {
             margin-bottom: 14px;
         }
 
-            .form-group label {
-                display: block;
-                margin-bottom: 5px;
-                font-size: 12.5px;
-                font-weight: 600;
-                color: var(--text-heading);
-            }
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-size: 12.5px;
+            font-weight: 600;
+            color: var(--text-heading);
+        }
 
         .input-wrapper {
             position: relative;
@@ -670,11 +564,11 @@
             transition: all 0.2s ease;
         }
 
-            .form-group input:focus {
-                outline: none;
-                border-color: var(--primary-accent);
-                box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.15);
-            }
+        .form-group input:focus {
+            outline: none;
+            border-color: var(--primary-accent);
+            box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.15);
+        }
 
         .password-toggle-icon {
             position: absolute;
@@ -685,9 +579,7 @@
             transition: color 0.2s ease;
         }
 
-            .password-toggle-icon:hover {
-                color: var(--primary-accent);
-            }
+        .password-toggle-icon:hover { color: var(--primary-accent); }
 
         .submit-btn {
             width: 100%;
@@ -704,10 +596,10 @@
             box-shadow: 0 4px 12px rgba(2, 132, 199, 0.25);
         }
 
-            .submit-btn:hover {
-                opacity: 0.9;
-                transform: translateY(-1px);
-            }
+        .submit-btn:hover {
+            opacity: 0.9;
+            transform: translateY(-1px);
+        }
 
         .error-msg {
             color: #ef4444;
@@ -723,28 +615,37 @@
             text-align: center;
         }
 
-        @@media (max-width: 768px) {
+        /* Fluid Media Queries for Small Displays to Prevent Breaking */
+        @@media (max-width: 900px) {
             .hero-inner-content {
                 flex-direction: column;
                 text-align: center;
                 gap: 20px;
             }
-
             .hero-text-side p {
                 margin: 0 auto 16px auto;
             }
-
             .hero-stats-row {
                 justify-content: center;
             }
-
             .hero-visual-side {
-                height: 220px;
+                height: 200px;
                 width: 100%;
             }
+            .features-container {
+                grid-template-columns: 1fr;
+            }
+        }
 
+        @@media (max-width: 480px) {
             .header {
-                padding: 14px 16px;
+                padding: 12px 16px;
+            }
+            .logo-title {
+                font-size: 17px;
+            }
+            .hero-carousel {
+                padding: 20px 16px;
             }
         }
     </style>
@@ -808,22 +709,28 @@
         </div>
     </div>
 
-    <!-- Features Section -->
+    <!-- Features Section (Horizontal 3-Column Layout) -->
     <main class="features-container">
         <div class="feature-card">
             <img src="https://images.unsplash.com/photo-1506784983877-45594efa4cbe?auto=format&fit=crop&w=400&q=80" alt="Appointments">
-            <h3>Book Appointments</h3>
-            <p>Client can book appointments easily</p>
+            <div class="feature-info">
+                <h3>Book Appointments</h3>
+                <p>Client can book appointments easily</p>
+            </div>
         </div>
         <div class="feature-card">
             <img src="https://images.unsplash.com/photo-1628009368231-7bb7cfcb0def?auto=format&fit=crop&w=400&q=80" alt="HealthCare">
-            <h3>HealthCare</h3>
-            <p>Client can review pet health records</p>
+            <div class="feature-info">
+                <h3>HealthCare</h3>
+                <p>Client can review pet health records</p>
+            </div>
         </div>
         <div class="feature-card">
             <img src="/images/chatbot.jpg" alt="AI Chatbot" style="object-fit: contain; background-color: var(--bg-main);">
-            <h3>AI-Chatbot</h3>
-            <p>AI-Chatbot can answer questions about animals</p>
+            <div class="feature-info">
+                <h3>AI-Chatbot</h3>
+                <p>AI-Chatbot can answer questions about animals</p>
+            </div>
         </div>
     </main>
 
