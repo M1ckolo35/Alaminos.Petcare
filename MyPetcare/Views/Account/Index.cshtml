@@ -12,7 +12,6 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
     <style>
         :root {
-            /* Professional Light Theme (Matched to Dashboard) */
             --bg-main: #f8fafc;
             --bg-card: #ffffff;
             --bg-sidebar: #0f172a;
@@ -27,7 +26,6 @@
         }
 
         [data-theme="dark"] {
-            /* Modern Dark Enterprise Theme */
             --bg-main: #0b0f19;
             --bg-card: #111827;
             --bg-sidebar: #0b0f19;
@@ -79,6 +77,7 @@
                 opacity: 0;
                 transform: translateY(-10px);
             }
+
             to {
                 opacity: 1;
                 transform: translateY(0);
@@ -127,9 +126,9 @@
             gap: 6px;
         }
 
-        .theme-toggle-btn:hover {
-            border-color: var(--primary-accent);
-        }
+            .theme-toggle-btn:hover {
+                border-color: var(--primary-accent);
+            }
 
         .login-nav-btn {
             background-color: var(--primary-accent);
@@ -144,10 +143,10 @@
             box-shadow: 0 4px 12px rgba(2, 132, 199, 0.2);
         }
 
-        .login-nav-btn:hover {
-            opacity: 0.9;
-            transform: translateY(-1px);
-        }
+            .login-nav-btn:hover {
+                opacity: 0.9;
+                transform: translateY(-1px);
+            }
 
         .register-nav-btn {
             background-color: transparent;
@@ -161,12 +160,12 @@
             transition: all 0.2s ease;
         }
 
-        .register-nav-btn:hover {
-            border-color: var(--primary-accent);
-            color: var(--primary-accent);
-        }
+            .register-nav-btn:hover {
+                border-color: var(--primary-accent);
+                color: var(--primary-accent);
+            }
 
-        /* Hero Carousel Section with Fully Responsive Split Layout */
+        /* Hero Carousel Section */
         .hero-carousel {
             position: relative;
             width: 100%;
@@ -190,20 +189,19 @@
             z-index: 1;
         }
 
-        .carousel-bg-slide.active {
-            opacity: 1;
-            transform: scale(1);
-        }
+            .carousel-bg-slide.active {
+                opacity: 1;
+                transform: scale(1);
+            }
 
-        .carousel-bg-slide img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            display: block;
-            filter: brightness(0.7);
-        }
+            .carousel-bg-slide img {
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
+                display: block;
+                filter: brightness(0.7);
+            }
 
-        /* Hero Content Container - Horizontal Setup Maintained */
         .hero-inner-content {
             position: relative;
             z-index: 3;
@@ -229,6 +227,7 @@
                 opacity: 0;
                 transform: translateX(-20px);
             }
+
             to {
                 opacity: 1;
                 transform: translateX(0);
@@ -270,7 +269,6 @@
             font-weight: 600;
         }
 
-        /* Balanced Grid Floating Animal Cards Group (Right Side - Scaled Down for Balance) */
         .hero-visual-side {
             flex: 0.8;
             position: relative;
@@ -299,22 +297,21 @@
             text-align: center;
         }
 
-        .floating-card img {
-            width: 100%;
-            height: 52px;
-            object-fit: cover;
-            border-radius: 5px;
-        }
+            .floating-card img {
+                width: 100%;
+                height: 52px;
+                object-fit: cover;
+                border-radius: 5px;
+            }
 
-        .floating-card span {
-            font-size: 9.5px;
-            font-weight: 700;
-            color: #0f172a;
-            margin-top: 3px;
-            display: block;
-        }
+            .floating-card span {
+                font-size: 9.5px;
+                font-weight: 700;
+                color: #0f172a;
+                margin-top: 3px;
+                display: block;
+            }
 
-        /* Balanced Grid Layout & Floating Positions */
         .card-pos-1 {
             top: 10px;
             left: 10px;
@@ -322,7 +319,10 @@
             color: #ffffff;
             animation: floatCard1 6s ease-in-out infinite;
         }
-        .card-pos-1 span { color: #ffffff; }
+
+            .card-pos-1 span {
+                color: #ffffff;
+            }
 
         .card-pos-2 {
             top: 5px;
@@ -330,7 +330,10 @@
             background: #06b6d4;
             animation: floatCard2 7s ease-in-out infinite;
         }
-        .card-pos-2 span { color: #ffffff; }
+
+            .card-pos-2 span {
+                color: #ffffff;
+            }
 
         .card-pos-3 {
             bottom: 10px;
@@ -338,22 +341,42 @@
             background: #f59e0b;
             animation: floatCard3 6.5s ease-in-out infinite;
         }
-        .card-pos-3 span { color: #ffffff; }
+
+            .card-pos-3 span {
+                color: #ffffff;
+            }
 
         @@keyframes floatCard1 {
-            0%, 100% { transform: translateY(0px) rotate(-4deg); }
-            50% { transform: translateY(-8px) rotate(-1deg); }
-        }
-        @@keyframes floatCard2 {
-            0%, 100% { transform: translateY(0px) rotate(3deg); }
-            50% { transform: translateY(-10px) rotate(5deg); }
-        }
-        @@keyframes floatCard3 {
-            0%, 100% { transform: translateY(0px) rotate(2deg); }
-            50% { transform: translateY(-8px) rotate(-2deg); }
+            0%, 100% {
+                transform: translateY(0px) rotate(-4deg);
+            }
+
+            50% {
+                transform: translateY(-8px) rotate(-1deg);
+            }
         }
 
-        /* Features Cards Responsive Grid (Horizontal Row Layout) */
+        @@keyframes floatCard2 {
+            0%, 100% {
+                transform: translateY(0px) rotate(3deg);
+            }
+
+            50% {
+                transform: translateY(-10px) rotate(5deg);
+            }
+        }
+
+        @@keyframes floatCard3 {
+            0%, 100% {
+                transform: translateY(0px) rotate(2deg);
+            }
+
+            50% {
+                transform: translateY(-8px) rotate(-2deg);
+            }
+        }
+
+        /* Features Cards Grid */
         .features-container {
             display: grid;
             grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -370,6 +393,7 @@
                 opacity: 0;
                 transform: translateY(12px);
             }
+
             to {
                 opacity: 1;
                 transform: translateY(0);
@@ -389,18 +413,18 @@
             gap: 14px;
         }
 
-        .feature-card:hover {
-            transform: translateY(-3px);
-            border-color: rgba(2, 132, 199, 0.4);
-        }
+            .feature-card:hover {
+                transform: translateY(-3px);
+                border-color: rgba(2, 132, 199, 0.4);
+            }
 
-        .feature-card img {
-            width: 75px;
-            height: 75px;
-            object-fit: cover;
-            border-radius: 6px;
-            flex-shrink: 0;
-        }
+            .feature-card img {
+                width: 75px;
+                height: 75px;
+                object-fit: cover;
+                border-radius: 6px;
+                flex-shrink: 0;
+            }
 
         .feature-info h3 {
             font-size: 14px;
@@ -434,46 +458,125 @@
             animation: dogBodyBounce 0.4s ease-in-out infinite alternate;
         }
 
-        .css-dog-character .ear { animation: earWiggle 0.5s ease-in-out infinite alternate; transform-origin: top center; }
-        .css-dog-character .tail { animation: tailWag 0.3s ease-in-out infinite alternate; transform-origin: bottom left; }
-        .css-dog-character .leg-left { animation: legMoveLeft 0.4s ease-in-out infinite alternate; transform-origin: top center; }
-        .css-dog-character .leg-right { animation: legMoveRight 0.4s ease-in-out infinite alternate; transform-origin: top center; }
+            .css-dog-character .ear {
+                animation: earWiggle 0.5s ease-in-out infinite alternate;
+                transform-origin: top center;
+            }
+
+            .css-dog-character .tail {
+                animation: tailWag 0.3s ease-in-out infinite alternate;
+                transform-origin: bottom left;
+            }
+
+            .css-dog-character .leg-left {
+                animation: legMoveLeft 0.4s ease-in-out infinite alternate;
+                transform-origin: top center;
+            }
+
+            .css-dog-character .leg-right {
+                animation: legMoveRight 0.4s ease-in-out infinite alternate;
+                transform-origin: top center;
+            }
 
         @@keyframes walkAcrossScreen {
-            0% { left: -100px; transform: scaleX(1); }
-            49.9% { left: calc(100vw + 20px); transform: scaleX(1); }
-            50% { left: calc(100vw + 20px); transform: scaleX(-1); }
-            99.9% { left: -100px; transform: scaleX(-1); }
-            100% { left: -100px; transform: scaleX(1); }
-        }
-        @@keyframes dogBodyBounce { 0% { transform: translateY(0); } 100% { transform: translateY(-3px); } }
-        @@keyframes earWiggle { 0% { transform: rotate(0deg); } 100% { transform: rotate(8deg); } }
-        @@keyframes tailWag { 0% { transform: rotate(-10deg); } 100% { transform: rotate(15deg); } }
-        @@keyframes legMoveLeft { 0% { transform: rotate(-20deg); } 100% { transform: rotate(20deg); } }
-        @@keyframes legMoveRight { 0% { transform: rotate(20deg); } 100% { transform: rotate(-20deg); } }
+            0% {
+                left: -100px;
+                transform: scaleX(1);
+            }
 
-        /* Modal Overlay & Login Card (Fully Responsive) */
+            49.9% {
+                left: calc(100vw + 20px);
+                transform: scaleX(1);
+            }
+
+            50% {
+                left: calc(100vw + 20px);
+                transform: scaleX(-1);
+            }
+
+            99.9% {
+                left: -100px;
+                transform: scaleX(-1);
+            }
+
+            100% {
+                left: -100px;
+                transform: scaleX(1);
+            }
+        }
+
+        @@keyframes dogBodyBounce {
+            0% {
+                transform: translateY(0);
+            }
+
+            100% {
+                transform: translateY(-3px);
+            }
+        }
+
+        @@keyframes earWiggle {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(8deg);
+            }
+        }
+
+        @@keyframes tailWag {
+            0% {
+                transform: rotate(-10deg);
+            }
+
+            100% {
+                transform: rotate(15deg);
+            }
+        }
+
+        @@keyframes legMoveLeft {
+            0% {
+                transform: rotate(-20deg);
+            }
+
+            100% {
+                transform: rotate(20deg);
+            }
+        }
+
+        @@keyframes legMoveRight {
+            0% {
+                transform: rotate(20deg);
+            }
+
+            100% {
+                transform: rotate(-20deg);
+            }
+        }
+
+        /* CLEANED MODAL BACKDROP */
         .modal {
             display: none;
             position: fixed;
             top: 0;
             left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.6);
+            width: 100vw;
+            height: 100vh;
+            background-color: rgba(0, 0, 0, 0.45);
             justify-content: center;
             align-items: center;
             z-index: 2000;
-            backdrop-filter: blur(4px);
+            backdrop-filter: blur(3px);
             opacity: 0;
-            transition: opacity 0.3s ease;
+            transition: opacity 0.25s ease;
             padding: 16px;
         }
 
-        .modal.show {
-            display: flex;
-            opacity: 1;
-        }
+            .modal.show {
+                display: flex;
+                opacity: 1;
+            }
 
         .modal-content {
             background: var(--bg-card);
@@ -482,10 +585,10 @@
             width: 100%;
             max-width: 400px;
             position: relative;
-            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.2);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.25);
             border: 1px solid var(--border-color);
-            transform: translateY(10px) scale(0.98);
-            transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            transform: translateY(8px) scale(0.98);
+            transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
             max-height: 90vh;
             overflow-y: auto;
         }
@@ -504,7 +607,9 @@
             transition: color 0.2s ease;
         }
 
-        .close-btn:hover { color: var(--text-heading); }
+            .close-btn:hover {
+                color: var(--text-heading);
+            }
 
         .tab-buttons {
             display: flex;
@@ -529,23 +634,23 @@
             transition: all 0.2s ease;
         }
 
-        .tab-btn.active {
-            background-color: var(--bg-card);
-            color: var(--primary-accent);
-            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
-        }
+            .tab-btn.active {
+                background-color: var(--bg-card);
+                color: var(--primary-accent);
+                box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+            }
 
         .form-group {
             margin-bottom: 14px;
         }
 
-        .form-group label {
-            display: block;
-            margin-bottom: 5px;
-            font-size: 12.5px;
-            font-weight: 600;
-            color: var(--text-heading);
-        }
+            .form-group label {
+                display: block;
+                margin-bottom: 5px;
+                font-size: 12.5px;
+                font-weight: 600;
+                color: var(--text-heading);
+            }
 
         .input-wrapper {
             position: relative;
@@ -564,11 +669,11 @@
             transition: all 0.2s ease;
         }
 
-        .form-group input:focus {
-            outline: none;
-            border-color: var(--primary-accent);
-            box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.15);
-        }
+            .form-group input:focus {
+                outline: none;
+                border-color: var(--primary-accent);
+                box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.15);
+            }
 
         .password-toggle-icon {
             position: absolute;
@@ -579,7 +684,9 @@
             transition: color 0.2s ease;
         }
 
-        .password-toggle-icon:hover { color: var(--primary-accent); }
+            .password-toggle-icon:hover {
+                color: var(--primary-accent);
+            }
 
         .submit-btn {
             width: 100%;
@@ -596,10 +703,10 @@
             box-shadow: 0 4px 12px rgba(2, 132, 199, 0.25);
         }
 
-        .submit-btn:hover {
-            opacity: 0.9;
-            transform: translateY(-1px);
-        }
+            .submit-btn:hover {
+                opacity: 0.9;
+                transform: translateY(-1px);
+            }
 
         .error-msg {
             color: #ef4444;
@@ -615,23 +722,49 @@
             text-align: center;
         }
 
-        /* Fluid Media Queries for Small Displays to Prevent Breaking */
+        /* Modern Toast Notification inside Modal */
+        .toast-alert {
+            padding: 10px 14px;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 600;
+            margin-bottom: 12px;
+            text-align: center;
+        }
+
+        .toast-success {
+            background-color: rgba(16, 185, 129, 0.15);
+            color: #10b981;
+            border: 1px solid rgba(16, 185, 129, 0.3);
+        }
+
+        .toast-error {
+            background-color: rgba(239, 68, 68, 0.15);
+            color: #ef4444;
+            border: 1px solid rgba(239, 68, 68, 0.3);
+        }
+
+        /* Responsive Media Queries */
         @@media (max-width: 900px) {
             .hero-inner-content {
                 flex-direction: column;
                 text-align: center;
                 gap: 20px;
             }
+
             .hero-text-side p {
                 margin: 0 auto 16px auto;
             }
+
             .hero-stats-row {
                 justify-content: center;
             }
+
             .hero-visual-side {
                 height: 200px;
                 width: 100%;
             }
+
             .features-container {
                 grid-template-columns: 1fr;
             }
@@ -641,9 +774,11 @@
             .header {
                 padding: 12px 16px;
             }
+
             .logo-title {
                 font-size: 17px;
             }
+
             .hero-carousel {
                 padding: 20px 16px;
             }
@@ -668,7 +803,7 @@
         </div>
     </header>
 
-    <!-- Hero Carousel Section with Responsive Layout -->
+    <!-- Hero Carousel Section -->
     <div class="hero-carousel">
         <div class="carousel-bg-slide active"><img src="/images/dog2.jpg" alt="Dog 2"></div>
         <div class="carousel-bg-slide"><img src="/images/dog3.jpg" alt="Dog 3"></div>
@@ -709,7 +844,7 @@
         </div>
     </div>
 
-    <!-- Features Section (Horizontal 3-Column Layout) -->
+    <!-- Features Section -->
     <main class="features-container">
         <div class="feature-card">
             <img src="https://images.unsplash.com/photo-1506784983877-45594efa4cbe?auto=format&fit=crop&w=400&q=80" alt="Appointments">
@@ -840,13 +975,14 @@
     </div>
 
     <!-- FORGOT / RESET PASSWORD MODAL -->
-    <div id="forgotPasswordModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 2000; justify-content: center; align-items: center; backdrop-filter: blur(4px); padding: 16px;">
-        <div style="background: var(--bg-card); padding: 24px; border-radius: 12px; width: 100%; max-width: 380px; box-shadow: 0 20px 25px -5px rgba(0,0,0,0.2); border: 1px solid var(--border-color); color: var(--text-main);">
+    <div id="forgotPasswordModal" class="modal">
+        <div class="modal-content">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px;">
                 <h3 style="margin: 0; font-size: 16px; font-weight: 700; color: var(--text-heading);"><i class="fa-solid fa-key" style="color: var(--primary-accent); margin-right: 6px;"></i> Reset Password</h3>
                 <button onclick="closeForgotPasswordModal()" style="background: none; border: none; font-size: 20px; cursor: pointer; color: var(--text-muted);">&times;</button>
             </div>
             <form onsubmit="handleResetPassword(event)">
+                <div id="resetMessageContainer"></div>
                 <div class="form-group">
                     <label>Registered Email</label>
                     <input type="email" id="resetEmail" placeholder="e.g. user@gmail.com" required />
@@ -929,7 +1065,7 @@
                 modal.style.display = 'none';
                 document.getElementById('errorMessage').innerText = '';
                 document.getElementById('regMessage').innerText = '';
-            }, 300);
+            }, 250);
         }
 
         function switchMode(mode) {
@@ -1042,19 +1178,30 @@
         }
 
         function openForgotPasswordModal() {
-            document.getElementById('forgotPasswordModal').style.display = 'flex';
+            const modal = document.getElementById('forgotPasswordModal');
+            modal.style.display = 'flex';
+            setTimeout(() => { modal.classList.add('show'); }, 10);
         }
 
         function closeForgotPasswordModal() {
-            document.getElementById('forgotPasswordModal').style.display = 'none';
-            document.getElementById('resetEmail').value = '';
-            document.getElementById('resetNewPassword').value = '';
+            const modal = document.getElementById('forgotPasswordModal');
+            modal.classList.remove('show');
+            setTimeout(() => {
+                modal.style.display = 'none';
+                document.getElementById('resetEmail').value = '';
+                document.getElementById('resetNewPassword').value = '';
+                const msgContainer = document.getElementById('resetMessageContainer');
+                if (msgContainer) msgContainer.innerHTML = '';
+            }, 250);
         }
 
-              async function handleResetPassword(event) {
+        async function handleResetPassword(event) {
             event.preventDefault();
             const email = document.getElementById('resetEmail').value.trim();
             const newPassword = document.getElementById('resetNewPassword').value;
+            const msgContainer = document.getElementById('resetMessageContainer');
+
+            msgContainer.innerHTML = `<div class="toast-alert" style="background: rgba(2, 132, 199, 0.15); color: var(--primary-accent); border: 1px solid rgba(2, 132, 199, 0.3);">Updating password...</div>`;
 
             try {
                 const response = await fetch('/Account/ForgotPassword', {
@@ -1065,23 +1212,17 @@
 
                 const data = await response.json();
                 if (data.success) {
-                    alert(data.message);
-                    closeForgotPasswordModal();
+                    msgContainer.innerHTML = `<div class="toast-alert toast-success"><i class="fa-solid fa-circle-check" style="margin-right: 6px;"></i>${data.message}</div>`;
+                    setTimeout(() => {
+                        closeForgotPasswordModal();
+                    }, 2000);
                 } else {
-                    alert("Error: " + data.message);
+                    msgContainer.innerHTML = `<div class="toast-alert toast-error"><i class="fa-solid fa-circle-exclamation" style="margin-right: 6px;"></i>${data.message}</div>`;
                 }
             } catch (err) {
-                alert("An error occurred while attempting to connect to the server.");
+                msgContainer.innerHTML = `<div class="toast-alert toast-error">An error occurred while connecting to the server.</div>`;
                 console.error(err);
             }
-        }
-
-        function openForgotPasswordModal() {
-            document.getElementById('forgotPasswordModal').style.display = 'flex';
-        }
-
-        function closeForgotPasswordModal() {
-            document.getElementById('forgotPasswordModal').style.display = 'none';
         }
     </script>
 </body>
