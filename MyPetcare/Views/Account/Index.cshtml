@@ -1051,31 +1051,37 @@
             document.getElementById('resetNewPassword').value = '';
         }
 
-        async function handleResetPassword(event) {
+              async function handleResetPassword(event) {
             event.preventDefault();
-
             const email = document.getElementById('resetEmail').value.trim();
-            const newPassword = document.getElementById('resetNewPassword').value.trim();
+            const newPassword = document.getElementById('resetNewPassword').value;
 
             try {
-                const response = await fetch('/Account/ResetPassword', {
+                const response = await fetch('/Account/ForgotPassword', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ Email: email, NewPassword: newPassword })
+                    body: JSON.stringify({ email: email, newPassword: newPassword })
                 });
 
                 const data = await response.json();
-
                 if (data.success) {
                     alert(data.message);
                     closeForgotPasswordModal();
                 } else {
-                    alert(data.message || 'Password update failed.');
+                    alert("Error: " + data.message);
                 }
             } catch (err) {
+                alert("An error occurred while attempting to connect to the server.");
                 console.error(err);
-                alert('An error occurred while attempting to reset the password.');
             }
+        }
+
+        function openForgotPasswordModal() {
+            document.getElementById('forgotPasswordModal').style.display = 'flex';
+        }
+
+        function closeForgotPasswordModal() {
+            document.getElementById('forgotPasswordModal').style.display = 'none';
         }
     </script>
 </body>

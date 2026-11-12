@@ -130,7 +130,7 @@ namespace MyPetcare.Controllers
         }
 
         [HttpPost]
-        public IActionResult ForgotPassword([FromBody] ForgotPasswordDto model)
+        public async Task<IActionResult> ForgotPassword([FromBody] ForgotPasswordDto model)
         {
             if (model == null || string.IsNullOrWhiteSpace(model.Email) || string.IsNullOrWhiteSpace(model.NewPassword))
             {
@@ -144,24 +144,27 @@ namespace MyPetcare.Controllers
                 return Json(new { success = false, message = "Password must be at least 8 characters long and include letters, numbers, and special characters." });
             }
 
-            // Find the user by email in the SQL Server database
-            var user = _context.Users.FirstOrDefault(u => u.Email.ToLower() == model.Email.ToLower());
-            if (user == null)
-            {
-                return Json(new { success = false, message = "Email address not found." });
-            }
-
             try
             {
-                // Update the password
+                // Find the user by email (case-insensitive) asynchronously
+                var user = await _context.Users
+                    .FirstOrDefaultAsync(u => u.Email.ToLower() == model.Email.Trim().ToLower());
+
+                if (user == null)
+                {
+                    return Json(new { success = false, message = "Email address not found." });
+                }
+
+                // Update the password and explicitly mark the entity state as Modified
                 user.Password = model.NewPassword;
-                _context.SaveChanges(); // Save changes to SQL Server
+                _context.Users.Update(user);
+                await _context.SaveChangesAsync(); // Save changes asynchronously to database
 
                 return Json(new { success = true, message = "Password updated successfully! You can now log in." });
             }
             catch (Exception ex)
             {
-                return Json(new { success = false, message = "An error occurred: " + ex.Message });
+                return Json(new { success = false, message = "An error occurred: " + ex.GetBaseException().Message });
             }
         }
 
