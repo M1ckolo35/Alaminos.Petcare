@@ -15,7 +15,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
-            --bg-color: #f1f5f9;
+            --bg-color: #f8fafc;
             --card-bg: #ffffff;
             --text-color: #334155;
             --text-muted: #64748b;
@@ -25,7 +25,7 @@
             --table-border: #f1f5f9;
             --bg-main: #f8fafc;
             --primary-accent: #0284c7;
-            --card-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05), 0 1px 2px -1px rgba(0, 0, 0, 0.05);
+            --card-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.02), 0 2px 4px -2px rgba(0, 0, 0, 0.02);
             --table-hover: #f8fafc;
             --badge-pending-bg: #fef3c7;
             --badge-pending-text: #b45309;
@@ -36,18 +36,18 @@
         }
 
         [data-theme="dark"] {
-            --bg-color: #0b0f19;
-            --card-bg: #111827;
-            --text-color: #9ca3af;
-            --text-muted: #6b7280;
-            --heading-color: #f9fafb;
-            --border-color: #1f2937;
-            --sidebar-bg: #0f172a;
-            --table-border: #1f2937;
-            --bg-main: #0b0f19;
+            --bg-color: #07090e;
+            --card-bg: #0f172a;
+            --text-color: #94a3b8;
+            --text-muted: #64748b;
+            --heading-color: #f8fafc;
+            --border-color: #1e293b;
+            --sidebar-bg: #090d16;
+            --table-border: #1e293b;
+            --bg-main: #07090e;
             --primary-accent: #38bdf8;
-            --card-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3);
-            --table-hover: #1f2937;
+            --card-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.4);
+            --table-hover: #162032;
             --badge-pending-bg: #451a03;
             --badge-pending-text: #fbbf24;
             --badge-approved-bg: #064e3b;
@@ -60,8 +60,7 @@
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-            transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
         }
 
         body {
@@ -76,7 +75,7 @@
         @@keyframes slideInToast {
             from {
                 opacity: 0;
-                transform: translateY(30px) scale(0.9);
+                transform: translateY(20px) scale(0.95);
             }
 
             to {
@@ -93,45 +92,44 @@
 
             to {
                 opacity: 0;
-                transform: translateY(15px) scale(0.9);
+                transform: translateY(10px) scale(0.95);
             }
         }
 
         .custom-toast {
             position: fixed;
-            bottom: 35px;
-            right: 35px;
+            bottom: 30px;
+            right: 30px;
             background-color: var(--card-bg);
             color: var(--heading-color);
-            border: 2px solid var(--border-color);
-            padding: 18px 26px;
+            border: 1px solid var(--border-color);
+            padding: 14px 20px;
             border-radius: 12px;
-            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
             display: flex;
             align-items: center;
-            gap: 16px;
+            gap: 12px;
             z-index: 99999;
-            font-size: 15px;
-            font-weight: 600;
-            animation: slideInToast 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+            font-size: 14px;
+            font-weight: 500;
+            animation: slideInToast 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
         }
 
             .custom-toast.fade-out {
-                animation: fadeOutToast 0.3s ease forwards;
+                animation: fadeOutToast 0.2s ease forwards;
             }
 
-        /* FIXED SIDEBAR */
+        /* SIDEBAR */
         .sidebar {
-            width: 280px;
-            min-width: 280px;
-            max-width: 280px;
+            width: 270px;
+            min-width: 270px;
             height: 100vh;
             background-color: var(--sidebar-bg);
             border-right: 1px solid var(--border-color);
             display: flex;
             flex-direction: column;
             justify-content: space-between;
-            padding: 24px;
+            padding: 24px 20px;
             position: relative;
             flex-shrink: 0;
             overflow-y: auto;
@@ -142,7 +140,7 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
-            margin-bottom: 20px;
+            margin-bottom: 24px;
         }
 
         .brand-left {
@@ -154,15 +152,16 @@
         .sidebar-top .brand img {
             width: 36px;
             height: 36px;
-            border-radius: 8px;
+            border-radius: 10px;
             object-fit: cover;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
         }
 
         .sidebar-top .brand h2 {
-            font-size: 16px;
-            font-weight: 700;
+            font-size: 15px;
+            font-weight: 600;
             color: var(--heading-color);
-            letter-spacing: -0.3px;
+            letter-spacing: -0.2px;
         }
 
         .close-sidebar-btn {
@@ -170,25 +169,24 @@
             background: transparent;
             border: none;
             color: var(--text-muted);
-            font-size: 1.2rem;
+            font-size: 1.1rem;
             cursor: pointer;
             padding: 4px;
         }
 
-        /* Admin Team & Online Status Box in Sidebar */
         .sidebar-admin-section {
             background: var(--bg-main);
             border: 1px solid var(--border-color);
             border-radius: 10px;
             padding: 12px;
-            margin-bottom: 20px;
+            margin-bottom: 24px;
         }
 
         .admin-item {
             display: flex;
             align-items: center;
             gap: 10px;
-            padding: 8px 0;
+            padding: 6px 0;
             border-bottom: 1px dashed var(--border-color);
         }
 
@@ -198,23 +196,23 @@
             }
 
         .admin-avatar-box {
-            width: 32px;
-            height: 32px;
+            width: 30px;
+            height: 30px;
             border-radius: 50%;
             background: var(--primary-accent);
             color: white;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-weight: bold;
-            font-size: 12px;
+            font-weight: 600;
+            font-size: 11px;
             position: relative;
             flex-shrink: 0;
         }
 
         .online-dot {
-            width: 10px;
-            height: 10px;
+            width: 8px;
+            height: 8px;
             border-radius: 50%;
             border: 2px solid var(--sidebar-bg);
             position: absolute;
@@ -245,11 +243,14 @@
                 color: var(--text-muted);
                 text-decoration: none;
                 font-weight: 500;
-                font-size: 14px;
-                border-radius: 6px;
-                position: relative;
-                cursor: pointer;
+                font-size: 13.5px;
+                border-radius: 8px;
+                transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
             }
+
+                .nav-links li a:active {
+                    transform: scale(0.98);
+                }
 
                 .nav-links li.active a, .nav-links li a:hover {
                     background-color: rgba(2, 132, 199, 0.08);
@@ -269,18 +270,23 @@
         .theme-toggle-btn {
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 12px;
             padding: 10px 14px;
             color: var(--text-color);
             background-color: var(--bg-main);
             border: 1px solid var(--border-color);
             font-weight: 500;
-            font-size: 14px;
-            border-radius: 6px;
+            font-size: 13.5px;
+            border-radius: 8px;
             cursor: pointer;
             width: 100%;
             text-align: left;
+            transition: all 0.2s ease;
         }
+
+            .theme-toggle-btn:active {
+                transform: scale(0.98);
+            }
 
             .theme-toggle-btn:hover {
                 border-color: var(--primary-accent);
@@ -289,41 +295,52 @@
         .logout-btn {
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 12px;
             padding: 10px 14px;
             color: #ef4444;
             text-decoration: none;
             font-weight: 500;
-            font-size: 14px;
-            border-radius: 6px;
-            background-color: rgba(239, 68, 68, 0.06);
+            font-size: 13.5px;
+            border-radius: 8px;
+            background-color: rgba(239, 68, 68, 0.04);
+            transition: all 0.2s ease;
         }
 
-            .logout-btn:hover {
-                background-color: rgba(239, 68, 68, 0.12);
+            .logout-btn:active {
+                transform: scale(0.98);
             }
 
+            .logout-btn:hover {
+                background-color: rgba(239, 68, 68, 0.08);
+            }
+
+        /* MAIN AREA */
         .main-content {
             flex: 1;
             display: flex;
             flex-direction: column;
             height: 100vh;
-            overflow-y: auto;
-            overflow-x: hidden;
+            overflow: hidden;
             min-width: 0;
+            position: relative;
+            background-color: var(--bg-color);
+        }
+
+        .sticky-top-container {
+            position: relative;
+            z-index: 950;
+            background-color: var(--bg-color);
+            flex-shrink: 0;
         }
 
         .dashboard-header {
             background-color: var(--card-bg);
-            padding: 18px 36px;
+            padding: 18px 28px;
             border-bottom: 1px solid var(--border-color);
             display: flex;
             justify-content: space-between;
             align-items: center;
-            position: sticky;
-            top: 0;
-            z-index: 900;
-            gap: 12px;
+            gap: 16px;
         }
 
         .header-left {
@@ -341,7 +358,7 @@
             width: 38px;
             height: 38px;
             border-radius: 8px;
-            font-size: 1.05rem;
+            font-size: 1rem;
             cursor: pointer;
             align-items: center;
             justify-content: center;
@@ -352,19 +369,17 @@
             display: none;
             position: fixed;
             inset: 0;
-            background: rgba(0, 0, 0, 0.5);
+            background: rgba(0, 0, 0, 0.4);
             z-index: 999;
-            backdrop-filter: blur(2px);
+            backdrop-filter: blur(3px);
         }
 
         .dashboard-header h1 {
-            font-size: 20px;
-            font-weight: 700;
+            font-size: 17px;
+            font-weight: 600;
             color: var(--heading-color);
-            letter-spacing: -0.3px;
+            letter-spacing: -0.2px;
             white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
         }
 
         .user-profile {
@@ -372,60 +387,90 @@
             align-items: center;
             gap: 12px;
             cursor: pointer;
-            padding: 4px 10px;
-            border-radius: 20px;
+            padding: 6px 12px;
+            border-radius: 24px;
             border: 1px solid transparent;
             flex-shrink: 0;
+            transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
         }
+
+            .user-profile:active {
+                transform: scale(0.96);
+            }
 
             .user-profile:hover {
                 border-color: var(--border-color);
                 background: var(--bg-main);
+                box-shadow: 0 2px 8px rgba(0,0,0,0.03);
             }
 
+        /* BODY AREA */
         .dashboard-body {
-            padding: 28px 36px;
+            padding: 24px 28px;
             display: flex;
             flex-direction: column;
-            gap: 24px;
+            gap: 20px;
+            flex: 1;
+            overflow: hidden;
             max-width: 100%;
         }
 
-        .card, .metric-card {
+        .card {
             background-color: var(--card-bg);
-            border-radius: 10px;
+            border-radius: 14px;
             padding: 22px;
             box-shadow: var(--card-shadow);
             border: 1px solid var(--border-color);
         }
 
-        /* HORIZONTAL METRICS CARDS */
-        .metrics-grid {
-            display: flex;
-            flex-direction: row;
-            gap: 20px;
-            overflow-x: auto;
-            padding-bottom: 4px;
+        /* METRICS GRID */
+        .metrics-grid-sticky-wrapper {
+            background-color: var(--bg-color);
+            padding: 16px 28px 4px 28px;
             width: 100%;
         }
 
+        .metrics-grid {
+            display: grid !important;
+            grid-template-columns: repeat(4, 1fr) !important;
+            gap: 16px !important;
+            width: 100% !important;
+            box-sizing: border-box !important;
+        }
+
         .metric-card {
-            flex: 1;
-            min-width: 210px;
+            background-color: var(--card-bg);
+            border-radius: 12px;
+            padding: 18px;
+            box-shadow: var(--card-shadow);
+            border: 1px solid var(--border-color);
             display: flex;
             flex-direction: column;
             justify-content: space-between;
+            min-height: 105px;
+            cursor: pointer;
+            transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
         }
+
+            .metric-card:hover {
+                transform: translateY(-3px);
+                box-shadow: 0 10px 25px -5px rgba(2, 132, 199, 0.08);
+                border-color: var(--primary-accent);
+            }
+
+            .metric-card:active {
+                transform: scale(0.97);
+            }
 
             .metric-card .metric-header {
                 display: flex;
                 justify-content: space-between;
                 align-items: center;
-                margin-bottom: 12px;
+                margin-bottom: 8px;
             }
 
             .metric-card h4 {
-                font-size: 13px;
+                font-size: 11.5px;
                 font-weight: 600;
                 color: var(--text-muted);
                 text-transform: uppercase;
@@ -433,32 +478,50 @@
             }
 
             .metric-card .icon-box {
-                width: 34px;
-                height: 34px;
+                width: 32px;
+                height: 32px;
                 border-radius: 8px;
-                background: rgba(2, 132, 199, 0.1);
+                background: rgba(2, 132, 199, 0.08);
                 color: var(--primary-accent);
                 display: flex;
                 align-items: center;
                 justify-content: center;
-                font-size: 15px;
+                font-size: 13.5px;
                 flex-shrink: 0;
+                transition: transform 0.2s ease;
+            }
+
+            .metric-card:hover .icon-box {
+                transform: scale(1.1);
             }
 
             .metric-card .value {
                 font-size: 24px;
                 font-weight: 700;
                 color: var(--heading-color);
+                letter-spacing: -0.5px;
             }
 
         .lower-grid {
             display: grid;
             grid-template-columns: 2fr 1fr;
-            gap: 24px;
+            gap: 20px;
+            flex: 1;
+            min-height: 0;
+            overflow: hidden;
+        }
+
+        .scrollable-column {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            overflow-y: auto;
+            max-height: calc(100vh - 250px);
+            padding-right: 4px;
         }
 
         .card h3 {
-            font-size: 16px;
+            font-size: 15px;
             font-weight: 600;
             margin-bottom: 16px;
             color: var(--heading-color);
@@ -482,7 +545,7 @@
         }
 
             .table th, .table td {
-                padding: 12px 10px;
+                padding: 12px 14px;
                 border-bottom: 1px solid var(--table-border);
                 color: var(--text-color);
                 white-space: nowrap;
@@ -492,6 +555,8 @@
                 color: var(--text-muted);
                 font-weight: 600;
                 background-color: var(--bg-main);
+                font-size: 11.5px;
+                letter-spacing: 0.3px;
             }
 
             .table tbody tr:hover {
@@ -500,10 +565,9 @@
 
         .badge {
             padding: 4px 10px;
-            border-radius: 12px;
+            border-radius: 6px;
             font-size: 11px;
             font-weight: 600;
-            text-transform: uppercase;
             letter-spacing: 0.3px;
             display: inline-block;
         }
@@ -528,74 +592,103 @@
             color: white;
             border: none;
             padding: 7px 14px;
-            border-radius: 6px;
+            border-radius: 8px;
             cursor: pointer;
             font-weight: 600;
-            font-size: 13px;
+            font-size: 12.5px;
+            transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+            box-shadow: 0 2px 4px rgba(2, 132, 199, 0.15);
         }
 
+            .action-btn:active {
+                transform: scale(0.95);
+            }
+
             .action-btn:hover {
-                opacity: 0.95;
+                opacity: 0.92;
+                box-shadow: 0 4px 8px rgba(2, 132, 199, 0.25);
             }
 
         .btn-outline-warning {
             background: transparent;
             border: 1px solid #d97706;
             color: #d97706;
-            padding: 4px 8px;
-            border-radius: 4px;
-            font-size: 11px;
+            padding: 5px 10px;
+            border-radius: 6px;
+            font-size: 11.5px;
             font-weight: 600;
             cursor: pointer;
+            transition: all 0.2s ease;
         }
+
+            .btn-outline-warning:active {
+                transform: scale(0.95);
+            }
+
+            .btn-outline-warning:hover {
+                background: rgba(217, 119, 6, 0.08);
+            }
 
         .btn-outline-danger {
             background: transparent;
             border: 1px solid #ef4444;
             color: #ef4444;
-            padding: 4px 8px;
-            border-radius: 4px;
-            font-size: 11px;
+            padding: 5px 10px;
+            border-radius: 6px;
+            font-size: 11.5px;
             font-weight: 600;
             cursor: pointer;
+            transition: all 0.2s ease;
         }
+
+            .btn-outline-danger:active {
+                transform: scale(0.95);
+            }
+
+            .btn-outline-danger:hover {
+                background: rgba(239, 68, 68, 0.08);
+            }
 
         .see-more-toggle {
             display: inline-block;
             margin-top: 12px;
-            font-size: 13px;
+            font-size: 12.5px;
             font-weight: 600;
             color: var(--primary-accent);
             cursor: pointer;
             background: none;
             border: none;
-            text-decoration: underline;
+            text-decoration: none;
         }
 
-        /* FIXED PET STUDIO MODAL SCROLLING & SUBMIT/CANCEL BUTTONS */
+            .see-more-toggle:hover {
+                text-decoration: underline;
+            }
+
         .pet-studio-modal-card {
             width: 740px;
             max-width: 95%;
             max-height: 90vh;
-            border-radius: 12px;
-            padding: 20px;
+            border-radius: 16px;
+            padding: 24px;
             display: flex;
             flex-direction: column;
             overflow: hidden;
             background: var(--card-bg);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
         }
 
         .canva-modal-body {
             display: grid;
-            grid-template-columns: 280px 1fr;
+            grid-template-columns: 260px 1fr;
             flex: 1;
             min-height: 0;
             max-height: 52vh;
-            border-radius: 8px;
+            border-radius: 10px;
             overflow: hidden;
             border: 1px solid var(--border-color);
             background: var(--card-bg);
-            margin-bottom: 14px;
+            margin-bottom: 16px;
         }
 
         .canva-sidebar {
@@ -610,11 +703,11 @@
         }
 
         .canva-sidebar-section-title {
-            font-size: 11px;
+            font-size: 10.5px;
             font-weight: 700;
             text-transform: uppercase;
             color: var(--text-muted);
-            letter-spacing: 0.5px;
+            letter-spacing: 0.6px;
         }
 
         .canva-item-grid {
@@ -632,15 +725,20 @@
             align-items: center;
             justify-content: center;
             cursor: pointer;
-            font-size: 12px;
+            font-size: 11.5px;
             color: var(--text-color);
             transition: all 0.2s ease;
         }
+
+            .canva-asset-card:active {
+                transform: scale(0.95);
+            }
 
             .canva-asset-card:hover, .canva-asset-card.active {
                 border-color: var(--primary-accent);
                 background: rgba(2, 132, 199, 0.08);
                 color: var(--primary-accent);
+                font-weight: 600;
             }
 
         .swatch-group {
@@ -655,6 +753,7 @@
             border-radius: 50%;
             cursor: pointer;
             border: 2px solid transparent;
+            transition: transform 0.2s ease;
         }
 
             .color-swatch:hover, .color-swatch.active {
@@ -671,7 +770,6 @@
             overflow: hidden;
         }
 
-        /* --- MOBILE & TABLET MEDIA QUERIES --- */
         @@media (max-width: 992px) {
             body {
                 flex-direction: column;
@@ -691,12 +789,11 @@
             .sidebar {
                 position: fixed;
                 top: 0;
-                left: -280px;
-                width: 280px;
-                max-width: 280px;
+                left: -270px;
+                width: 270px;
                 height: 100vh;
                 z-index: 1000;
-                transition: left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+                transition: left 0.3s cubic-bezier(0.16, 1, 0.3, 1);
             }
 
                 .sidebar.open {
@@ -712,26 +809,34 @@
                 overflow: visible;
             }
 
+            .metrics-grid {
+                grid-template-columns: repeat(2, 1fr) !important;
+            }
+
+            .metrics-grid-sticky-wrapper {
+                padding: 12px 16px 4px 16px;
+            }
+
             .dashboard-header {
                 padding: 14px 18px;
             }
 
-                .dashboard-header h1 {
-                    font-size: 1.1rem;
-                }
-
             .dashboard-body {
                 padding: 16px;
                 gap: 16px;
-            }
-
-            .metrics-grid {
-                flex-direction: column;
-                overflow-x: visible;
+                overflow-y: visible;
             }
 
             .lower-grid {
                 grid-template-columns: 1fr;
+                display: flex;
+                flex-direction: column;
+                overflow: visible;
+            }
+
+            .scrollable-column {
+                max-height: none;
+                overflow-y: visible;
             }
 
             .canva-modal-body {
@@ -764,20 +869,17 @@
                 </button>
             </div>
 
-            <!-- ALL ADMIN PERSONNEL LIST & ONLINE STATUS WIDGET -->
-            <div style="margin-bottom: 14px;">
-                <span style="font-size: 11px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; display: block; margin-bottom: 6px;">
-                    <i class="fa-solid fa-users-gear" style="color: var(--primary-accent); margin-right: 4px;"></i> Clinic Admin Team
+            <div style="margin-bottom: 12px;">
+                <span style="font-size: 10.5px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.6px; display: block; margin-bottom: 8px;">
+                    <i class="fa-solid fa-user-shield" style="color: var(--primary-accent); margin-right: 4px;"></i> Clinic Admin Team
                 </span>
-                <div class="sidebar-admin-section" id="sidebarAdminTeamContainer">
-                    <!-- Dinamikong ika-load dito ang lahat ng Admins at ang kanilang Online status -->
-                </div>
+                <div class="sidebar-admin-section" id="sidebarAdminTeamContainer"></div>
             </div>
 
             <ul class="nav-links">
-                <li id="navDashboard" class="active"><a href="#" onclick="switchTab('dashboard'); return false;"><i class="fa-solid fa-chart-pie"></i> Dashboard</a></li>
-                <li id="navAppointments"><a href="#" onclick="switchTab('appointments'); return false;"><i class="fa-solid fa-calendar-days"></i> Appointments</a></li>
-                <li id="navMyPets"><a href="#" onclick="switchTab('mypets'); return false;"><i class="fa-solid fa-shield-dog"></i> My Pets</a></li>
+                <li id="navDashboard" class="active"><a href="#" onclick="switchTab('dashboard'); return false;"><i class="fa-solid fa-house-chimney"></i> Dashboard</a></li>
+                <li id="navAppointments"><a href="#" onclick="switchTab('appointments'); return false;"><i class="fa-solid fa-calendar-check"></i> Appointments</a></li>
+                <li id="navMyPets"><a href="#" onclick="switchTab('mypets'); return false;"><i class="fa-solid fa-paw"></i> My Pets</a></li>
                 <li><a href="#" onclick="openProfileModal(); return false;"><i class="fa-solid fa-wand-magic-sparkles"></i> Pet Studio</a></li>
             </ul>
         </div>
@@ -791,150 +893,153 @@
 
     <!-- Main Content Area -->
     <main class="main-content">
-        <header class="dashboard-header">
-            <div class="header-left">
-                <button class="mobile-menu-btn" onclick="toggleMobileSidebar()" aria-label="Open Menu">
-                    <i class="fa-solid fa-bars"></i>
-                </button>
-                <h1 id="headerMainTitle">Dashboard Overview</h1>
-            </div>
-            <div style="display: flex; gap: 12px; align-items: center;">
-                <button class="action-btn" id="headerBookBtn" style="display: none;" onclick="openAppointmentModal()"><i class="fa-solid fa-plus"></i> Book an Appointment</button>
-                <div class="user-profile" onclick="openProfileModal()" title="Customize Profile">
-                    <div style="text-align: right;">
-                        <span style="display: block; font-weight: 600; font-size: 13px; color: var(--heading-color);" id="headerDisplayName">@ViewBag.ClientName</span>
-                        <span style="font-size: 11px; color: var(--text-muted);">Client Portal</span>
-                    </div>
-                    <div id="headerAvatarContainer" style="width: 38px; height: 38px; border-radius: 50%; overflow: hidden; border: 1.5px solid var(--primary-accent); background: #ffffff; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
-                        <svg id="headerPetSvg" viewBox="0 0 200 200" width="34" height="34">
-                            <g id="headerSvgContent">
-                                <ellipse cx="100" cy="120" rx="40" ry="32" fill="#0284c7" />
-                                <circle cx="100" cy="85" r="28" fill="#0284c7" />
-                                <ellipse cx="100" cy="94" rx="14" ry="11" fill="#fef3c7" />
-                                <circle cx="91" cy="79" r="3.5" fill="#0f172a" />
-                                <circle cx="109" cy="79" r="3.5" fill="#0f172a" />
-                                <ellipse cx="100" cy="91" rx="4.5" ry="3" fill="#0f172a" />
-                            </g>
-                        </svg>
+        <!-- FIXED TOP CONTAINER (HEADER + 2X2 METRICS) -->
+        <div class="sticky-top-container" id="stickyTopContainer">
+            <header class="dashboard-header">
+                <div class="header-left">
+                    <button class="mobile-menu-btn" onclick="toggleMobileSidebar()" aria-label="Open Menu">
+                        <i class="fa-solid fa-bars"></i>
+                    </button>
+                    <h1 id="headerMainTitle">Dashboard Overview</h1>
+                </div>
+                <div style="display: flex; gap: 12px; align-items: center;">
+                    <button class="action-btn" id="headerBookBtn" style="display: none;" onclick="openAppointmentModal()"><i class="fa-solid fa-circle-plus" style="margin-right: 4px;"></i> Book Appointment</button>
+                    <div class="user-profile" onclick="openProfileModal()" title="Customize Profile">
+                        <div style="text-align: right; line-height: 1.2;">
+                            <span style="font-size: 10.5px; color: var(--text-muted); display: block; font-weight: 500;">Client Portal</span>
+                            <span style="font-weight: 600; font-size: 13px; color: var(--heading-color);" id="headerDisplayName">@ViewBag.ClientName</span>
+                        </div>
+                        <div id="headerAvatarContainer" style="width: 36px; height: 36px; border-radius: 50%; overflow: hidden; border: 1.5px solid var(--primary-accent); background: #ffffff; display: flex; align-items: center; justify-content: center; flex-shrink: 0; box-shadow: 0 2px 4px rgba(0,0,0,0.06);">
+                            <svg id="headerPetSvg" viewBox="0 0 200 200" width="32" height="32">
+                                <g id="headerSvgContent">
+                                    <ellipse cx="100" cy="120" rx="40" ry="32" fill="#0284c7" />
+                                    <circle cx="100" cy="85" r="28" fill="#0284c7" />
+                                    <ellipse cx="100" cy="94" rx="14" ry="11" fill="#fef3c7" />
+                                    <circle cx="91" cy="79" r="3.5" fill="#0f172a" />
+                                    <circle cx="109" cy="79" r="3.5" fill="#0f172a" />
+                                    <ellipse cx="100" cy="91" rx="4.5" ry="3" fill="#0f172a" />
+                                </g>
+                            </svg>
+                        </div>
                     </div>
                 </div>
-            </div>
-        </header>
+            </header>
 
-        <div class="dashboard-body">
-            <!-- TAB 1: DASHBOARD OVERVIEW -->
-            <div id="tabDashboard" style="display: flex; flex-direction: column; gap: 24px;">
-                <!-- HORIZONTAL METRICS CARDS -->
+            <!-- METRICS GRID FIXED UNDER HEADER -->
+            <div class="metrics-grid-sticky-wrapper" id="stickyMetricsWrapper">
                 <div class="metrics-grid">
                     <div class="metric-card">
                         <div class="metric-header">
                             <h4>Registered Pets</h4>
-                            <div class="icon-box"><i class="fa-solid fa-paw"></i></div>
+                            <div class="icon-box"><i class="fa-solid fa-shield-dog"></i></div>
                         </div>
                         <div class="value" id="petCountDisplay">0</div>
                     </div>
                     <div class="metric-card">
                         <div class="metric-header">
-                            <h4>Active Appointments</h4>
-                            <div class="icon-box"><i class="fa-solid fa-calendar-check"></i></div>
+                            <h4>Active Bookings</h4>
+                            <div class="icon-box"><i class="fa-solid fa-calendar-days"></i></div>
                         </div>
                         <div class="value" id="activeAppointmentsCountDisplay">0</div>
                     </div>
                     <div class="metric-card">
                         <div class="metric-header">
-                            <h4>Vaccination Status</h4>
-                            <div class="icon-box"><i class="fa-solid fa-shield-heart"></i></div>
+                            <h4>Vaccination</h4>
+                            <div class="icon-box"><i class="fa-solid fa-syringe"></i></div>
                         </div>
-                        <div class="value" style="font-size: 16px; color: #047857; margin-top: 6px;">Verified Active</div>
+                        <div class="value" style="font-size: 14.5px; color: #047857; margin-top: 4px; display: flex; align-items: center; gap: 6px;"><i class="fa-solid fa-circle-check" style="font-size: 13px;"></i> Verified Active</div>
                     </div>
                     <div class="metric-card">
                         <div class="metric-header">
-                            <h4>Support Assistant</h4>
+                            <h4>Support AI</h4>
                             <div class="icon-box"><i class="fa-solid fa-robot"></i></div>
                         </div>
-                        <div class="value" style="font-size: 16px; color: var(--primary-accent); margin-top: 6px;">Online 24/7</div>
+                        <div class="value" style="font-size: 14.5px; color: var(--primary-accent); margin-top: 4px; display: flex; align-items: center; gap: 6px;"><i class="fa-solid fa-signal" style="font-size: 13px;"></i> Online 24/7</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="dashboard-body">
+            <!-- TAB 1: DASHBOARD OVERVIEW -->
+            <div id="tabDashboard" class="lower-grid">
+                <div class="scrollable-column">
+                    <div class="card" id="appointmentsCardSection">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; flex-wrap: wrap; gap: 10px;">
+                            <h3><i class="fa-solid fa-clipboard-list" style="color: var(--primary-accent);"></i> Scheduled Appointments</h3>
+                            <button class="action-btn" onclick="openAppointmentModal()"><i class="fa-solid fa-circle-plus" style="margin-right: 4px;"></i> New Booking</button>
+                        </div>
+                        <div class="table-responsive">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>Pet Record</th>
+                                        <th>Service Type</th>
+                                        <th>Schedule Date</th>
+                                        <th>Status</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="combinedAppointmentsTableBody"></tbody>
+                            </table>
+                        </div>
+                        <div id="dashboardSeeMoreContainer" style="text-align: center; margin-top: 10px;"></div>
                     </div>
                 </div>
 
-                <div class="lower-grid">
-                    <div style="display: flex; flex-direction: column; gap: 24px;">
-                        <div class="card" id="appointmentsCardSection">
-                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; flex-wrap: wrap; gap: 10px;">
-                                <h3><i class="fa-solid fa-calendar-days" style="color: var(--primary-accent);"></i> Scheduled Appointments</h3>
-                                <button class="action-btn" onclick="openAppointmentModal()"><i class="fa-solid fa-plus"></i> New Booking</button>
+                <div class="scrollable-column">
+                    <div class="card">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px;">
+                            <h3 style="margin: 0; font-size: 15px; display: flex; align-items: center; gap: 8px;">
+                                <i class="fa-solid fa-calendar-days" style="color: var(--primary-accent);"></i> Schedule Reference
+                            </h3>
+                            <div style="display: flex; align-items: center; gap: 6px;">
+                                <button onclick="changeMonth(-1)" style="background: none; border: 1px solid var(--border-color); border-radius: 6px; padding: 4px 8px; cursor: pointer; color: var(--text-color); font-size: 11px;"><i class="fa-solid fa-chevron-left"></i></button>
+                                <span id="calendarMonthLabel" style="font-size: 12px; font-weight: 600; color: var(--heading-color); min-width: 95px; text-align: center;">November 2026</span>
+                                <button onclick="changeMonth(1)" style="background: none; border: 1px solid var(--border-color); border-radius: 6px; padding: 4px 8px; cursor: pointer; color: var(--text-color); font-size: 11px;"><i class="fa-solid fa-chevron-right"></i></button>
                             </div>
-                            <div class="table-responsive">
-                                <table class="table">
-                                    <thead>
-                                        <tr>
-                                            <th>Pet Record</th>
-                                            <th>Service Type</th>
-                                            <th>Schedule Date</th>
-                                            <th>Status</th>
-                                            <th>Actions</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody id="combinedAppointmentsTableBody"></tbody>
-                                </table>
-                            </div>
-                            <div id="dashboardSeeMoreContainer" style="text-align: center; margin-top: 10px;"></div>
+                        </div>
+                        <div style="display: grid; grid-template-columns: repeat(7, 1fr); text-align: center; gap: 4px;">
+                            <div style="font-size: 11px; font-weight: 700; color: var(--text-muted); padding-bottom: 6px;">Su</div>
+                            <div style="font-size: 11px; font-weight: 700; color: var(--text-muted); padding-bottom: 6px;">Mo</div>
+                            <div style="font-size: 11px; font-weight: 700; color: var(--text-muted); padding-bottom: 6px;">Tu</div>
+                            <div style="font-size: 11px; font-weight: 700; color: var(--text-muted); padding-bottom: 6px;">We</div>
+                            <div style="font-size: 11px; font-weight: 700; color: var(--text-muted); padding-bottom: 6px;">Th</div>
+                            <div style="font-size: 11px; font-weight: 700; color: var(--text-muted); padding-bottom: 6px;">Fr</div>
+                            <div style="font-size: 11px; font-weight: 700; color: var(--text-muted); padding-bottom: 6px;">Sa</div>
+                            <div id="calendarDaysContainer" style="display: contents;"></div>
+                        </div>
+                        <div id="selectedDateDisplay" style="margin-top: 12px; font-size: 12px; color: var(--text-muted); text-align: center; border-top: 1px dashed var(--border-color); padding-top: 10px;">
+                            <i class="fa-solid fa-hand-pointer" style="margin-right: 4px;"></i> Click any day to view details
                         </div>
                     </div>
 
-                    <div style="display: flex; flex-direction: column; gap: 24px;">
-                        <div class="card">
-                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px;">
-                                <h3 style="margin: 0; font-size: 15px; display: flex; align-items: center; gap: 8px;">
-                                    <i class="fa-solid fa-calendar-days" style="color: var(--primary-accent);"></i> Schedule Reference
-                                </h3>
-                                <div style="display: flex; align-items: center; gap: 6px;">
-                                    <button onclick="changeMonth(-1)" style="background: none; border: 1px solid var(--border-color); border-radius: 4px; padding: 2px 7px; cursor: pointer; color: var(--text-color); font-size: 11px;"><i class="fa-solid fa-chevron-left"></i></button>
-                                    <span id="calendarMonthLabel" style="font-size: 12px; font-weight: 600; color: var(--heading-color); min-width: 95px; text-align: center;">November 2026</span>
-                                    <button onclick="changeMonth(1)" style="background: none; border: 1px solid var(--border-color); border-radius: 4px; padding: 2px 7px; cursor: pointer; color: var(--text-color); font-size: 11px;"><i class="fa-solid fa-chevron-right"></i></button>
-                                </div>
-                            </div>
-                            <div style="display: grid; grid-template-columns: repeat(7, 1fr); text-align: center; gap: 4px;">
-                                <div style="font-size: 11px; font-weight: 700; color: var(--text-muted); padding-bottom: 6px;">Su</div>
-                                <div style="font-size: 11px; font-weight: 700; color: var(--text-muted); padding-bottom: 6px;">Mo</div>
-                                <div style="font-size: 11px; font-weight: 700; color: var(--text-muted); padding-bottom: 6px;">Tu</div>
-                                <div style="font-size: 11px; font-weight: 700; color: var(--text-muted); padding-bottom: 6px;">We</div>
-                                <div style="font-size: 11px; font-weight: 700; color: var(--text-muted); padding-bottom: 6px;">Th</div>
-                                <div style="font-size: 11px; font-weight: 700; color: var(--text-muted); padding-bottom: 6px;">Fr</div>
-                                <div style="font-size: 11px; font-weight: 700; color: var(--text-muted); padding-bottom: 6px;">Sa</div>
-                                <div id="calendarDaysContainer" style="display: contents;"></div>
-                            </div>
-                            <div id="selectedDateDisplay" style="margin-top: 12px; font-size: 12px; color: var(--text-muted); text-align: center; border-top: 1px dashed var(--border-color); padding-top: 8px;">
-                                Click any day to view details
-                            </div>
-                        </div>
+                    <div class="card">
+                        <h3><i class="fa-solid fa-bullhorn" style="color: var(--primary-accent);"></i> Clinic Notices</h3>
+                        <ul id="clientAnnouncementsContainer" style="list-style: none; display: flex; flex-direction: column; gap: 10px; font-size: 12.5px; color: var(--text-muted);"></ul>
+                    </div>
 
-                        <div class="card">
-                            <h3><i class="fa-solid fa-bullhorn" style="color: var(--primary-accent);"></i> Clinic Notices</h3>
-                            <ul id="clientAnnouncementsContainer" style="list-style: none; display: flex; flex-direction: column; gap: 10px; font-size: 13px; color: var(--text-muted);"></ul>
+                    <div class="card">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                            <h3 style="margin: 0; font-size: 15px; display: flex; align-items: center; gap: 8px;">
+                                <i class="fa-solid fa-map-location-dot" style="color: var(--primary-accent);"></i> Facility Location
+                            </h3>
+                            <span style="font-size: 11px; font-weight: 600; background: var(--bg-main); border: 1px solid var(--border-color); padding: 3px 8px; border-radius: 6px; color: var(--text-muted);">Alaminos City</span>
                         </div>
-
-                        <div class="card">
-                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
-                                <h3 style="margin: 0; font-size: 15px; display: flex; align-items: center; gap: 8px;">
-                                    <i class="fa-solid fa-map-location-dot" style="color: var(--primary-accent);"></i> Facility Location
-                                </h3>
-                                <span style="font-size: 11px; font-weight: 600; background: var(--bg-main); border: 1px solid var(--border-color); padding: 2px 8px; border-radius: 4px; color: var(--text-muted);">Alaminos City</span>
-                            </div>
-                            <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 12px;">
-                                <i class="fa-solid fa-location-pin" style="color: var(--primary-accent); margin-right: 4px;"></i> Alaminos City Slaughter House, Pangasinan
-                            </p>
-                            <div style="width: 100%; height: 210px; border-radius: 8px; overflow: hidden; border: 1px solid var(--border-color); position: relative;">
-                                <iframe width="100%" height="100%" style="border:0;" loading="lazy" allowfullscreen referrerpolicy="no-referrer-when-downgrade" src="https://maps.google.com/maps?q=Alaminos%20City%20Slaughter%20House%20Pangasinan&t=&z=15&ie=UTF8&iwloc=&output=embed"></iframe>
-                            </div>
+                        <p style="font-size: 12.5px; color: var(--text-muted); margin-bottom: 12px; display: flex; align-items: center; gap: 6px;">
+                            <i class="fa-solid fa-location-dot" style="color: var(--primary-accent);"></i> Alaminos City Slaughter House, Pangasinan
+                        </p>
+                        <div style="width: 100%; height: 180px; border-radius: 8px; overflow: hidden; border: 1px solid var(--border-color); position: relative;">
+                            <iframe width="100%" height="100%" style="border:0;" loading="lazy" allowfullscreen referrerpolicy="no-referrer-when-downgrade" src="https://maps.google.com/maps?q=Alaminos%20City%20Slaughter%20House%20Pangasinan&t=&z=15&ie=UTF8&iwloc=&output=embed"></iframe>
                         </div>
                     </div>
                 </div>
             </div>
 
             <!-- TAB 2: APPOINTMENTS PAGE VIEW -->
-            <div id="tabAppointments" style="display: none; flex-direction: column; gap: 24px;">
-                <p style="font-size: 13px; color: var(--text-muted); margin-top: -10px;">View and manage the appointment history for each of your pets.</p>
-                <div style="display: flex; gap: 20px; max-width: 500px;">
+            <div id="tabAppointments" style="display: none; flex-direction: column; gap: 20px; overflow-y: auto; max-height: calc(100vh - 160px); padding-right: 4px;">
+                <p style="font-size: 13px; color: var(--text-muted); margin-top: -6px;">View and manage the appointment history for each of your pets.</p>
+                <div style="display: flex; gap: 16px; max-width: 450px;">
                     <div class="metric-card" style="flex:1;">
                         <div class="metric-header">
                             <h4>Total appointments</h4>
@@ -945,87 +1050,91 @@
                     <div class="metric-card" style="flex:1;">
                         <div class="metric-header">
                             <h4>Pets with records</h4>
-                            <div class="icon-box"><i class="fa-solid fa-paw"></i></div>
+                            <div class="icon-box"><i class="fa-solid fa-shield-dog"></i></div>
                         </div>
                         <div class="value" id="metricPetsWithRecords">0</div>
                     </div>
                 </div>
                 <div style="display: flex; flex-direction: column; gap: 16px;">
-                    <div id="groupedAppointmentsContainer" style="display: flex; flex-direction: column; gap: 20px;"></div>
+                    <div id="groupedAppointmentsContainer" style="display: flex; flex-direction: column; gap: 16px;"></div>
                 </div>
             </div>
 
             <!-- TAB 3: MY PETS PAGE VIEW -->
-            <div id="tabMyPets" style="display: none; flex-direction: column; gap: 24px;">
+            <div id="tabMyPets" style="display: none; flex-direction: column; gap: 20px; overflow-y: auto; max-height: calc(100vh - 160px); padding-right: 4px;">
                 <div class="card" style="padding: 24px;">
-                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 10px;">
-                        <h3 style="margin: 0; font-size: 18px; color: var(--heading-color); display: flex; align-items: center; gap: 10px;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 18px; flex-wrap: wrap; gap: 10px;">
+                        <h3 style="margin: 0; font-size: 16px; color: var(--heading-color); display: flex; align-items: center; gap: 10px;">
                             <i class="fa-solid fa-shield-dog" style="color: var(--primary-accent);"></i> Registered Pet Profiles
                         </h3>
-                        <button class="action-btn" onclick="openMyPetsModal()"><i class="fa-solid fa-plus"></i> Add Pet</button>
+                        <button class="action-btn" onclick="openMyPetsModal()"><i class="fa-solid fa-circle-plus" style="margin-right: 4px;"></i> Add Pet</button>
                     </div>
-                    <div id="registeredPetsContainer" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px;"></div>
+                    <div id="registeredPetsContainer" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 16px;"></div>
                 </div>
             </div>
         </div>
     </main>
 
     <!-- RESCHEDULE MODAL -->
-    <div id="rescheduleModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 30000; justify-content: center; align-items: center; backdrop-filter: blur(4px); padding: 16px;">
-        <div class="card" style="width: 380px; max-width: 90%; border-radius: 12px; padding: 22px;">
+    <div id="rescheduleModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 30000; justify-content: center; align-items: center; backdrop-filter: blur(3px); padding: 16px;">
+        <div class="card" style="width: 380px; max-width: 90%; border-radius: 14px; padding: 24px;">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
-                <h3 style="margin: 0; font-size: 16px;"><i class="fa-solid fa-clock-rotate-left" style="color: var(--primary-accent);"></i> Reschedule Appointment</h3>
+                <h3 style="margin: 0; font-size: 15.5px;"><i class="fa-solid fa-clock-rotate-left" style="color: var(--primary-accent);"></i> Reschedule Appointment</h3>
                 <button onclick="closeRescheduleModal()" style="background: none; border: none; font-size: 18px; cursor: pointer; color: var(--text-muted);">&times;</button>
             </div>
             <form onsubmit="submitReschedule(event)">
                 <input type="hidden" id="rescheduleAppointmentId" />
                 <div style="margin-bottom: 14px;">
-                    <label style="display: block; font-size: 12px; font-weight: 600; margin-bottom: 4px; color: var(--text-muted);">Pet Record</label>
-                    <input type="text" id="reschedulePetName" style="width: 100%; padding: 8px 10px; border-radius: 6px; border: 1px solid var(--border-color); background: var(--bg-main); color: var(--text-color); font-size: 13px;" readonly />
+                    <label style="display: block; font-size: 11.5px; font-weight: 600; margin-bottom: 6px; color: var(--text-muted);">Pet Record</label>
+                    <input type="text" id="reschedulePetName" style="width: 100%; padding: 9px 12px; border-radius: 8px; border: 1px solid var(--border-color); background: var(--bg-main); color: var(--text-color); font-size: 13px;" readonly />
                 </div>
                 <div style="margin-bottom: 20px;">
-                    <label style="display: block; font-size: 12px; font-weight: 600; margin-bottom: 4px; color: var(--text-muted);">New Date & Time</label>
-                    <input type="datetime-local" id="rescheduleNewDateTime" style="width: 100%; padding: 8px 10px; border-radius: 6px; border: 1px solid var(--border-color); background: var(--bg-main); color: var(--text-color); font-size: 13px;" required />
+                    <label style="display: block; font-size: 11.5px; font-weight: 600; margin-bottom: 6px; color: var(--text-muted);">New Date & Time</label>
+                    <input type="datetime-local" id="rescheduleNewDateTime" style="width: 100%; padding: 9px 12px; border-radius: 8px; border: 1px solid var(--border-color); background: var(--bg-main); color: var(--text-color); font-size: 13px;" required />
                 </div>
                 <div style="display: flex; justify-content: flex-end; gap: 8px;">
-                    <button type="button" onclick="closeRescheduleModal()" style="padding: 7px 14px; border-radius: 6px; border: 1px solid var(--border-color); background: transparent; color: var(--text-color); cursor: pointer; font-weight: 500; font-size: 13px;">Cancel</button>
-                    <button type="submit" class="action-btn" style="padding: 7px 16px; font-size: 13px;">Save Schedule</button>
+                    <button type="button" onclick="closeRescheduleModal()" style="padding: 7px 14px; border-radius: 8px; border: 1px solid var(--border-color); background: transparent; color: var(--text-color); cursor: pointer; font-weight: 500; font-size: 12.5px;">Cancel</button>
+                    <button type="submit" class="action-btn" style="padding: 7px 16px; font-size: 12.5px;">Save Schedule</button>
                 </div>
             </form>
         </div>
     </div>
 
-    <!-- CANCEL MODAL -->
-    <div id="cancelModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 30000; justify-content: center; align-items: center; backdrop-filter: blur(4px); padding: 16px;">
-        <div class="card" style="width: 360px; max-width: 90%; border-radius: 12px; padding: 22px;">
+    <!-- CANCEL MODAL WITH REASON -->
+    <div id="cancelModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 30000; justify-content: center; align-items: center; backdrop-filter: blur(3px); padding: 16px;">
+        <div class="card" style="width: 400px; max-width: 90%; border-radius: 14px; padding: 24px;">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px;">
-                <h3 style="margin: 0; font-size: 16px; color: #ef4444;"><i class="fa-solid fa-triangle-exclamation"></i> Cancel Appointment</h3>
+                <h3 style="margin: 0; font-size: 15.5px; color: #ef4444;"><i class="fa-solid fa-triangle-exclamation"></i> Cancel Appointment</h3>
                 <button onclick="closeCancelModal()" style="background: none; border: none; font-size: 18px; cursor: pointer; color: var(--text-muted);">&times;</button>
             </div>
-            <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 20px;" id="cancelModalText">Are you sure you want to cancel this appointment?</p>
+            <p style="font-size: 12.5px; color: var(--text-muted); margin-bottom: 14px;" id="cancelModalText">Please provide a reason for cancellation.</p>
             <input type="hidden" id="cancelAppointmentId" />
+            <div style="margin-bottom: 18px;">
+                <label style="display: block; font-size: 11.5px; font-weight: 600; margin-bottom: 6px; color: var(--text-muted);">Reason for Cancellation *</label>
+                <textarea id="cancelReasonInput" placeholder="e.g., Pet is currently unwell / Schedule conflict..." style="width: 100%; padding: 9px 12px; border-radius: 8px; border: 1px solid var(--border-color); background: var(--bg-main); color: var(--text-color); font-size: 13px; height: 90px; resize: none;" required></textarea>
+            </div>
             <div style="display: flex; justify-content: flex-end; gap: 8px;">
-                <button type="button" onclick="closeCancelModal()" style="padding: 7px 14px; border-radius: 6px; border: 1px solid var(--border-color); background: transparent; color: var(--text-color); cursor: pointer; font-weight: 500; font-size: 13px;">No, Keep It</button>
-                <button type="button" onclick="confirmCancelAppointment()" class="action-btn" style="background-color: #ef4444; padding: 7px 16px; font-size: 13px;">Yes, Cancel Booking</button>
+                <button type="button" onclick="closeCancelModal()" style="padding: 7px 14px; border-radius: 8px; border: 1px solid var(--border-color); background: transparent; color: var(--text-color); cursor: pointer; font-weight: 500; font-size: 12.5px;">Keep Booking</button>
+                <button type="button" onclick="confirmCancelAppointment()" class="action-btn" style="background-color: #ef4444; color: white; padding: 7px 16px; font-size: 12.5px;">Confirm Cancellation</button>
             </div>
         </div>
     </div>
 
     <!-- MY PETS MODAL -->
-    <div id="myPetsModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 30000; justify-content: center; align-items: center; backdrop-filter: blur(4px); padding: 16px;">
-        <div class="card" style="width: 420px; max-width: 90%; border-radius: 12px; padding: 22px;">
+    <div id="myPetsModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 30000; justify-content: center; align-items: center; backdrop-filter: blur(3px); padding: 16px;">
+        <div class="card" style="width: 400px; max-width: 90%; border-radius: 14px; padding: 24px;">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
-                <h3 style="margin: 0; font-size: 16px;"><i class="fa-solid fa-shield-dog" style="color: var(--primary-accent);"></i> Register New Pet Info</h3>
+                <h3 style="margin: 0; font-size: 15.5px;"><i class="fa-solid fa-shield-dog" style="color: var(--primary-accent);"></i> Register New Pet Info</h3>
                 <button onclick="closeMyPetsModal()" style="background: none; border: none; font-size: 18px; cursor: pointer; color: var(--text-muted);">&times;</button>
             </div>
             <form id="petRegistrationForm" onsubmit="registerNewPet(event)">
                 <div style="margin-bottom: 14px;">
-                    <label style="display: block; font-size: 12px; font-weight: 600; margin-bottom: 4px; color: var(--text-muted);">Pet Name</label>
-                    <input type="text" id="regPetName" placeholder="e.g. Max" style="width: 100%; padding: 8px 10px; border-radius: 6px; border: 1px solid var(--border-color); background: var(--bg-main); color: var(--text-color); font-size: 13px;" required />
+                    <label style="display: block; font-size: 11.5px; font-weight: 600; margin-bottom: 6px; color: var(--text-muted);">Pet Name</label>
+                    <input type="text" id="regPetName" placeholder="e.g. Max" style="width: 100%; padding: 9px 12px; border-radius: 8px; border: 1px solid var(--border-color); background: var(--bg-main); color: var(--text-color); font-size: 13px;" required />
                 </div>
                 <div style="margin-bottom: 14px;">
-                    <label style="display: block; font-size: 12px; font-weight: 600; margin-bottom: 4px; color: var(--text-muted);">Species</label>
-                    <select id="regPetSpecies" style="width: 100%; padding: 8px 10px; border-radius: 6px; border: 1px solid var(--border-color); background: var(--bg-main); color: var(--text-color); font-size: 13px;" required>
+                    <label style="display: block; font-size: 11.5px; font-weight: 600; margin-bottom: 6px; color: var(--text-muted);">Species</label>
+                    <select id="regPetSpecies" style="width: 100%; padding: 9px 12px; border-radius: 8px; border: 1px solid var(--border-color); background: var(--bg-main); color: var(--text-color); font-size: 13px;" required>
                         <option value="Dog">Dog</option>
                         <option value="Cat">Cat</option>
                         <option value="Rabbit">Rabbit</option>
@@ -1033,26 +1142,26 @@
                     </select>
                 </div>
                 <div style="margin-bottom: 14px;">
-                    <label style="display: block; font-size: 12px; font-weight: 600; margin-bottom: 4px; color: var(--text-muted);">Breed</label>
-                    <input type="text" id="regPetBreed" placeholder="e.g. Corgi / Aspin" style="width: 100%; padding: 8px 10px; border-radius: 6px; border: 1px solid var(--border-color); background: var(--bg-main); color: var(--text-color); font-size: 13px;" required />
+                    <label style="display: block; font-size: 11.5px; font-weight: 600; margin-bottom: 6px; color: var(--text-muted);">Breed</label>
+                    <input type="text" id="regPetBreed" placeholder="e.g. Corgi / Aspin" style="width: 100%; padding: 9px 12px; border-radius: 8px; border: 1px solid var(--border-color); background: var(--bg-main); color: var(--text-color); font-size: 13px;" required />
                 </div>
                 <div style="margin-bottom: 20px;">
-                    <label style="display: block; font-size: 12px; font-weight: 600; margin-bottom: 4px; color: var(--text-muted);">Age / Details</label>
-                    <input type="text" id="regPetAge" placeholder="e.g. 2 Years Old" style="width: 100%; padding: 8px 10px; border-radius: 6px; border: 1px solid var(--border-color); background: var(--bg-main); color: var(--text-color); font-size: 13px;" required />
+                    <label style="display: block; font-size: 11.5px; font-weight: 600; margin-bottom: 6px; color: var(--text-muted);">Age / Details</label>
+                    <input type="text" id="regPetAge" placeholder="e.g. 2 Years Old" style="width: 100%; padding: 9px 12px; border-radius: 8px; border: 1px solid var(--border-color); background: var(--bg-main); color: var(--text-color); font-size: 13px;" required />
                 </div>
                 <div style="display: flex; justify-content: flex-end; gap: 8px;">
-                    <button type="button" onclick="closeMyPetsModal()" style="padding: 7px 14px; border-radius: 6px; border: 1px solid var(--border-color); background: transparent; color: var(--text-color); cursor: pointer; font-weight: 500; font-size: 13px;">Cancel</button>
-                    <button type="submit" class="action-btn" style="padding: 7px 16px; font-size: 13px;">Save Pet Record</button>
+                    <button type="button" onclick="closeMyPetsModal()" style="padding: 7px 14px; border-radius: 8px; border: 1px solid var(--border-color); background: transparent; color: var(--text-color); cursor: pointer; font-weight: 500; font-size: 12.5px;">Cancel</button>
+                    <button type="submit" class="action-btn" style="padding: 7px 16px; font-size: 12.5px;">Save Pet Record</button>
                 </div>
             </form>
         </div>
     </div>
 
-    <!-- PET STUDIO MODAL (FIXED WITH VISIBLE SUBMIT/CANCEL) -->
-    <div id="profileModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 30000; justify-content: center; align-items: center; backdrop-filter: blur(4px); padding: 16px;">
+    <!-- PET STUDIO MODAL -->
+    <div id="profileModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 30000; justify-content: center; align-items: center; backdrop-filter: blur(3px); padding: 16px;">
         <div class="card pet-studio-modal-card">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; flex-shrink: 0;">
-                <h3 style="margin: 0; font-size: 16px;"><i class="fa-solid fa-wand-magic-sparkles" style="color: var(--primary-accent);"></i> Pet Avatar Studio</h3>
+                <h3 style="margin: 0; font-size: 15.5px;"><i class="fa-solid fa-wand-magic-sparkles" style="color: var(--primary-accent);"></i> Pet Avatar Studio</h3>
                 <button onclick="closeProfileModal()" style="background: none; border: none; font-size: 18px; cursor: pointer; color: var(--text-muted);">&times;</button>
             </div>
             <div class="canva-modal-body">
@@ -1093,7 +1202,7 @@
                     </div>
                 </div>
                 <div class="canva-canvas-viewport">
-                    <svg id="canvaPetSvg" viewBox="0 0 200 200" width="180" height="180">
+                    <svg id="canvaPetSvg" viewBox="0 0 200 200" width="160" height="160">
                         <g id="svgTailLayer"></g>
                         <ellipse id="svgBody" cx="100" cy="120" rx="40" ry="32" fill="#0284c7" />
                         <rect id="svgLegLeft" x="72" y="140" width="12" height="22" rx="6" fill="#0369a1" />
@@ -1111,36 +1220,36 @@
                 </div>
             </div>
             <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; flex-shrink: 0;">
-                <input type="text" id="modalDisplayName" value="@ViewBag.ClientName" style="width: 240px; max-width: 100%; padding: 7px 10px; border-radius: 6px; border: 1px solid var(--border-color); background: var(--bg-main); color: var(--text-color); font-size: 13px;" />
+                <input type="text" id="modalDisplayName" value="@ViewBag.ClientName" style="width: 220px; max-width: 100%; padding: 8px 12px; border-radius: 8px; border: 1px solid var(--border-color); background: var(--bg-main); color: var(--text-color); font-size: 13px;" />
                 <div style="display: flex; gap: 8px;">
-                    <button type="button" onclick="closeProfileModal()" style="padding: 7px 14px; border-radius: 6px; border: 1px solid var(--border-color); background: transparent; color: var(--text-color); cursor: pointer; font-weight: 500; font-size: 13px;">Cancel</button>
-                    <button type="button" class="action-btn" onclick="saveProfileChanges()" style="padding: 7px 16px; font-size: 13px;">Save Changes</button>
+                    <button type="button" onclick="closeProfileModal()" style="padding: 7px 14px; border-radius: 8px; border: 1px solid var(--border-color); background: transparent; color: var(--text-color); cursor: pointer; font-weight: 500; font-size: 12.5px;">Cancel</button>
+                    <button type="button" class="action-btn" onclick="saveProfileChanges()" style="padding: 7px 16px; font-size: 12.5px;">Save Changes</button>
                 </div>
             </div>
         </div>
     </div>
 
     <!-- BOOK APPOINTMENT MODAL -->
-    <div id="appointmentModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 30000; justify-content: center; align-items: center; backdrop-filter: blur(4px); padding: 16px;">
-        <div class="card" style="width: 400px; max-width: 90%; border-radius: 12px; padding: 22px;">
+    <div id="appointmentModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 30000; justify-content: center; align-items: center; backdrop-filter: blur(3px); padding: 16px;">
+        <div class="card" style="width: 400px; max-width: 90%; border-radius: 14px; padding: 24px;">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
-                <h3 style="margin: 0; font-size: 16px;"><i class="fa-solid fa-calendar-plus" style="color: var(--primary-accent);"></i> New Appointment Request</h3>
+                <h3 style="margin: 0; font-size: 15.5px;"><i class="fa-solid fa-calendar-plus" style="color: var(--primary-accent);"></i> New Appointment Request</h3>
                 <button onclick="closeAppointmentModal()" style="background: none; border: none; font-size: 18px; cursor: pointer; color: var(--text-muted);">&times;</button>
             </div>
             <form id="appointmentForm" onsubmit="submitAppointment(event)">
                 <div style="margin-bottom: 14px;">
-                    <label style="display: block; font-size: 12px; font-weight: 600; margin-bottom: 4px; color: var(--text-muted);">Select Registered Pet</label>
-                    <select id="modalPetSelect" style="width: 100%; padding: 8px 10px; border-radius: 6px; border: 1px solid var(--border-color); background: var(--bg-main); color: var(--text-color); font-size: 13px;" onchange="updateModalPetInput(this)" required>
+                    <label style="display: block; font-size: 11.5px; font-weight: 600; margin-bottom: 6px; color: var(--text-muted);">Select Registered Pet</label>
+                    <select id="modalPetSelect" style="width: 100%; padding: 9px 12px; border-radius: 8px; border: 1px solid var(--border-color); background: var(--bg-main); color: var(--text-color); font-size: 13px;" onchange="updateModalPetInput(this)" required>
                         <option value="">-- Choose from My Pets --</option>
                     </select>
                 </div>
                 <div style="margin-bottom: 14px;">
-                    <label style="display: block; font-size: 12px; font-weight: 600; margin-bottom: 4px; color: var(--text-muted);">Pet Name & Breed</label>
-                    <input type="text" id="modalPetName" placeholder="e.g. Max (Corgi)" style="width: 100%; padding: 8px 10px; border-radius: 6px; border: 1px solid var(--border-color); background: var(--bg-main); color: var(--text-color); font-size: 13px;" required />
+                    <label style="display: block; font-size: 11.5px; font-weight: 600; margin-bottom: 6px; color: var(--text-muted);">Pet Name & Breed</label>
+                    <input type="text" id="modalPetName" placeholder="e.g. Max (Corgi)" style="width: 100%; padding: 9px 12px; border-radius: 8px; border: 1px solid var(--border-color); background: var(--bg-main); color: var(--text-color); font-size: 13px;" required />
                 </div>
                 <div style="margin-bottom: 14px;">
-                    <label style="display: block; font-size: 12px; font-weight: 600; margin-bottom: 4px; color: var(--text-muted);">Service Selection</label>
-                    <select id="modalService" style="width: 100%; padding: 8px 10px; border-radius: 6px; border: 1px solid var(--border-color); background: var(--bg-main); color: var(--text-color); font-size: 13px;" required>
+                    <label style="display: block; font-size: 11.5px; font-weight: 600; margin-bottom: 6px; color: var(--text-muted);">Service Selection</label>
+                    <select id="modalService" style="width: 100%; padding: 9px 12px; border-radius: 8px; border: 1px solid var(--border-color); background: var(--bg-main); color: var(--text-color); font-size: 13px;" required>
                         <option value="">Select Service...</option>
                         <option value="Anti-Rabies Vaccine">Anti-Rabies Vaccination</option>
                         <option value="General Check-up">General Health Check-up</option>
@@ -1149,23 +1258,23 @@
                     </select>
                 </div>
                 <div style="margin-bottom: 20px;">
-                    <label style="display: block; font-size: 12px; font-weight: 600; margin-bottom: 4px; color: var(--text-muted);">Date & Time</label>
-                    <input type="datetime-local" id="modalDateTime" style="width: 100%; padding: 8px 10px; border-radius: 6px; border: 1px solid var(--border-color); background: var(--bg-main); color: var(--text-color); font-size: 13px;" required />
+                    <label style="display: block; font-size: 11.5px; font-weight: 600; margin-bottom: 6px; color: var(--text-muted);">Date & Time</label>
+                    <input type="datetime-local" id="modalDateTime" style="width: 100%; padding: 9px 12px; border-radius: 8px; border: 1px solid var(--border-color); background: var(--bg-main); color: var(--text-color); font-size: 13px;" required />
                 </div>
                 <div style="display: flex; justify-content: flex-end; gap: 8px;">
-                    <button type="button" onclick="closeAppointmentModal()" style="padding: 7px 14px; border-radius: 6px; border: 1px solid var(--border-color); background: transparent; color: var(--text-color); cursor: pointer; font-weight: 500; font-size: 13px;">Cancel</button>
-                    <button type="submit" class="action-btn" style="padding: 7px 16px; font-size: 13px;">Confirm Booking</button>
+                    <button type="button" onclick="closeAppointmentModal()" style="padding: 7px 14px; border-radius: 8px; border: 1px solid var(--border-color); background: transparent; color: var(--text-color); cursor: pointer; font-weight: 500; font-size: 12.5px;">Cancel</button>
+                    <button type="submit" class="action-btn" style="padding: 7px 16px; font-size: 12.5px;">Confirm Booking</button>
                 </div>
             </form>
         </div>
     </div>
 
     <!-- FLOATING AI CHATBOT WIDGET -->
-    <div id="aiChatWidget" style="position: fixed; bottom: 24px; right: 24px; z-index: 20000;">
-        <button id="chatToggleBtn" onclick="toggleChatWindow()" style="width: 54px; height: 54px; border-radius: 50%; background: #ffffff; border: 2px solid var(--primary-accent); cursor: pointer; box-shadow: 0 4px 12px rgba(0,0,0,0.15); display: flex; align-items: center; justify-content: center; overflow: hidden; padding: 0;">
+    <div id="aiChatWidget" style="position: fixed; bottom: 20px; right: 20px; z-index: 20000;">
+        <button id="chatToggleBtn" onclick="toggleChatWindow()" style="width: 52px; height: 52px; border-radius: 50%; background: #ffffff; border: 2px solid var(--primary-accent); cursor: pointer; box-shadow: 0 6px 16px rgba(0,0,0,0.12); display: flex; align-items: center; justify-content: center; overflow: hidden; padding: 0; transition: transform 0.2s ease;">
             <img src="/images/chatbotLogo.jpg" alt="PetBot AI" style="width: 100%; height: 100%; object-fit: cover;" />
         </button>
-        <div id="chatWindow" style="display: none; position: absolute; bottom: 68px; right: 0; width: 340px; height: 460px; background-color: var(--card-bg); border: 1px solid var(--border-color); border-radius: 10px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); flex-direction: column; overflow: hidden; color: var(--text-color);">
+        <div id="chatWindow" style="display: none; position: absolute; bottom: 64px; right: 0; width: 330px; height: 440px; background-color: var(--card-bg); border: 1px solid var(--border-color); border-radius: 14px; box-shadow: 0 15px 35px rgba(0,0,0,0.12); flex-direction: column; overflow: hidden; color: var(--text-color);">
             <div style="background: var(--sidebar-bg); border-bottom: 1px solid var(--border-color); padding: 12px 16px; display: flex; justify-content: space-between; align-items: center;">
                 <div style="display: flex; align-items: center; gap: 8px;">
                     <div style="width: 8px; height: 8px; border-radius: 50%; background: #10b981;"></div>
@@ -1176,13 +1285,13 @@
                 </button>
             </div>
             <div id="chatMessages" style="flex: 1; padding: 14px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; font-size: 13px; background-color: var(--bg-main);">
-                <div style="background: var(--card-bg); border: 1px solid var(--border-color); color: var(--text-color); padding: 10px 12px; border-radius: 8px; max-width: 85%; align-self: flex-start; line-height: 1.4;">
+                <div style="background: var(--card-bg); border: 1px solid var(--border-color); color: var(--text-color); padding: 10px 12px; border-radius: 8px; max-width: 85%; align-self: flex-start; line-height: 1.4; box-shadow: 0 1px 2px rgba(0,0,0,0.02);">
                     Hello! How can I assist you with your veterinary inquiries today?
                 </div>
             </div>
-            <div style="padding: 10px; border-top: 1px solid var(--border-color); display: flex; gap: 6px; background-color: var(--card-bg);">
-                <input type="text" id="chatInput" placeholder="Type a message..." onkeypress="handleChatKeyPress(event)" style="flex: 1; padding: 8px 10px; border-radius: 6px; border: 1px solid var(--border-color); background-color: var(--bg-main); color: var(--text-color); font-size: 13px; outline: none;" />
-                <button onclick="sendChatMessage()" style="background-color: var(--primary-accent); color: white; border: none; padding: 0 14px; border-radius: 6px; cursor: pointer; font-size: 13px;">
+            <div style="padding: 10px; border-top: 1px solid var(--border-color); display: flex; gap: 8px; background-color: var(--card-bg);">
+                <input type="text" id="chatInput" placeholder="Type a message..." onkeypress="handleChatKeyPress(event)" style="flex: 1; padding: 8px 12px; border-radius: 8px; border: 1px solid var(--border-color); background-color: var(--bg-main); color: var(--text-color); font-size: 13px; outline: none;" />
+                <button onclick="sendChatMessage()" style="background-color: var(--primary-accent); color: white; border: none; padding: 0 14px; border-radius: 8px; cursor: pointer; font-size: 13px;">
                     <i class="fa-solid fa-paper-plane"></i>
                 </button>
             </div>
@@ -1267,7 +1376,7 @@
                             <div class="online-dot ${dotClass}" title="${statusText}"></div>
                         </div>
                         <div style="overflow: hidden; flex: 1;">
-                            <span style="font-size: 12px; font-weight: 600; color: var(--heading-color); display: block; white-space: nowrap; text-overflow: ellipsis; overflow: hidden;">${adm.name}</span>
+                            <span style="font-size: 11.5px; font-weight: 600; color: var(--heading-color); display: block; white-space: nowrap; text-overflow: ellipsis; overflow: hidden;">${adm.name}</span>
                             <div style="display: flex; justify-content: space-between; align-items: center;">
                                 <span style="font-size: 10px; color: var(--text-muted); white-space: nowrap; text-overflow: ellipsis; overflow: hidden;">${adm.position}</span>
                                 <span style="font-size: 9px; font-weight: 600; color: ${isOnline ? '#10b981' : '#94a3b8'};">${statusText}</span>
@@ -1290,7 +1399,7 @@
                 osc.frequency.setValueAtTime(400, audioCtx.currentTime);
                 osc.frequency.exponentialRampToValueAtTime(200, audioCtx.currentTime + 0.08);
 
-                gainNode.gain.setValueAtTime(0.1, audioCtx.currentTime);
+                gainNode.gain.setValueAtTime(0.08, audioCtx.currentTime);
                 gainNode.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.08);
 
                 osc.connect(gainNode);
@@ -1313,7 +1422,7 @@
                 osc.frequency.setValueAtTime(587.33, audioCtx.currentTime);
                 osc.frequency.exponentialRampToValueAtTime(880, audioCtx.currentTime + 0.15);
 
-                gainNode.gain.setValueAtTime(0.15, audioCtx.currentTime);
+                gainNode.gain.setValueAtTime(0.1, audioCtx.currentTime);
                 gainNode.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.3);
 
                 osc.connect(gainNode);
@@ -1340,16 +1449,16 @@
             let iconClass = type === 'error' ? 'fa-circle-exclamation' : 'fa-circle-check';
 
             toast.innerHTML = `
-                <i class="fa-solid ${iconClass}" style="color: ${iconColor}; font-size: 22px;"></i>
-                <span style="font-size: 15px; letter-spacing: -0.2px;">${message}</span>
+                <i class="fa-solid ${iconClass}" style="color: ${iconColor}; font-size: 18px;"></i>
+                <span style="font-size: 13.5px;">${message}</span>
             `;
 
             document.body.appendChild(toast);
 
             setTimeout(() => {
                 toast.classList.add('fade-out');
-                setTimeout(() => toast.remove(), 300);
-            }, 3500);
+                setTimeout(() => toast.remove(), 250);
+            }, 3000);
         }
 
         function changeMonth(direction) {
@@ -1383,8 +1492,8 @@
                 let isSelected = (selectedCalendarDate && day === selectedCalendarDate.getDate() && month === selectedCalendarDate.getMonth() && year === selectedCalendarDate.getFullYear());
 
                 let style = `
-                    padding: 6px 0;
-                    font-size: 12px;
+                    padding: 4px 0;
+                    font-size: 11.5px;
                     font-weight: 500;
                     border-radius: 50%;
                     width: 28px;
@@ -1399,10 +1508,10 @@
                 `;
 
                 if (isSelected || (isToday && !selectedCalendarDate)) {
-                    style += `background-color: var(--primary-accent); color: white; font-weight: 700; box-shadow: 0 2px 6px rgba(2, 132, 199, 0.4);`;
+                    style += `background-color: var(--primary-accent); color: white; font-weight: 600; box-shadow: 0 2px 6px rgba(2, 132, 199, 0.35);`;
                 }
 
-                html += `<div style="${style}" onmouseover="if(!this.style.backgroundColor) this.style.background='rgba(2, 132, 199, 0.15)'" onmouseout="if(!this.style.backgroundColor.includes('rgb(2, 132, 199)')) this.style.background='transparent'" onclick="selectStandaloneDate(${day}, ${month}, ${year})">${day}</div>`;
+                html += `<div style="${style}" onmouseover="if(!this.style.backgroundColor) this.style.background='rgba(2, 132, 199, 0.1)'" onmouseout="if(!this.style.backgroundColor.includes('rgb(2, 132, 199)')) this.style.background='transparent'" onclick="selectStandaloneDate(${day}, ${month}, ${year})">${day}</div>`;
             }
 
             container.innerHTML = html;
@@ -1431,6 +1540,7 @@
             const navMyPets = document.getElementById('navMyPets');
             const headerTitle = document.getElementById('headerMainTitle');
             const headerBookBtn = document.getElementById('headerBookBtn');
+            const stickyMetrics = document.getElementById('stickyMetricsWrapper');
 
             tabDashboard.style.display = 'none';
             tabAppointments.style.display = 'none';
@@ -1440,22 +1550,25 @@
             navMyPets.className = '';
 
             if (tabName === 'dashboard') {
-                tabDashboard.style.display = 'flex';
+                tabDashboard.style.display = 'grid';
                 navDashboard.className = 'active';
                 headerTitle.innerText = 'Dashboard Overview';
                 headerBookBtn.style.display = 'none';
+                if (stickyMetrics) stickyMetrics.style.display = 'block';
                 loadSavedPets();
             } else if (tabName === 'appointments') {
                 tabAppointments.style.display = 'flex';
                 navAppointments.className = 'active';
                 headerTitle.innerText = 'Appointment Records';
                 headerBookBtn.style.display = 'inline-flex';
+                if (stickyMetrics) stickyMetrics.style.display = 'none';
                 loadAppointmentsPageView();
             } else if (tabName === 'mypets') {
                 tabMyPets.style.display = 'flex';
                 navMyPets.className = 'active';
                 headerTitle.innerText = 'My Pets Directory';
                 headerBookBtn.style.display = 'inline-flex';
+                if (stickyMetrics) stickyMetrics.style.display = 'none';
                 loadSavedPets();
             }
 
@@ -1589,7 +1702,7 @@
             }));
 
             closeProfileModal();
-            showCustomToast("Pet avatar updated successfully! You can edit anytime.");
+            showCustomToast("Pet avatar updated successfully!");
         }
 
         function adjustColor(hex, amt) {
@@ -1629,6 +1742,7 @@
             let allRecords = dbAppointments.map(rec => {
                 if (rec.id && statusOverrides[rec.id]) {
                     rec.status = statusOverrides[rec.id].status;
+                    rec.reason = statusOverrides[rec.id].reason;
                     if (statusOverrides[rec.id].date) {
                         rec.date = statusOverrides[rec.id].date;
                     }
@@ -1651,7 +1765,7 @@
             container.innerHTML = '';
 
             if (Object.keys(grouped).length === 0) {
-                container.innerHTML = `<div class="card" style="text-align: center; color: var(--text-muted); padding: 30px;">No appointment records found.</div>`;
+                container.innerHTML = `<div class="card" style="text-align: center; color: var(--text-muted); padding: 24px;">No appointment records found.</div>`;
                 return;
             }
 
@@ -1663,17 +1777,18 @@
                 let rowsHtml = '';
                 visibleRecords.forEach(rec => {
                     let badgeClass = (rec.status || 'PENDING').toLowerCase();
+                    let reasonDisplay = rec.reason ? `<br><span style="font-size:11px; color:#f87171;">Reason: ${rec.reason}</span>` : '';
                     rowsHtml += `
                         <tr>
                             <td style="color: var(--text-color); font-weight: 500;">${rec.service}</td>
                             <td style="color: var(--text-muted);"><i class="fa-regular fa-calendar" style="margin-right: 6px;"></i> ${rec.date}</td>
-                            <td><span class="badge ${badgeClass}">${rec.status || 'PENDING'}</span></td>
+                            <td><span class="badge ${badgeClass}">${rec.status || 'PENDING'}</span>${reasonDisplay}</td>
                         </tr>
                     `;
                 });
 
                 let seeMoreBtnHtml = hasMore ? `
-                    <div style="padding: 10px 20px; background: var(--bg-main); border-top: 1px solid var(--border-color); text-align: center;">
+                    <div style="padding: 8px 16px; background: var(--bg-main); border-top: 1px solid var(--border-color); text-align: center;">
                         <button class="see-more-toggle" onclick="togglePetGroupSeeMore('${petName}')">
                             ${isExpanded ? 'See Less ▲' : `See More (${records.length - 3} more) ▼`}
                         </button>
@@ -1682,22 +1797,22 @@
 
                 container.innerHTML += `
                     <div class="card" style="padding: 0; overflow: hidden;">
-                        <div style="background: var(--bg-main); padding: 16px 20px; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center;">
+                        <div style="background: var(--bg-main); padding: 14px 18px; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center;">
                             <div>
-                                <h4 style="font-size: 14px; font-weight: 600; color: var(--heading-color); display: flex; align-items: center; gap: 8px;">
-                                    <i class="fa-solid fa-paw" style="color: var(--primary-accent);"></i> ${petName}
+                                <h4 style="font-size: 13.5px; font-weight: 600; color: var(--heading-color); display: flex; align-items: center; gap: 8px;">
+                                    <i class="fa-solid fa-shield-dog" style="color: var(--primary-accent);"></i> ${petName}
                                 </h4>
                                 <span style="font-size: 11px; color: var(--text-muted);">${records.length} appointment${records.length > 1 ? 's' : ''} recorded</span>
                             </div>
-                            <span style="font-size: 11px; font-weight: 600; text-transform: uppercase; background: var(--card-bg); border: 1px solid var(--border-color); padding: 4px 10px; border-radius: 6px; color: var(--text-muted);">Pet Record</span>
+                            <span style="font-size: 10.5px; font-weight: 600; text-transform: uppercase; background: var(--card-bg); border: 1px solid var(--border-color); padding: 3px 8px; border-radius: 5px; color: var(--text-muted);">Pet Record</span>
                         </div>
                         <div class="table-responsive">
                             <table class="table" style="margin: 0;">
                                 <thead>
                                     <tr>
-                                        <th style="padding-left: 20px;">SERVICE</th>
+                                        <th style="padding-left: 18px;">SERVICE</th>
                                         <th>APPOINTMENT DATE</th>
-                                        <th style="padding-right: 20px;">STATUS</th>
+                                        <th style="padding-right: 18px;">STATUS</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -1719,26 +1834,28 @@
             const container = document.getElementById('registeredPetsContainer');
             const dropdown = document.getElementById('modalPetSelect');
 
-            container.innerHTML = '';
+            if (container) container.innerHTML = '';
             if (dropdown) dropdown.innerHTML = '<option value="">-- Choose from My Pets --</option>';
 
             if (pets.length === 0) {
-                container.innerHTML = `<div style="grid-column: 1 / -1; text-align: center; color: var(--text-muted); padding: 40px; font-size: 14px;">No registered pets found. Click "Add Pet" to register your first pet profile.</div>`;
+                if (container) container.innerHTML = `<div style="grid-column: 1 / -1; text-align: center; color: var(--text-muted); padding: 30px; font-size: 13.5px;">No registered pets found. Click "Add Pet" to register your first pet profile.</div>`;
             } else {
                 pets.forEach(pet => {
                     let iconClass = pet.species === 'Cat' ? 'fa-cat' : (pet.species === 'Rabbit' ? 'fa-hippo' : 'fa-dog');
-                    container.innerHTML += `
-                        <div style="background: var(--bg-main); padding: 18px; border-radius: 10px; border: 1px solid var(--border-color); display: flex; flex-direction: column; justify-content: space-between;">
-                            <div>
-                                <h4 style="color: var(--heading-color); margin-bottom: 6px; font-size: 15px; display: flex; align-items: center; gap: 8px;">
-                                    <i class="fa-solid ${iconClass}" style="color: var(--primary-accent);"></i> ${pet.name}
-                                </h4>
-                                <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 4px;">Breed: ${pet.breed} (${pet.species})</p>
-                                <p style="font-size: 13px; color: var(--text-muted);">Details: ${pet.age}</p>
+                    if (container) {
+                        container.innerHTML += `
+                            <div style="background: var(--bg-main); padding: 18px; border-radius: 12px; border: 1px solid var(--border-color); display: flex; flex-direction: column; justify-content: space-between; box-shadow: 0 2px 4px rgba(0,0,0,0.02);">
+                                <div>
+                                    <h4 style="color: var(--heading-color); margin-bottom: 8px; font-size: 15px; display: flex; align-items: center; gap: 8px;">
+                                        <i class="fa-solid ${iconClass}" style="color: var(--primary-accent);"></i> ${pet.name}
+                                    </h4>
+                                    <p style="font-size: 12.5px; color: var(--text-muted); margin-bottom: 4px;">Breed: ${pet.breed} (${pet.species})</p>
+                                    <p style="font-size: 12.5px; color: var(--text-muted);">Details: ${pet.age}</p>
+                                </div>
+                                <button onclick="bookForPet('${pet.name}', '${pet.breed} (${pet.species})')" class="action-btn" style="margin-top: 16px; font-size: 12px; padding: 6px 12px; align-self: flex-start;"><i class="fa-solid fa-circle-plus" style="margin-right: 4px;"></i> Make Appointment</button>
                             </div>
-                            <button onclick="bookForPet('${pet.name}', '${pet.breed} (${pet.species})')" class="action-btn" style="margin-top: 16px; font-size: 12px; padding: 6px 12px; align-self: flex-start;">Make Appointment</button>
-                        </div>
-                    `;
+                        `;
+                    }
 
                     if (dropdown) {
                         dropdown.innerHTML += `<option value="${pet.name} (${pet.breed})">${pet.name} - ${pet.breed} (${pet.species})</option>`;
@@ -1760,6 +1877,7 @@
             let allAppointments = dbAppointments.map(item => {
                 if (item.id && statusOverrides[item.id]) {
                     item.status = statusOverrides[item.id].status;
+                    item.reason = statusOverrides[item.id].reason;
                     if (statusOverrides[item.id].date) {
                         item.date = statusOverrides[item.id].date;
                         item.rawDate = statusOverrides[item.id].rawDate;
@@ -1783,6 +1901,7 @@
 
                     visibleList.forEach(item => {
                         let badgeClass = (item.status || 'PENDING').toLowerCase();
+                        let reasonSubtext = item.reason ? `<br><small style="color:#f87171;">Reason: ${item.reason}</small>` : '';
                         let actionButtons = (item.status && (item.status.toLowerCase() == 'cancelled' || item.status.toLowerCase() == 'rejected')) ?
                             `<span style="font-size: 11px; color: var(--text-muted);">No actions</span>` :
                             `<button class="btn-outline-warning" onclick="openRescheduleModal('${item.id || ''}', '${item.petName}', '${item.rawDate || ''}')"><i class="fa-solid fa-clock-rotate-left"></i> Reschedule</button>
@@ -1793,7 +1912,7 @@
                                 <td><strong>${item.petName}</strong></td>
                                 <td>${item.service}</td>
                                 <td>${item.date}</td>
-                                <td><span class="badge ${badgeClass}">${item.status || 'PENDING'}</span></td>
+                                <td><span class="badge ${badgeClass}">${item.status || 'PENDING'}</span>${reasonSubtext}</td>
                                 <td>${actionButtons}</td>
                             </tr>
                         `;
@@ -1811,7 +1930,7 @@
                 } else {
                     combinedTableBody.innerHTML = `
                         <tr>
-                            <td colspan="5" style="text-align: center; color: var(--text-muted); padding: 24px;">No appointment records found.</td>
+                            <td colspan="5" style="text-align: center; color: var(--text-muted); padding: 20px;">No appointment records found.</td>
                         </tr>
                     `;
                     seeMoreContainer.innerHTML = '';
@@ -1841,9 +1960,9 @@
                 list.forEach(ann => {
                     container.innerHTML += `
                         <li style="border-bottom: 1px solid var(--table-border); padding-bottom: 8px; margin-bottom: 8px;">
-                            <strong style="color: var(--heading-color); display: block; margin-bottom: 2px;">${ann.title}</strong>
+                            <strong style="color: var(--heading-color); display: block; margin-bottom: 3px;">${ann.title}</strong>
                             <p style="margin-bottom: 4px;">${ann.content}</p>
-                            <span style="font-size: 11px; color: var(--primary-accent); font-weight: 600;">${ann.date}</span>
+                            <span style="font-size: 11px; color: var(--primary-accent); font-weight: 600;"><i class="fa-regular fa-clock" style="margin-right: 3px;"></i> ${ann.date}</span>
                         </li>
                     `;
                 });
@@ -1919,14 +2038,14 @@
             } catch (err) {
                 console.error(err);
             }
-            showCustomToast('Appointment rescheduled and synced to admin!');
+            showCustomToast('Appointment rescheduled successfully!');
             closeRescheduleModal();
             setTimeout(() => location.reload(), 1000);
         }
 
         function openCancelModal(id, petName) {
             document.getElementById('cancelAppointmentId').value = id;
-            document.getElementById('cancelModalText').innerText = `Are you sure you want to cancel the appointment for ${petName}?`;
+            document.getElementById('cancelReasonInput').value = '';
             document.getElementById('cancelModal').style.display = 'flex';
         }
 
@@ -1936,16 +2055,23 @@
 
         async function confirmCancelAppointment() {
             const id = document.getElementById('cancelAppointmentId').value;
+            const reason = document.getElementById('cancelReasonInput').value.trim();
+
+            if (!reason) {
+                showCustomToast('Please provide a reason for cancellation.', 'error');
+                return;
+            }
 
             if (id) {
                 let statusOverrides = JSON.parse(localStorage.getItem('appointment_status_overrides_' + userIdentifier) || '{}');
                 statusOverrides[id] = {
-                    status: 'CANCELLED'
+                    status: 'CANCELLED',
+                    reason: reason
                 };
                 localStorage.setItem('appointment_status_overrides_' + userIdentifier, JSON.stringify(statusOverrides));
 
                 let globalAdminLogs = JSON.parse(localStorage.getItem('admin_appointment_logs') || '{}');
-                globalAdminLogs[id] = { status: 'CANCELLED' };
+                globalAdminLogs[id] = { status: 'CANCELLED', reason: reason };
                 localStorage.setItem('admin_appointment_logs', JSON.stringify(globalAdminLogs));
             }
 
@@ -1953,12 +2079,12 @@
                 await fetch('/Home/CancelAppointment', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ Id: id })
+                    body: JSON.stringify({ Id: id, Reason: reason })
                 });
             } catch (err) {
                 console.error(err);
             }
-            showCustomToast('Appointment cancelled and synced to admin.');
+            showCustomToast('Appointment cancelled successfully.');
             closeCancelModal();
             setTimeout(() => location.reload(), 1000);
         }
@@ -2055,7 +2181,7 @@
                 });
 
                 if (response.ok) {
-                    showCustomToast('Appointment successfully booked and saved!');
+                    showCustomToast('Appointment successfully booked!');
                     closeAppointmentModal();
                     setTimeout(() => location.reload(), 1000);
                 } else {
@@ -2083,7 +2209,7 @@
             if (!messageText) return;
 
             const chatMessages = document.getElementById('chatMessages');
-            chatMessages.innerHTML += `<div style="background: var(--primary-accent); color: white; padding: 8px 12px; border-radius: 6px; max-width: 85%; align-self: flex-end; font-size: 13px;">${escapeHtml(messageText)}</div>`;
+            chatMessages.innerHTML += `<div style="background: var(--primary-accent); color: white; padding: 8px 12px; border-radius: 8px; max-width: 85%; align-self: flex-end; font-size: 13px;">${escapeHtml(messageText)}</div>`;
             inputField.value = '';
             chatMessages.scrollTop = chatMessages.scrollHeight;
 
@@ -2094,10 +2220,10 @@
                     body: JSON.stringify({ message: messageText })
                 });
                 const data = await response.json();
-                chatMessages.innerHTML += `<div style="background: var(--card-bg); border: 1px solid var(--border-color); color: var(--heading-color); padding: 8px 12px; border-radius: 6px; max-width: 85%; align-self: flex-start; font-size: 13px;">${data.reply}</div>`;
+                chatMessages.innerHTML += `<div style="background: var(--card-bg); border: 1px solid var(--border-color); color: var(--heading-color); padding: 8px 12px; border-radius: 8px; max-width: 85%; align-self: flex-start; font-size: 13px;">${data.reply}</div>`;
                 chatMessages.scrollTop = chatMessages.scrollHeight;
             } catch (error) {
-                chatMessages.innerHTML += `<div style="background: #fee2e2; color: #dc2626; padding: 8px 12px; border-radius: 6px; font-size: 13px;">Connection error.</div>`;
+                chatMessages.innerHTML += `<div style="background: #fee2e2; color: #dc2626; padding: 8px 12px; border-radius: 8px; font-size: 13px;">Connection error.</div>`;
             }
         }
 
