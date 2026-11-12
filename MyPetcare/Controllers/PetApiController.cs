@@ -1,52 +1,64 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using MyPetcare.Data;
 using MyPetcare.Models;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace MyPetcare.Controllers
 {
-    // Route prefix for all API endpoints in this controller: /api/pets
     [Route("api/pets")]
     [ApiController]
     public class PetApiController : ControllerBase
     {
-        // -------------------------------------------------------------
-        // GET ENDPOINT: Retrieve all client appointments
-        // URL: GET /api/pets/appointments
-        // -------------------------------------------------------------
-        [HttpGet("appointments")]
-        public IActionResult GetAppointments()
-        {
-            // Fetch records from the database using Entity Framework Core (e.g., _context.Appointments.ToList())
-            var appointments = new List<AppointmentModel>
-            {
-                new AppointmentModel { PetName = "Max (Corgi)", Service = "Vaccination", Status = "Confirmed", AppointmentDate = System.DateTime.Now }
-            };
+        private readonly ApplicationDbContext _context;
 
-            // Return success response with data in JSON format
+        public PetApiController(ApplicationDbContext context)
+        {
+            _context = context;
+        }
+
+        // GET /api/pets/appointments?clientName=Michaelradovan66
+        [HttpGet("appointments")]
+        public async Task<IActionResult> GetAppointments([FromQuery] string? clientName)
+        {
+            var query = _context.Appointments.AsNoTracking().AsQueryable();
+
+            if (!string.IsNullOrWhiteSpace(clientName))
+            {
+                query = query.Where(a => a.ClientName == clientName);
+            }
+
+            var appointments = await query
+                .OrderByDescending(a => a.Id)
+                .Take(100)
+                .ToListAsync();
+
             return Ok(new { success = true, data = appointments });
         }
 
-        // -------------------------------------------------------------
-        // POST ENDPOINT: Create and save a new appointment from the frontend
-        // URL: POST /api/pets/create-appointment
-        // -------------------------------------------------------------
+        // POST /api/pets/create-appointment
         [HttpPost("create-appointment")]
-        public IActionResult CreateAppointment([FromBody] AppointmentModel model)
+        public async Task<IActionResult> CreateAppointment([FromBody] AppointmentModel model)
         {
-            // Validate incoming payload
-            if (model == null || string.IsNullOrEmpty(model.PetName))
+            if (model == null || string.IsNullOrWhiteSpace(model.PetName) || string.IsNullOrWhiteSpace(model.Service))
             {
                 return BadRequest(new { success = false, message = "Invalid appointment data provided." });
             }
 
-            // Save the appointment to the database using Entity Framework Core
-            // Example:
-            // _context.Appointments.Add(model);
-            // _context.SaveChanges();
+            model.Id = 0;                                   // let PostgreSQL generate the Id
+            model.Status = "Pending";
+            model.AppointmentDate = DateTime.SpecifyKind(model.AppointmentDate, DateTimeKind.Utc);
 
-            // Return success confirmation response
-            return Ok(new { success = true, message = "Appointment successfully created via API!" });
+            try
+            {
+                _context.Appointments.Add(model);
+                await _context.SaveChangesAsync();
+                return Ok(new { success = true, message = "Appointment successfully created.", id = model.Id });
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.ToString());
+                return StatusCode(500, new { success = false, message = "Could not save appointment." });
+            }
         }
     }
 }
