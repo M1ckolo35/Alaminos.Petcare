@@ -65,11 +65,13 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 18px 48px;
+            padding: 16px 24px;
             background-color: var(--header-bg);
             border-bottom: 1px solid var(--border-color);
             animation: fadeInDown 0.7s cubic-bezier(0.16, 1, 0.3, 1) forwards;
             z-index: 10;
+            flex-wrap: wrap;
+            gap: 12px;
         }
 
         @@keyframes fadeInDown {
@@ -91,15 +93,15 @@
         }
 
         .site-logo {
-            height: 42px;
-            width: 42px;
+            height: 38px;
+            width: 38px;
             object-fit: contain;
             border-radius: 10px;
             box-shadow: 0 4px 12px rgba(2, 132, 199, 0.2);
         }
 
         .logo-title {
-            font-size: 22px;
+            font-size: 19px;
             font-weight: 700;
             color: var(--text-heading);
             letter-spacing: -0.4px;
@@ -108,21 +110,22 @@
         .header-actions {
             display: flex;
             align-items: center;
-            gap: 16px;
+            gap: 10px;
+            flex-wrap: wrap;
         }
 
         .theme-toggle-btn {
             background: var(--bg-main);
             border: 1px solid var(--border-color);
             color: var(--text-main);
-            padding: 7px 14px;
+            padding: 7px 12px;
             border-radius: 6px;
             cursor: pointer;
             font-size: 0.85rem;
             font-weight: 500;
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 6px;
         }
 
             .theme-toggle-btn:hover {
@@ -133,8 +136,8 @@
             background-color: var(--primary-accent);
             color: #ffffff;
             border: none;
-            padding: 9px 24px;
-            font-size: 14px;
+            padding: 8px 18px;
+            font-size: 13.5px;
             font-weight: 600;
             border-radius: 8px;
             cursor: pointer;
@@ -151,8 +154,8 @@
             background-color: transparent;
             color: var(--text-heading);
             border: 1px solid var(--border-color);
-            padding: 9px 20px;
-            font-size: 14px;
+            padding: 8px 16px;
+            font-size: 13.5px;
             font-weight: 600;
             border-radius: 8px;
             cursor: pointer;
@@ -164,20 +167,16 @@
                 color: var(--primary-accent);
             }
 
-        /* Hero Carousel Section with Split Layout */
+        /* Hero Carousel Section with Fully Responsive Split Layout */
         .hero-carousel {
             position: relative;
-            width: 100vw;
-            left: 50%;
-            right: 50%;
-            margin-left: -50vw;
-            margin-right: -50vw;
-            height: 420px;
+            width: 100%;
+            min-height: 440px;
             overflow: hidden;
             background-color: var(--bg-card);
             display: flex;
             align-items: center;
-            padding: 0 60px;
+            padding: 30px 24px;
         }
 
         .carousel-bg-slide {
@@ -202,24 +201,24 @@
                 height: 100%;
                 object-fit: cover;
                 display: block;
-                filter: brightness(0.75);
+                filter: brightness(0.7);
             }
 
         /* Hero Content Container */
         .hero-inner-content {
             position: relative;
             z-index: 3;
-            max-width: 1240px;
+            max-width: 1200px;
             width: 100%;
             margin: 0 auto;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            gap: 40px;
+            gap: 30px;
         }
 
         .hero-text-side {
-            flex: 1.1;
+            flex: 1.2;
             color: #ffffff;
             text-shadow: 0 2px 8px rgba(0,0,0,0.4);
             animation: fadeInLeft 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
@@ -238,34 +237,34 @@
         }
 
         .hero-text-side h1 {
-            font-size: 42px;
+            font-size: clamp(28px, 4vw, 42px);
             font-weight: 800;
             line-height: 1.15;
-            margin-bottom: 14px;
+            margin-bottom: 12px;
             letter-spacing: -0.5px;
         }
 
         .hero-text-side p {
-            font-size: 16px;
+            font-size: clamp(14px, 1.8vw, 16px);
             line-height: 1.5;
             color: #f1f5f9;
-            margin-bottom: 24px;
+            margin-bottom: 20px;
             max-width: 520px;
         }
 
         .hero-stats-row {
             display: flex;
-            gap: 32px;
+            gap: 24px;
         }
 
         .stat-box h3 {
-            font-size: 24px;
+            font-size: 22px;
             font-weight: 700;
             color: #38bdf8;
         }
 
         .stat-box span {
-            font-size: 12px;
+            font-size: 11px;
             text-transform: uppercase;
             letter-spacing: 0.5px;
             color: #cbd5e1;
@@ -274,9 +273,9 @@
 
         /* Balanced Grid Floating Animal Cards Group (Right Side) */
         .hero-visual-side {
-            flex: 0.9;
+            flex: 0.8;
             position: relative;
-            height: 340px;
+            height: 300px;
             display: flex;
             justify-content: center;
             align-items: center;
@@ -284,42 +283,43 @@
 
         .grid-cards-group {
             position: relative;
-            width: 400px;
-            height: 300px;
+            width: 100%;
+            max-width: 360px;
+            height: 280px;
         }
 
         .floating-card {
             position: absolute;
             background: rgba(255, 255, 255, 0.92);
             backdrop-filter: blur(6px);
-            padding: 8px 8px 12px 8px;
-            border-radius: 12px;
+            padding: 6px 6px 10px 6px;
+            border-radius: 10px;
             border: 1px solid rgba(255, 255, 255, 0.5);
             box-shadow: 0 14px 35px rgba(0,0,0,0.25);
-            width: 120px;
+            width: 110px;
             text-align: center;
         }
 
             .floating-card img {
                 width: 100%;
-                height: 75px;
+                height: 65px;
                 object-fit: cover;
-                border-radius: 8px;
+                border-radius: 6px;
             }
 
             .floating-card span {
-                font-size: 11px;
+                font-size: 10.5px;
                 font-weight: 700;
                 color: #0f172a;
-                margin-top: 6px;
+                margin-top: 4px;
                 display: block;
             }
 
         /* Balanced Grid Layout & Floating Positions */
         .card-pos-1 {
-            top: 20px;
+            top: 10px;
             left: 10px;
-            background: #ec4899; /* Vibrant pink card accent */
+            background: #ec4899;
             color: #ffffff;
             animation: floatCard1 6s ease-in-out infinite;
         }
@@ -329,9 +329,9 @@
             }
 
         .card-pos-2 {
-            top: 10px;
-            right: 20px;
-            background: #06b6d4; /* Teal card accent */
+            top: 5px;
+            right: 10px;
+            background: #06b6d4;
             animation: floatCard2 7s ease-in-out infinite;
         }
 
@@ -340,9 +340,9 @@
             }
 
         .card-pos-3 {
-            bottom: 20px;
-            left: 80px;
-            background: #f59e0b; /* Amber card accent */
+            bottom: 10px;
+            left: 60px;
+            background: #f59e0b;
             animation: floatCard3 6.5s ease-in-out infinite;
         }
 
@@ -356,7 +356,7 @@
             }
 
             50% {
-                transform: translateY(-10px) rotate(-1deg);
+                transform: translateY(-8px) rotate(-1deg);
             }
         }
 
@@ -366,7 +366,7 @@
             }
 
             50% {
-                transform: translateY(-12px) rotate(5deg);
+                transform: translateY(-10px) rotate(5deg);
             }
         }
 
@@ -376,18 +376,19 @@
             }
 
             50% {
-                transform: translateY(-10px) rotate(-2deg);
+                transform: translateY(-8px) rotate(-2deg);
             }
         }
 
-        /* Features Cards Grid */
+        /* Features Cards Responsive Grid */
         .features-container {
-            display: flex;
-            justify-content: space-between;
-            padding: 40px 48px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            padding: 30px 24px;
             max-width: 1200px;
             margin: 0 auto;
-            gap: 24px;
+            gap: 20px;
+            width: 100%;
             animation: fadeInUp 0.7s cubic-bezier(0.16, 1, 0.3, 1) forwards;
         }
 
@@ -405,9 +406,8 @@
 
         .feature-card {
             text-align: center;
-            flex: 1;
             background: var(--bg-card);
-            padding: 22px;
+            padding: 20px;
             border-radius: 10px;
             border: 1px solid var(--border-color);
             box-shadow: var(--card-shadow);
@@ -421,35 +421,35 @@
 
             .feature-card img {
                 width: 100%;
-                height: 150px;
+                height: 140px;
                 object-fit: cover;
                 border-radius: 6px;
             }
 
             .feature-card h3 {
-                margin-top: 14px;
-                font-size: 16px;
+                margin-top: 12px;
+                font-size: 15px;
                 font-weight: 700;
                 color: var(--text-heading);
             }
 
             .feature-card p {
                 color: var(--text-muted);
-                font-size: 13px;
+                font-size: 12.5px;
                 margin-top: 6px;
                 line-height: 1.4;
             }
 
-        /* --- STABLE PURE CSS/SVG ANIMATED WALKING DOG WIDGET --- */
+        /* WALKING DOG ANIMATION */
         .walking-dog-wrapper {
             position: fixed;
             bottom: 5px;
             left: -100px;
-            width: 80px;
-            height: 60px;
+            width: 70px;
+            height: 50px;
             z-index: 999;
             pointer-events: none;
-            animation: walkAcrossScreen 16s linear infinite;
+            animation: walkAcrossScreen 18s linear infinite;
         }
 
         .css-dog-character {
@@ -512,7 +512,7 @@
             }
 
             100% {
-                transform: translateY(-4px);
+                transform: translateY(-3px);
             }
         }
 
@@ -556,7 +556,7 @@
             }
         }
 
-        /* Modal Overlay & Login Card */
+        /* Modal Overlay & Login Card (Fully Responsive) */
         .modal {
             display: none;
             position: fixed;
@@ -571,6 +571,7 @@
             backdrop-filter: blur(4px);
             opacity: 0;
             transition: opacity 0.3s ease;
+            padding: 16px;
         }
 
             .modal.show {
@@ -580,14 +581,17 @@
 
         .modal-content {
             background: var(--bg-card);
-            padding: 32px;
+            padding: 24px;
             border-radius: 12px;
-            width: 420px;
+            width: 100%;
+            max-width: 400px;
             position: relative;
             box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.2);
             border: 1px solid var(--border-color);
             transform: translateY(10px) scale(0.98);
             transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            max-height: 90vh;
+            overflow-y: auto;
         }
 
         .modal.show .modal-content {
@@ -596,8 +600,8 @@
 
         .close-btn {
             position: absolute;
-            right: 18px;
-            top: 16px;
+            right: 16px;
+            top: 14px;
             font-size: 20px;
             cursor: pointer;
             color: var(--text-muted);
@@ -610,7 +614,7 @@
 
         .tab-buttons {
             display: flex;
-            margin-bottom: 20px;
+            margin-bottom: 16px;
             border-radius: 8px;
             overflow: hidden;
             background-color: var(--bg-main);
@@ -620,13 +624,13 @@
 
         .tab-btn {
             flex: 1;
-            padding: 9px;
+            padding: 8px;
             border: none;
             background-color: transparent;
             cursor: pointer;
             font-weight: 600;
             color: var(--text-muted);
-            font-size: 13.5px;
+            font-size: 13px;
             border-radius: 6px;
             transition: all 0.2s ease;
         }
@@ -638,45 +642,64 @@
             }
 
         .form-group {
-            margin-bottom: 16px;
+            margin-bottom: 14px;
         }
 
             .form-group label {
                 display: block;
-                margin-bottom: 6px;
-                font-size: 13px;
+                margin-bottom: 5px;
+                font-size: 12.5px;
                 font-weight: 600;
                 color: var(--text-heading);
             }
 
-            .form-group input {
-                width: 100%;
-                padding: 10px 14px;
-                border: 1px solid var(--border-color);
-                border-radius: 8px;
-                font-size: 14px;
-                background-color: var(--input-bg);
-                color: var(--text-heading);
-                transition: all 0.2s ease;
+        .input-wrapper {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 9px 36px 9px 12px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            font-size: 13.5px;
+            background-color: var(--input-bg);
+            color: var(--text-heading);
+            transition: all 0.2s ease;
+        }
+
+            .form-group input:focus {
+                outline: none;
+                border-color: var(--primary-accent);
+                box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.15);
             }
 
-                .form-group input:focus {
-                    outline: none;
-                    border-color: var(--primary-accent);
-                    box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.15);
-                }
+        .password-toggle-icon {
+            position: absolute;
+            right: 12px;
+            cursor: pointer;
+            color: var(--text-muted);
+            font-size: 14px;
+            transition: color 0.2s ease;
+        }
+
+            .password-toggle-icon:hover {
+                color: var(--primary-accent);
+            }
 
         .submit-btn {
             width: 100%;
-            padding: 11px;
+            padding: 10px;
             background-color: var(--primary-accent);
             color: #ffffff;
             border: none;
             border-radius: 8px;
-            font-size: 15px;
+            font-size: 14px;
             font-weight: 600;
             cursor: pointer;
-            margin-top: 6px;
+            margin-top: 4px;
             transition: opacity 0.2s ease, transform 0.1s ease;
             box-shadow: 0 4px 12px rgba(2, 132, 199, 0.25);
         }
@@ -688,16 +711,41 @@
 
         .error-msg {
             color: #ef4444;
-            font-size: 13px;
-            margin-bottom: 10px;
+            font-size: 12.5px;
+            margin-bottom: 8px;
             text-align: center;
         }
 
         .success-msg {
             color: #10b981;
-            font-size: 13px;
-            margin-bottom: 10px;
+            font-size: 12.5px;
+            margin-bottom: 8px;
             text-align: center;
+        }
+
+        @@media (max-width: 768px) {
+            .hero-inner-content {
+                flex-direction: column;
+                text-align: center;
+                gap: 20px;
+            }
+
+            .hero-text-side p {
+                margin: 0 auto 16px auto;
+            }
+
+            .hero-stats-row {
+                justify-content: center;
+            }
+
+            .hero-visual-side {
+                height: 220px;
+                width: 100%;
+            }
+
+            .header {
+                padding: 14px 16px;
+            }
         }
     </style>
 </head>
@@ -719,20 +767,12 @@
         </div>
     </header>
 
-    <!-- Hero Carousel Section with Encouraging Text & Balanced Floating Cards Grid -->
+    <!-- Hero Carousel Section with Responsive Layout -->
     <div class="hero-carousel">
-        <!-- Background Slider Images -->
-        <div class="carousel-bg-slide active">
-            <img src="/images/dog2.jpg" alt="Dog 2">
-        </div>
-        <div class="carousel-bg-slide">
-            <img src="/images/dog3.jpg" alt="Dog 3">
-        </div>
-        <div class="carousel-bg-slide">
-            <img src="/images/dog1.jpeg" alt="Dog 1">
-        </div>
+        <div class="carousel-bg-slide active"><img src="/images/dog2.jpg" alt="Dog 2"></div>
+        <div class="carousel-bg-slide"><img src="/images/dog3.jpg" alt="Dog 3"></div>
+        <div class="carousel-bg-slide"><img src="/images/dog1.jpeg" alt="Dog 1"></div>
 
-        <!-- Inner Content (Left Encouraging Text + Right Balanced Grid Cards) -->
         <div class="hero-inner-content">
             <div class="hero-text-side">
                 <h1>Give your pets the best care, even when you're busy.</h1>
@@ -787,29 +827,22 @@
         </div>
     </main>
 
-    <!-- WALKING DOG ANIMATION (PURE CSS SVG) -->
+    <!-- WALKING DOG ANIMATION -->
     <div class="walking-dog-wrapper">
         <svg class="css-dog-character" viewBox="0 0 120 90" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <!-- Tail -->
             <path class="tail" d="M 25 45 C 10 35 5 25 10 15 C 15 20 20 30 28 42 Z" fill="#d97706" />
-            <!-- Back Legs -->
             <rect class="leg-right" x="32" y="55" width="8" height="25" rx="4" fill="#b45309" />
             <rect class="leg-left" x="72" y="55" width="8" height="25" rx="4" fill="#b45309" />
-            <!-- Body -->
             <rect x="25" y="35" width="60" height="30" rx="15" fill="#f59e0b" />
             <circle cx="45" cy="50" r="10" fill="#fef3c7" opacity="0.6" />
-            <!-- Front Legs -->
             <rect class="leg-left" x="40" y="55" width="8" height="25" rx="4" fill="#f59e0b" />
             <rect class="leg-right" x="80" y="55" width="8" height="25" rx="4" fill="#f59e0b" />
-            <!-- Head & Snout -->
             <circle cx="85" cy="30" r="18" fill="#f59e0b" />
             <path class="ear" d="M 75 16 C 70 5 62 10 68 22 Z" fill="#b45309" />
             <ellipse cx="98" cy="34" rx="10" ry="7" fill="#fef3c7" />
-            <!-- Nose & Eye -->
             <circle cx="106" cy="32" r="3.5" fill="#1e293b" />
             <circle cx="90" cy="26" r="3" fill="#1e293b" />
             <circle cx="91" cy="25" r="1" fill="#ffffff" />
-            <!-- Collar -->
             <rect x="75" y="38" width="6" height="12" rx="2" fill="#0284c7" />
         </svg>
     </div>
@@ -826,16 +859,15 @@
 
             <!-- LOGIN SECTION -->
             <div id="loginSection">
-                <div style="display: flex; gap: 4px; margin-bottom: 16px; background: var(--bg-main); padding: 3px; border-radius: 8px; border: 1px solid var(--border-color);">
+                <div style="display: flex; gap: 4px; margin-bottom: 14px; background: var(--bg-main); padding: 3px; border-radius: 8px; border: 1px solid var(--border-color);">
                     <button type="button" class="tab-btn active" id="clientTab" onclick="switchRole('client')">Client Login</button>
                     <button type="button" class="tab-btn" id="adminTab" onclick="switchRole('admin')">Admin Login</button>
                 </div>
 
-                <h2 id="modalTitle" style="font-size: 18px; font-weight: 700; margin-bottom: 14px; color: var(--text-heading);">Client Login</h2>
+                <h2 id="modalTitle" style="font-size: 16px; font-weight: 700; margin-bottom: 12px; color: var(--text-heading);">Client Login</h2>
                 <form id="loginForm" onsubmit="handleLogin(event)">
                     <input type="hidden" id="roleInput" value="client">
 
-                    <!-- Admin Extra Fields (Name & Position) -->
                     <div id="adminExtraFields" style="display: none;">
                         <div class="form-group">
                             <label for="adminName">Admin Full Name</label>
@@ -854,11 +886,14 @@
 
                     <div class="form-group">
                         <label for="password">Password</label>
-                        <input type="password" id="password" required placeholder="Enter password">
+                        <div class="input-wrapper">
+                            <input type="password" id="password" required placeholder="Enter password">
+                            <i class="fa-solid fa-eye password-toggle-icon" onclick="togglePasswordVisibility('password', this)"></i>
+                        </div>
                     </div>
 
-                    <div style="display: flex; justify-content: flex-end; align-items: center; margin-bottom: 14px;">
-                        <a href="javascript:void(0)" onclick="openForgotPasswordModal()" style="font-size: 13px; color: var(--primary-accent); text-decoration: none; font-weight: 500;">Forgot Password?</a>
+                    <div style="display: flex; justify-content: flex-end; align-items: center; margin-bottom: 12px;">
+                        <a href="javascript:void(0)" onclick="openForgotPasswordModal()" style="font-size: 12.5px; color: var(--primary-accent); text-decoration: none; font-weight: 500;">Forgot Password?</a>
                     </div>
 
                     <p id="errorMessage" class="error-msg"></p>
@@ -869,7 +904,7 @@
 
             <!-- REGISTER SECTION -->
             <div id="registerSection" style="display: none;">
-                <h2 style="font-size: 18px; font-weight: 700; margin-bottom: 14px; color: var(--text-heading);">Create an Account</h2>
+                <h2 style="font-size: 16px; font-weight: 700; margin-bottom: 12px; color: var(--text-heading);">Create an Account</h2>
                 <form id="registerForm" onsubmit="handleRegister(event)">
                     <div class="form-group">
                         <label for="regName">Full Name</label>
@@ -883,7 +918,10 @@
 
                     <div class="form-group">
                         <label for="regPassword">Password</label>
-                        <input type="password" id="regPassword" required placeholder="Create password">
+                        <div class="input-wrapper">
+                            <input type="password" id="regPassword" required placeholder="Create password">
+                            <i class="fa-solid fa-eye password-toggle-icon" onclick="togglePasswordVisibility('regPassword', this)"></i>
+                        </div>
                     </div>
 
                     <p id="regMessage" class="error-msg"></p>
@@ -895,10 +933,10 @@
     </div>
 
     <!-- FORGOT / RESET PASSWORD MODAL -->
-    <div id="forgotPasswordModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 2000; justify-content: center; align-items: center; backdrop-filter: blur(4px);">
-        <div style="background: var(--bg-card); padding: 28px; border-radius: 12px; width: 390px; max-width: 90%; box-shadow: 0 20px 25px -5px rgba(0,0,0,0.2); border: 1px solid var(--border-color); color: var(--text-main);">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
-                <h3 style="margin: 0; font-size: 17px; font-weight: 700; color: var(--text-heading);"><i class="fa-solid fa-key" style="color: var(--primary-accent); margin-right: 6px;"></i> Reset Password</h3>
+    <div id="forgotPasswordModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 2000; justify-content: center; align-items: center; backdrop-filter: blur(4px); padding: 16px;">
+        <div style="background: var(--bg-card); padding: 24px; border-radius: 12px; width: 100%; max-width: 380px; box-shadow: 0 20px 25px -5px rgba(0,0,0,0.2); border: 1px solid var(--border-color); color: var(--text-main);">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px;">
+                <h3 style="margin: 0; font-size: 16px; font-weight: 700; color: var(--text-heading);"><i class="fa-solid fa-key" style="color: var(--primary-accent); margin-right: 6px;"></i> Reset Password</h3>
                 <button onclick="closeForgotPasswordModal()" style="background: none; border: none; font-size: 20px; cursor: pointer; color: var(--text-muted);">&times;</button>
             </div>
             <form onsubmit="handleResetPassword(event)">
@@ -908,11 +946,14 @@
                 </div>
                 <div class="form-group">
                     <label>New Password</label>
-                    <input type="password" id="resetNewPassword" placeholder="Enter new password" required />
+                    <div class="input-wrapper">
+                        <input type="password" id="resetNewPassword" placeholder="Enter new password" required />
+                        <i class="fa-solid fa-eye password-toggle-icon" onclick="togglePasswordVisibility('resetNewPassword', this)"></i>
+                    </div>
                 </div>
-                <div style="display: flex; justify-content: flex-end; gap: 8px; margin-top: 18px;">
-                    <button type="button" onclick="closeForgotPasswordModal()" style="padding: 9px 14px; border-radius: 8px; border: 1px solid var(--border-color); background: transparent; cursor: pointer; font-weight: 600; color: var(--text-main); font-size: 13.5px;">Cancel</button>
-                    <button type="submit" class="submit-btn" style="width: auto; margin-top: 0; padding: 9px 18px;">Update Password</button>
+                <div style="display: flex; justify-content: flex-end; gap: 8px; margin-top: 16px;">
+                    <button type="button" onclick="closeForgotPasswordModal()" style="padding: 8px 12px; border-radius: 8px; border: 1px solid var(--border-color); background: transparent; cursor: pointer; font-weight: 600; color: var(--text-main); font-size: 13px;">Cancel</button>
+                    <button type="submit" class="submit-btn" style="width: auto; margin-top: 0; padding: 8px 16px;">Update Password</button>
                 </div>
             </form>
         </div>
@@ -930,7 +971,6 @@
         }
         setInterval(showNextSlide, 4500);
 
-        // Theme Toggle Logic Sync with Dashboard
         const themeToggleBtn = document.getElementById('themeToggle');
         const themeIcon = document.getElementById('themeIcon');
         const themeText = document.getElementById('themeText');
@@ -956,6 +996,17 @@
                 themeText.innerText = 'Light Mode';
             }
         });
+
+        function togglePasswordVisibility(fieldId, iconElem) {
+            const field = document.getElementById(fieldId);
+            if (field.type === 'password') {
+                field.type = 'text';
+                iconElem.className = 'fa-solid fa-eye-slash password-toggle-icon';
+            } else {
+                field.type = 'password';
+                iconElem.className = 'fa-solid fa-eye password-toggle-icon';
+            }
+        }
 
         function openModal(mode) {
             const modal = document.getElementById('authModal');
