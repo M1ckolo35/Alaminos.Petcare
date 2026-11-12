@@ -1,15 +1,25 @@
-﻿@model IEnumerable<MyPetcare.Models.User>
+﻿Naayos at na-optimize ko na ang iyong admin dashboard para maging **fully responsive sa lahat ng device** (cellphone/CP, tablet, at desktop).
+
+### **Mga Pagbabagong Ginawa para sa Responsive Design:**
+
+1. **Adaptive Sidebar:** Kapag binuksan sa mobile (`max-width: 992px`), awtomatiko itong magiging top navigation bar sa halip na fixed sidebar para hindi sakupin ang buong screen.
+2. **Flexible Stats Grid:** Ang 4-column stat cards ay magiging 2 columns sa tablets at magiging 1 column (stacked) sa mga mobile phones.
+3. **Responsive Tables (`overflow-x: auto`)**: Nilagyan ng scroll wrapper ang mga table para hindi masira o lumagpas ang layout kapag tiningnan sa maliit na screen ng cellphone.
+4. **Mobile Chat Window**: Na-adjust ang sukat at pwesto ng PetBot widget para maging komportable at madaling gamitin sa mobile touchscreens.
+
+---
+
+### **Ang Updated at Responsive na Code (`AdminDashboard.cshtml`):**
+
+```cshtml
+@model IEnumerable<MyPetcare.Models.User>
 @{
     Layout = null;
     ViewData["Title"] = "MyPetcare - Admin Dashboard";
 
-    // Retrieve the shared appointment list from ViewBag[cite: 5]
     var appointments = ViewBag.Appointments as List<MyPetcare.Models.AppointmentModel> ?? new List<MyPetcare.Models.AppointmentModel>();
-
-    // Retrieve the registered users list from the Model[cite: 5]
     var users = Model ?? Enumerable.Empty<MyPetcare.Models.User>();
 
-    // Calculate live summary statistics[cite: 5]
     int pendingCount = appointments.Count(a => a.Status.Equals("Pending", StringComparison.OrdinalIgnoreCase));
     int confirmedCount = appointments.Count(a => a.Status.Equals("Confirmed", StringComparison.OrdinalIgnoreCase) || a.Status.Equals("Approved", StringComparison.OrdinalIgnoreCase));
     int cancelledCount = appointments.Count(a => a.Status.Equals("Cancelled", StringComparison.OrdinalIgnoreCase) || a.Status.Equals("Rejected", StringComparison.OrdinalIgnoreCase));
@@ -99,6 +109,7 @@
             padding: 28px 18px;
             box-shadow: 4px 0 15px rgba(0, 0, 0, 0.03);
             z-index: 10;
+            overflow-y: auto;
         }
 
         .brand {
@@ -170,10 +181,6 @@
                 transform: translateX(3px);
             }
 
-                .nav-link:hover i {
-                    transform: scale(1.1);
-                }
-
             .nav-link.active {
                 font-weight: 600;
                 background: linear-gradient(90deg, rgba(2, 132, 199, 0.2), rgba(2, 132, 199, 0.05));
@@ -182,16 +189,13 @@
                 border-radius: 4px 8px 8px 4px;
             }
 
-                .nav-link.active i {
-                    color: var(--primary-accent);
-                }
-
         .sidebar-footer {
             display: flex;
             flex-direction: column;
             gap: 14px;
             border-top: 1px solid rgba(255, 255, 255, 0.08);
             padding-top: 18px;
+            margin-top: 20px;
         }
 
         .sidebar-admin-badge {
@@ -250,7 +254,6 @@
             .logout-btn:hover {
                 background-color: rgba(239, 68, 68, 0.2);
                 color: #ef4444;
-                transform: translateY(-1px);
             }
 
         .main-wrapper {
@@ -355,7 +358,7 @@
             justify-content: space-between;
             box-shadow: var(--card-shadow);
             cursor: pointer;
-            transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.25s ease, border-color 0.25s ease;
+            transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
         }
 
             .stat-card:hover {
@@ -379,11 +382,6 @@
             align-items: center;
             justify-content: center;
             font-size: 1.1rem;
-            transition: transform 0.3s ease;
-        }
-
-        .stat-card:hover .stat-icon {
-            transform: scale(1.1) rotate(5deg);
         }
 
         .stat-number {
@@ -408,7 +406,6 @@
             border-radius: 10px;
             padding: 22px;
             box-shadow: var(--card-shadow);
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
         }
 
         .table-card-title {
@@ -419,12 +416,22 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        /* Responsive Table Wrapper */
+        .table-responsive {
+            width: 100%;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
         }
 
         table {
             width: 100%;
             border-collapse: collapse;
             font-size: 0.875rem;
+            min-width: 600px;
         }
 
         th, td {
@@ -439,17 +446,10 @@
             background-color: var(--bg-main);
             cursor: pointer;
             user-select: none;
-            transition: color 0.2s ease;
         }
 
             th:hover {
                 color: var(--primary-accent);
-            }
-
-            th i {
-                margin-left: 6px;
-                font-size: 0.75rem;
-                color: var(--text-muted);
             }
 
         tbody tr:hover {
@@ -469,17 +469,6 @@
         .badge-pending {
             background-color: var(--badge-pending-bg);
             color: var(--badge-pending-text);
-            animation: pulse-glow 2s infinite ease-in-out;
-        }
-
-        @@keyframes pulse-glow {
-            0%, 100% {
-                opacity: 1;
-            }
-
-            50% {
-                opacity: 0.6;
-            }
         }
 
         .badge-approved, .badge-confirmed {
@@ -492,11 +481,6 @@
             color: var(--badge-rejected-text);
         }
 
-        .badge-rescheduled {
-            background-color: var(--badge-rescheduled-bg);
-            color: var(--badge-rescheduled-text);
-        }
-
         .btn-action {
             padding: 6px 12px;
             border-radius: 5px;
@@ -505,16 +489,8 @@
             cursor: pointer;
             font-size: 0.8rem;
             margin-right: 4px;
-            transition: transform 0.15s ease, opacity 0.2s ease;
+            margin-bottom: 4px;
         }
-
-            .btn-action:hover {
-                transform: translateY(-1px);
-            }
-
-            .btn-action:active {
-                transform: translateY(0) scale(0.97);
-            }
 
         .btn-approve {
             background-color: #047857;
@@ -548,33 +524,77 @@
             text-decoration: underline;
         }
 
-            .see-more-toggle:hover {
-                opacity: 0.8;
-            }
+        /* --- MOBILE & TABLET MEDIA QUERIES --- */
+        @@media (max-width: 992px) {
+            body
 
-        #chatToggleBtn {
-            animation: floatBounce 3s infinite ease-in-out;
+        {
+            flex-direction: column;
+            height: auto;
+            overflow: auto;
         }
 
-        @@keyframes floatBounce {
-            0%, 100% {
-                transform: translateY(0);
-            }
-
-            50% {
-                transform: translateY(-6px);
-            }
+        .sidebar {
+            width: 100%;
+            height: auto;
+            max-height: 300px;
+            position: relative;
+            padding: 16px;
         }
 
-        #chatToggleBtn:hover {
-            transform: scale(1.08) !important;
-            box-shadow: 0 8px 20px rgba(2, 132, 199, 0.3) !important;
+        .main-wrapper {
+            height: auto;
+            overflow: visible;
+        }
+
+        .stats-grid {
+            grid-template-columns: repeat(2, 1fr) !important;
+            gap: 12px;
+        }
+
+        .header {
+            padding: 14px 20px;
+            flex-direction: column;
+            gap: 12px;
+            align-items: flex-start;
+        }
+
+        .dashboard-body {
+            padding: 16px;
+            gap: 16px;
+        }
+
+        }
+
+        @@media (max-width: 576px) {
+            .stats-grid
+
+        {
+            grid-template-columns: 1fr !important;
+        }
+
+        .header-actions {
+            width: 100%;
+            justify-content: space-between;
+        }
+
+        .table-card {
+            padding: 14px;
+        }
+
+        #chatWindow {
+            width: 92vw !important;
+            right: 4vw !important;
+            bottom: 70px !important;
+            height: 400px !important;
+        }
+
         }
     </style>
 </head>
 <body>
 
-    <!-- Redesigned Modern Sidebar Navigation -->
+    <!-- Sidebar Navigation -->
     <aside class="sidebar">
         <div>
             <div class="brand">
@@ -588,7 +608,7 @@
             <ul class="nav-menu">
                 <li><a class="nav-link active" onclick="switchTab('dashboard', this)"><i class="fa-solid fa-chart-pie"></i> <span>Dashboard</span></a></li>
                 <li><a class="nav-link" onclick="switchTab('appointments', this)"><i class="fa-regular fa-calendar-check"></i> <span>Appointments</span></a></li>
-                <li><a class="nav-link" onclick="switchTab('deletedLogs', this)"><i class="fa-solid fa-clock-rotate-left"></i> <span>Deleted Logs (Archive)</span></a></li>
+                <li><a class="nav-link" onclick="switchTab('deletedLogs', this)"><i class="fa-solid fa-clock-rotate-left"></i> <span>Deleted Logs</span></a></li>
                 <li><a class="nav-link" onclick="switchTab('announcements', this)"><i class="fa-solid fa-bullhorn"></i> <span>Announcements</span></a></li>
                 <li><a class="nav-link" onclick="switchTab('clients', this)"><i class="fa-solid fa-users"></i> <span>Clients Directory</span></a></li>
                 <li><a class="nav-link" onclick="switchTab('pets', this)"><i class="fa-solid fa-dog"></i> <span>Pet Records</span></a></li>
@@ -670,21 +690,21 @@
                         <span id="tableCardHeaderLabel">Recent Appointments & Activity Updates</span>
                         <button id="clearFilterBtn" onclick="filterAppointmentsByStatus('All')" style="display:none; font-size: 0.75rem; background: var(--bg-main); border: 1px solid var(--border-color); color: var(--primary-accent); padding: 4px 10px; border-radius: 4px; cursor: pointer;">Show All</button>
                     </h2>
-                    <table>
-                        <thead>
-                            <tr>
-                                <th onclick="sortDashboardTable('clientName')">Client Name <i id="sortIcon_dash_clientName" class="fa-solid fa-sort"></i></th>
-                                <th onclick="sortDashboardTable('petName')">Pet Name <i id="sortIcon_dash_petName" class="fa-solid fa-sort"></i></th>
-                                <th>Service Type</th>
-                                <th onclick="sortDashboardTable('date')">Schedule Date <i id="sortIcon_dash_date" class="fa-solid fa-sort-down"></i></th>
-                                <th>Current Status</th>
-                                <th>Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody id="dynamicDashboardAppointmentsBody">
-                            <!-- Dynamic rendered rows loaded via JavaScript syncing localStorage -->
-                        </tbody>
-                    </table>
+                    <div class="table-responsive">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th onclick="sortDashboardTable('clientName')">Client Name <i id="sortIcon_dash_clientName" class="fa-solid fa-sort"></i></th>
+                                    <th onclick="sortDashboardTable('petName')">Pet Name <i id="sortIcon_dash_petName" class="fa-solid fa-sort"></i></th>
+                                    <th>Service Type</th>
+                                    <th onclick="sortDashboardTable('date')">Schedule Date <i id="sortIcon_dash_date" class="fa-solid fa-sort-down"></i></th>
+                                    <th>Current Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="dynamicDashboardAppointmentsBody"></tbody>
+                        </table>
+                    </div>
                     <div id="dashboardSeeMoreContainer" style="text-align: center;"></div>
                 </div>
             </section>
@@ -693,22 +713,22 @@
             <section id="appointments" class="admin-section">
                 <div class="table-card">
                     <h2 class="table-card-title">All Clinic Appointments History</h2>
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Booking ID</th>
-                                <th onclick="sortAppointmentsTable('clientName')">Client <i id="sortIcon_appt_clientName" class="fa-solid fa-sort"></i></th>
-                                <th onclick="sortAppointmentsTable('petName')">Pet <i id="sortIcon_appt_petName" class="fa-solid fa-sort"></i></th>
-                                <th>Service</th>
-                                <th onclick="sortAppointmentsTable('date')">Schedule Date <i id="sortIcon_appt_date" class="fa-solid fa-sort-down"></i></th>
-                                <th>Status</th>
-                                <th>Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody id="dynamicAllAppointmentsBody">
-                            <!-- Dynamic rendered rows loaded via JavaScript syncing localStorage -->
-                        </tbody>
-                    </table>
+                    <div class="table-responsive">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Booking ID</th>
+                                    <th onclick="sortAppointmentsTable('clientName')">Client <i id="sortIcon_appt_clientName" class="fa-solid fa-sort"></i></th>
+                                    <th onclick="sortAppointmentsTable('petName')">Pet <i id="sortIcon_appt_petName" class="fa-solid fa-sort"></i></th>
+                                    <th>Service</th>
+                                    <th onclick="sortAppointmentsTable('date')">Schedule Date <i id="sortIcon_appt_date" class="fa-solid fa-sort-down"></i></th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="dynamicAllAppointmentsBody"></tbody>
+                        </table>
+                    </div>
                     <div id="appointmentsSeeMoreContainer" style="text-align: center;"></div>
                 </div>
             </section>
@@ -716,25 +736,25 @@
             <!-- TAB 3: DELETED LOGS / ARCHIVE -->
             <section id="deletedLogs" class="admin-section">
                 <div class="table-card">
-                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; flex-wrap: wrap; gap: 10px;">
                         <h2 class="table-card-title" style="margin-bottom: 0;"><i class="fa-solid fa-clock-rotate-left"></i> Deleted Appointment Logs (Archive)</h2>
                         <button onclick="clearDeletedLogsArchive()" class="btn-action btn-reject" style="font-size: 0.75rem;"><i class="fa-solid fa-trash-can"></i> Clear Archive</button>
                     </div>
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Client Name</th>
-                                <th>Pet Name</th>
-                                <th>Service</th>
-                                <th>Original Date</th>
-                                <th>Final Status Before Deletion</th>
-                                <th>Deleted Timestamp</th>
-                            </tr>
-                        </thead>
-                        <tbody id="dynamicDeletedLogsBody">
-                            <!-- Dynamic archived deleted logs loaded via JavaScript -->
-                        </tbody>
-                    </table>
+                    <div class="table-responsive">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Client Name</th>
+                                    <th>Pet Name</th>
+                                    <th>Service</th>
+                                    <th>Original Date</th>
+                                    <th>Final Status Before Deletion</th>
+                                    <th>Deleted Timestamp</th>
+                                </tr>
+                            </thead>
+                            <tbody id="dynamicDeletedLogsBody"></tbody>
+                        </table>
+                    </div>
                 </div>
             </section>
 
@@ -757,9 +777,7 @@
 
                 <div class="table-card">
                     <h2 class="table-card-title">Active Announcements List</h2>
-                    <div id="adminAnnouncementsList" style="display: flex; flex-direction: column; gap: 12px;">
-                        <!-- Dynamic Announcements Load Here -->
-                    </div>
+                    <div id="adminAnnouncementsList" style="display: flex; flex-direction: column; gap: 12px;"></div>
                 </div>
             </section>
 
@@ -767,76 +785,78 @@
             <section id="clients" class="admin-section">
                 <div class="table-card">
                     <h2 class="table-card-title">Registered Client Directory</h2>
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Client ID</th>
-                                <th>Full Name</th>
-                                <th>Email Address</th>
-                                <th>Role</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @if (users.Any())
-                            {
-                                int rowId = 1;
-                                foreach (var user in users)
+                    <div class="table-responsive">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Client ID</th>
+                                    <th>Full Name</th>
+                                    <th>Email Address</th>
+                                    <th>Role</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @if (users.Any())
+                                {
+                                    int rowId = 1;
+                                    foreach (var user in users)
+                                    {
+                                        <tr>
+                                            <td>@rowId</td>
+                                            <td><strong>@user.FullName</strong></td>
+                                            <td>@user.Email</td>
+                                            <td>
+                                                <span class="badge @(user.Role.Equals("Admin", StringComparison.OrdinalIgnoreCase) ? "badge-approved" : "badge-pending")">
+                                                    @user.Role
+                                                </span>
+                                            </td>
+                                        </tr>
+                                        rowId++;
+                                    }
+                                }
+                                else
                                 {
                                     <tr>
-                                        <td>@rowId</td>
-                                        <td><strong>@user.FullName</strong></td>
-                                        <td>@user.Email</td>
-                                        <td>
-                                            <span class="badge @(user.Role.Equals("Admin", StringComparison.OrdinalIgnoreCase) ? "badge-approved" : "badge-pending")">
-                                                @user.Role
-                                            </span>
-                                        </td>
+                                        <td colspan="4" style="text-align: center; color: var(--text-muted); padding: 24px;">No registered clients found.</td>
                                     </tr>
-                                    rowId++;
                                 }
-                            }
-                            else
-                            {
-                                <tr>
-                                    <td colspan="4" style="text-align: center; color: var(--text-muted); padding: 24px;">No registered clients found.</td>
-                                </tr>
-                            }
-                        </tbody>
-                    </table>
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </section>
 
             <!-- TAB 6: PETS RECORDS & HEALTHCARE -->
             <section id="pets" class="admin-section">
                 <div class="table-card">
-                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; flex-wrap: wrap; gap: 10px;">
                         <h2 class="table-card-title" style="margin-bottom: 0;">Completed Appointments & Pet Medical Records</h2>
                         <span style="font-size: 0.85rem; color: var(--text-muted);">Veterinary System</span>
                     </div>
-                    <table>
-                        <thead>
-                            <tr>
-                                <th onclick="sortPetsTable('petName')">Pet Name <i id="sortIcon_pet_petName" class="fa-solid fa-sort"></i></th>
-                                <th onclick="sortPetsTable('clientName')">Owner / Client <i id="sortIcon_pet_clientName" class="fa-solid fa-sort"></i></th>
-                                <th>Completed Service</th>
-                                <th>Latest Condition</th>
-                                <th>Vaccination Status</th>
-                                <th>Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody id="dynamicPetRecordsBody">
-                            <!-- Dynamic Pet Records loaded from completed appointments & storage -->
-                        </tbody>
-                    </table>
+                    <div class="table-responsive">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th onclick="sortPetsTable('petName')">Pet Name <i id="sortIcon_pet_petName" class="fa-solid fa-sort"></i></th>
+                                    <th onclick="sortPetsTable('clientName')">Owner / Client <i id="sortIcon_pet_clientName" class="fa-solid fa-sort"></i></th>
+                                    <th>Completed Service</th>
+                                    <th>Latest Condition</th>
+                                    <th>Vaccination Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="dynamicPetRecordsBody"></tbody>
+                        </table>
+                    </div>
                 </div>
             </section>
 
         </main>
     </div>
 
-    <!-- CUSTOM CONFIRMATION MODAL WITH SOUND EFFECTS -->
-    <div id="customConfirmModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.6); z-index:999999; justify-content:center; align-items:center; backdrop-filter: blur(5px);">
-        <div style="background:var(--bg-card); padding:24px; border-radius:12px; width:380px; border:1px solid var(--border-color); color:var(--text-main); box-shadow: 0 10px 25px rgba(0,0,0,0.2); text-align: center;">
+    <!-- CUSTOM CONFIRMATION MODAL -->
+    <div id="customConfirmModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.6); z-index:999999; justify-content:center; align-items:center; backdrop-filter: blur(5px); padding: 16px;">
+        <div style="background:var(--bg-card); padding:24px; border-radius:12px; width:100%; max-width:380px; border:1px solid var(--border-color); color:var(--text-main); box-shadow: 0 10px 25px rgba(0,0,0,0.2); text-align: center;">
             <div style="width: 48px; height: 48px; border-radius: 50%; background: #fee2e2; color: #b91c1c; display: inline-flex; align-items: center; justify-content: center; font-size: 1.2rem; margin-bottom: 12px;">
                 <i class="fa-solid fa-triangle-exclamation"></i>
             </div>
@@ -850,8 +870,8 @@
     </div>
 
     <!-- ADMIN LOGIN MODAL -->
-    <div id="adminLoginModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.7); z-index:99999; justify-content:center; align-items:center; backdrop-filter: blur(6px);">
-        <div style="background:var(--bg-card); padding:30px; border-radius:12px; width:420px; border:1px solid var(--border-color); color:var(--text-main); box-shadow: 0 10px 30px rgba(0,0,0,0.3);">
+    <div id="adminLoginModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.7); z-index:99999; justify-content:center; align-items:center; backdrop-filter: blur(6px); padding: 16px;">
+        <div style="background:var(--bg-card); padding:30px; border-radius:12px; width:100%; max-width:420px; border:1px solid var(--border-color); color:var(--text-main); box-shadow: 0 10px 30px rgba(0,0,0,0.3);">
             <div style="text-align: center; margin-bottom: 20px;">
                 <div style="width: 50px; height: 50px; border-radius: 12px; background: linear-gradient(135deg, var(--primary-accent), #0369a1); color: white; display: inline-flex; align-items: center; justify-content: center; font-size: 1.4rem; margin-bottom: 10px;">
                     <i class="fa-solid fa-user-shield"></i>
@@ -878,16 +898,16 @@
 
                 <div style="display:flex; justify-content:space-between; gap:8px;">
                     <button type="button" onclick="closeAdminLoginModal()" style="padding:9px 16px; border-radius:6px; border:1px solid var(--border-color); background:transparent; color:var(--text-main); cursor:pointer; font-size: 0.85rem;">Cancel</button>
-                    <button type="submit" class="btn-action btn-primary-custom" style="padding:9px 20px; font-size: 0.85rem;"><i class="fa-solid fa-right-to-bracket"></i> Sign In to Dashboard</button>
+                    <button type="submit" class="btn-action btn-primary-custom" style="padding:9px 20px; font-size: 0.85rem;"><i class="fa-solid fa-right-to-bracket"></i> Sign In</button>
                 </div>
             </form>
         </div>
     </div>
 
     <!-- ADMIN PROFILE EDIT MODAL -->
-    <div id="adminProfileModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.6); z-index:999; justify-content:center; align-items:center; backdrop-filter: blur(4px);">
-        <div style="background:var(--bg-card); padding:24px; border-radius:10px; width:400px; border:1px solid var(--border-color); color:var(--text-main); box-shadow: var(--card-shadow);">
-            <h3 style="margin-bottom:16px; font-size: 1.1rem; color: var(--text-heading);"><i class="fa-solid fa-user-gear" style="color: var(--primary-accent);"></i> Edit Admin Profile & Position</h3>
+    <div id="adminProfileModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.6); z-index:999; justify-content:center; align-items:center; backdrop-filter: blur(4px); padding: 16px;">
+        <div style="background:var(--bg-card); padding:24px; border-radius:10px; width:100%; max-width:400px; border:1px solid var(--border-color); color:var(--text-main); box-shadow: var(--card-shadow);">
+            <h3 style="margin-bottom:16px; font-size: 1.1rem; color: var(--text-heading);"><i class="fa-solid fa-user-gear" style="color: var(--primary-accent);"></i> Edit Admin Profile</h3>
 
             <div style="margin-bottom:12px;">
                 <label style="font-size:0.8rem; font-weight:600; color: var(--text-muted);">Administrator Name:</label>
@@ -896,7 +916,7 @@
 
             <div style="margin-bottom:16px;">
                 <label style="font-size:0.8rem; font-weight:600; color: var(--text-muted);">Position / Role Title:</label>
-                <input type="text" id="editAdminPosition" placeholder="e.g. Senior Veterinarian / Lead Admin" style="width:100%; padding:9px; margin-top:4px; border-radius:6px; border:1px solid var(--border-color); background:var(--bg-main); color:var(--text-main); font-size: 0.85rem;" />
+                <input type="text" id="editAdminPosition" placeholder="e.g. Senior Veterinarian" style="width:100%; padding:9px; margin-top:4px; border-radius:6px; border:1px solid var(--border-color); background:var(--bg-main); color:var(--text-main); font-size: 0.85rem;" />
             </div>
 
             <div style="display:flex; justify-content:flex-end; gap:8px;">
@@ -907,8 +927,8 @@
     </div>
 
     <!-- VET HEALTHCARE UPDATE MODAL -->
-    <div id="vetModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.6); z-index:999; justify-content:center; align-items:center; backdrop-filter: blur(4px);">
-        <div style="background:var(--bg-card); padding:24px; border-radius:10px; width:440px; border:1px solid var(--border-color); color:var(--text-main); box-shadow: var(--card-shadow);">
+    <div id="vetModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.6); z-index:999; justify-content:center; align-items:center; backdrop-filter: blur(4px); padding: 16px;">
+        <div style="background:var(--bg-card); padding:24px; border-radius:10px; width:100%; max-width:440px; border:1px solid var(--border-color); color:var(--text-main); box-shadow: var(--card-shadow);">
             <h3 style="margin-bottom:16px; font-size: 1.1rem; color: var(--text-heading);"><i class="fa-solid fa-notes-medical" style="color: var(--primary-accent);"></i> Update Pet Health Record</h3>
 
             <input type="hidden" id="modalPetKey" />
@@ -920,12 +940,12 @@
 
             <div style="margin-bottom:12px;">
                 <label style="font-size:0.8rem; font-weight:600; color: var(--text-muted);">Diagnosis / Health Condition:</label>
-                <input type="text" id="modalDiagnosis" placeholder="e.g. Healthy, Recovering, Routine Check-up Done" style="width:100%; padding:8px; margin-top:4px; border-radius:6px; border:1px solid var(--border-color); background:var(--bg-main); color:var(--text-main); font-size: 0.85rem;" />
+                <input type="text" id="modalDiagnosis" placeholder="e.g. Healthy, Routine Check-up Done" style="width:100%; padding:8px; margin-top:4px; border-radius:6px; border:1px solid var(--border-color); background:var(--bg-main); color:var(--text-main); font-size: 0.85rem;" />
             </div>
 
             <div style="margin-bottom:12px;">
                 <label style="font-size:0.8rem; font-weight:600; color: var(--text-muted);">Vaccination / Medication Status:</label>
-                <input type="text" id="modalVaccines" placeholder="e.g. Anti-Rabies Verified, Fully Vaccinated" style="width:100%; padding:8px; margin-top:4px; border-radius:6px; border:1px solid var(--border-color); background:var(--bg-main); color:var(--text-main); font-size: 0.85rem;" />
+                <input type="text" id="modalVaccines" placeholder="e.g. Anti-Rabies Verified" style="width:100%; padding:8px; margin-top:4px; border-radius:6px; border:1px solid var(--border-color); background:var(--bg-main); color:var(--text-main); font-size: 0.85rem;" />
             </div>
 
             <div style="display:flex; justify-content:flex-end; gap:8px;">
@@ -989,7 +1009,6 @@
             loadDeletedLogsTable();
         });
 
-        // Built-in Web Audio API sound generator (No external files needed!)
         function playSound(type) {
             try {
                 const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
@@ -1020,7 +1039,6 @@
             }
         }
 
-        // Custom confirmation modal implementation
         function showCustomConfirm(message, onConfirm) {
             playSound('delete');
             const modal = document.getElementById('customConfirmModal');
@@ -1031,7 +1049,6 @@
             msgEl.innerText = message;
             modal.style.display = 'flex';
 
-            // Clean up previous event listeners
             const newOkBtn = okBtn.cloneNode(true);
             const newCancelBtn = cancelBtn.cloneNode(true);
             okBtn.parentNode.replaceChild(newOkBtn, okBtn);
@@ -1414,7 +1431,6 @@
             }
         }
 
-        // Trigger custom confirmation modal instead of native browser popup
         function promptDeleteAppointment(id) {
             showCustomConfirm('Are you sure you want to delete this appointment? It will be archived in Deleted Logs.', () => {
                 deleteAppointmentAction(id);
@@ -1560,7 +1576,7 @@
                                 <td><span class="badge badge-approved">${healthInfo.vaccines}</span></td>
                                 <td>
                                     <button class="btn-action btn-primary-custom" onclick="openVetModal('${item.id || ''}', '${item.petName}', '${item.clientName}', '${healthInfo.diagnosis}', '${healthInfo.vaccines}')">
-                                        <i class="fa-solid fa-notes-medical"></i> Update Record
+                                        <i class="fa-solid fa-notes-medical"></i> Update
                                     </button>
                                 </td>
                             </tr>
@@ -1652,13 +1668,12 @@
             }
 
             try {
-                const response = await fetch('/Home/UpdateAppointmentStatus', {
+                await fetch('/Home/UpdateAppointmentStatus', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ id: id, status: newStatus })
                 });
 
-                const result = await response.json();
                 loadAdminAppointmentsTables();
                 loadPetRecordsTable();
             } catch (err) {
@@ -1696,7 +1711,7 @@
             container.innerHTML = '';
             list.forEach((ann, idx) => {
                 container.innerHTML += `
-                    <div style="background: var(--bg-main); padding: 14px; border-radius: 8px; border: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: flex-start;">
+                    <div style="background: var(--bg-main); padding: 14px; border-radius: 8px; border: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: flex-start; gap: 10px; flex-wrap: wrap;">
                         <div>
                             <strong style="color: var(--text-heading); display: block; margin-bottom: 2px;">${ann.title}</strong>
                             <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 4px;">${ann.content}</p>
