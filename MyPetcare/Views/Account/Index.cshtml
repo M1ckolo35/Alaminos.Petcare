@@ -744,6 +744,17 @@
             border: 1px solid rgba(239, 68, 68, 0.3);
         }
 
+        .client-badge {
+            display: inline-block;
+            font-size: 11px;
+            font-weight: 600;
+            padding: 3px 8px;
+            border-radius: 6px;
+            background-color: rgba(2, 132, 199, 0.12);
+            color: var(--primary-accent);
+            margin-bottom: 12px;
+        }
+
         /* Responsive Media Queries */
         @@media (max-width: 900px) {
             .hero-inner-content {
@@ -798,7 +809,7 @@
                 <i id="themeIcon" class="fa-solid fa-moon"></i>
                 <span id="themeText">Dark Mode</span>
             </button>
-            <button class="register-nav-btn" onclick="openModal('register')">Register</button>
+            <button class="register-nav-btn" onclick="openModal('register')">Client Register</button>
             <button class="login-nav-btn" onclick="openModal('login')">Log in</button>
         </div>
     </header>
@@ -889,38 +900,22 @@
         </svg>
     </div>
 
-    <!-- Modal Popup for Login & Register -->
+    <!-- Modal Popup for Login & Register (Secure & Unified) -->
     <div id="authModal" class="modal">
         <div class="modal-content">
             <span class="close-btn" onclick="closeModal()">&times;</span>
 
             <div class="tab-buttons">
                 <button type="button" class="tab-btn active" id="loginTabBtn" onclick="switchMode('login')">Log In</button>
-                <button type="button" class="tab-btn" id="registerTabBtn" onclick="switchMode('register')">Register</button>
+                <button type="button" class="tab-btn" id="registerTabBtn" onclick="switchMode('register')">Client Register</button>
             </div>
 
-            <!-- LOGIN SECTION -->
+            <!-- UNIFIED LOGIN SECTION -->
             <div id="loginSection">
-                <div style="display: flex; gap: 4px; margin-bottom: 14px; background: var(--bg-main); padding: 3px; border-radius: 8px; border: 1px solid var(--border-color);">
-                    <button type="button" class="tab-btn active" id="clientTab" onclick="switchRole('client')">Client Login</button>
-                    <button type="button" class="tab-btn" id="adminTab" onclick="switchRole('admin')">Admin Login</button>
-                </div>
+                <h2 id="modalTitle" style="font-size: 16px; font-weight: 700; margin-bottom: 4px; color: var(--text-heading);">Portal Sign In</h2>
+                <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 12px;">Enter your credentials to access your dashboard.</p>
 
-                <h2 id="modalTitle" style="font-size: 16px; font-weight: 700; margin-bottom: 12px; color: var(--text-heading);">Client Login</h2>
                 <form id="loginForm" onsubmit="handleLogin(event)">
-                    <input type="hidden" id="roleInput" value="client">
-
-                    <div id="adminExtraFields" style="display: none;">
-                        <div class="form-group">
-                            <label for="adminName">Admin Full Name</label>
-                            <input type="text" id="adminName" placeholder="e.g. Dr. Michael Radovan">
-                        </div>
-                        <div class="form-group">
-                            <label for="adminPosition">Position / Title</label>
-                            <input type="text" id="adminPosition" placeholder="e.g. Chief Veterinarian">
-                        </div>
-                    </div>
-
                     <div class="form-group">
                         <label for="email">Email Address</label>
                         <input type="email" id="email" required placeholder="Enter email">
@@ -944,9 +939,10 @@
                 </form>
             </div>
 
-            <!-- REGISTER SECTION -->
+            <!-- CLIENT-ONLY REGISTER SECTION -->
             <div id="registerSection" style="display: none;">
-                <h2 style="font-size: 16px; font-weight: 700; margin-bottom: 12px; color: var(--text-heading);">Create an Account</h2>
+                <span class="client-badge"><i class="fa-solid fa-paw" style="margin-right: 4px;"></i> Pet Owner / Client Registration Only</span>
+                <h2 style="font-size: 16px; font-weight: 700; margin-bottom: 12px; color: var(--text-heading);">Create Client Account</h2>
                 <form id="registerForm" onsubmit="handleRegister(event)">
                     <div class="form-group">
                         <label for="regName">Full Name</label>
@@ -968,7 +964,7 @@
 
                     <p id="regMessage" class="error-msg"></p>
 
-                    <button type="submit" class="submit-btn">Register Account</button>
+                    <button type="submit" class="submit-btn">Register as Client</button>
                 </form>
             </div>
         </div>
@@ -1087,24 +1083,6 @@
             }
         }
 
-        function switchRole(role) {
-            document.getElementById('roleInput').value = role;
-            document.getElementById('modalTitle').innerText = (role === 'client' ? 'Client' : 'Admin') + ' Login';
-            document.getElementById('clientTab').classList.toggle('active', role === 'client');
-            document.getElementById('adminTab').classList.toggle('active', role === 'admin');
-
-            const adminFields = document.getElementById('adminExtraFields');
-            if (role === 'admin') {
-                adminFields.style.display = 'block';
-                document.getElementById('adminName').setAttribute('required', 'true');
-                document.getElementById('adminPosition').setAttribute('required', 'true');
-            } else {
-                adminFields.style.display = 'none';
-                document.getElementById('adminName').removeAttribute('required');
-                document.getElementById('adminPosition').removeAttribute('required');
-            }
-        }
-
         async function handleRegister(event) {
             event.preventDefault();
             const name = document.getElementById('regName').value;
@@ -1113,7 +1091,8 @@
             const msgEl = document.getElementById('regMessage');
 
             msgEl.className = "error-msg";
-            msgEl.innerText = "Processing registration...";
+            msgEl.style.color = "#38bdf8";
+            msgEl.innerText = "Processing client registration...";
 
             try {
                 const response = await fetch('/Account/Register', {
@@ -1128,9 +1107,13 @@
                     msgEl.innerText = data.message;
                     setTimeout(() => { switchMode('login'); }, 1500);
                 } else {
+                    msgEl.className = "error-msg";
+                    msgEl.style.color = "#ef4444";
                     msgEl.innerText = data.message;
                 }
             } catch (err) {
+                msgEl.className = "error-msg";
+                msgEl.style.color = "#ef4444";
                 msgEl.innerText = "An error occurred during registration.";
             }
         }
@@ -1139,40 +1122,37 @@
             event.preventDefault();
             const email = document.getElementById('email').value;
             const password = document.getElementById('password').value;
-            const role = document.getElementById('roleInput').value;
             const errorMsg = document.getElementById('errorMessage');
 
             errorMsg.className = "error-msg";
             errorMsg.style.color = "#38bdf8";
-            errorMsg.innerText = "Connecting...";
-
-            if (role === 'admin') {
-                const adminName = document.getElementById('adminName').value.trim();
-                const adminPosition = document.getElementById('adminPosition').value.trim();
-                if (adminName && adminPosition) {
-                    localStorage.setItem('admin_profile_data', JSON.stringify({
-                        name: adminName,
-                        position: adminPosition
-                    }));
-                }
-            }
+            errorMsg.innerText = "Authenticating...";
 
             try {
+                // Unified login payload without role tampering from frontend
                 const response = await fetch('/Account/Login', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
-                    body: JSON.stringify({ email, password, role })
+                    body: JSON.stringify({ email, password })
                 });
 
                 const data = await response.json();
 
                 if (data.success) {
-                    closeModal();
-                    window.location.href = data.redirectUrl;
+                    errorMsg.className = "success-msg";
+                    errorMsg.innerText = "Login successful! Redirecting...";
+                    setTimeout(() => {
+                        closeModal();
+                        window.location.href = data.redirectUrl;
+                    }, 500);
                 } else {
+                    errorMsg.className = "error-msg";
+                    errorMsg.style.color = "#ef4444";
                     errorMsg.innerText = data.message;
                 }
             } catch (err) {
+                errorMsg.className = "error-msg";
+                errorMsg.style.color = "#ef4444";
                 errorMsg.innerText = "Connection failed.";
             }
         }
